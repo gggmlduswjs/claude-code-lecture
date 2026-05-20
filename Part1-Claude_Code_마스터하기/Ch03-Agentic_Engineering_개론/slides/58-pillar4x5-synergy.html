@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Pillar IV × V Synergy — 곱셈 효과</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; margin-bottom: 24px; text-align: center; max-width: 1000px; line-height: 1.55; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.formula-box { width: 100%; max-width: 1100px; padding: 28px 32px; background: rgba(251, 191, 36, 0.06); border: 2px solid rgba(251, 191, 36, 0.35); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.1s; margin-bottom: 20px; }
+.formula-label { font-size: 11px; color: #fde68a; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
+.formula-row { display: grid; grid-template-columns: 1.2fr auto 1fr auto 1fr; gap: 14px; align-items: center; }
+.f-cell { padding: 18px 14px; background: rgba(10, 15, 26, 0.6); border-radius: 12px; text-align: center; border: 1px solid rgba(139, 148, 158, 0.18); }
+.f-cell.result { border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.08); }
+.f-cell.factor1 { border-top: 3px solid #ec4899; }
+.f-cell.factor2 { border-top: 3px solid #fbbf24; }
+.f-cell .vlabel { font-size: 10px; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; color: #b1bac4; }
+.f-cell.result .vlabel { color: #fde68a; }
+.f-cell .vname { font-size: 16px; font-weight: 900; color: #e6edf3; margin-bottom: 4px; line-height: 1.3; }
+.f-cell .vsub { font-size: 11px; color: #8b949e; line-height: 1.4; }
+.f-cell.factor1 .vname { color: #f9a8d4; }
+.f-cell.factor2 .vname { color: #fbbf24; }
+.f-op { font-size: 30px; color: #fbbf24; font-weight: 900; text-align: center; }
+.f-eq { font-size: 30px; color: #fdba74; font-weight: 900; text-align: center; }
+.compare-row { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.35s; }
+.compare-card { padding: 18px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 14px; min-height: 150px; }
+.compare-card.bad { border-top: 3px solid #ef4444; }
+.compare-card.good { border-top: 3px solid #34d399; }
+.compare-card .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.compare-card .ico { font-size: 22px; }
+.compare-card .htitle { font-size: 15px; font-weight: 900; color: #e6edf3; }
+.compare-card.bad .htitle { color: #fca5a5; }
+.compare-card.good .htitle { color: #6ee7b7; }
+.compare-card .body { font-size: 12.5px; color: #c9d1d9; line-height: 1.6; }
+.compare-card .body strong { color: #e6edf3; font-weight: 700; }
+.foundation-note { width: 100%; max-width: 1100px; margin-top: 16px; padding: 14px 28px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.28); border-radius: 12px; text-align: center; font-size: 13px; color: #fef3c7; line-height: 1.6; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; font-style: italic; }
+.foundation-note strong { color: #fde68a; font-weight: 800; font-style: normal; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Pillar IV × V Synergy</div>
+  <h1 class="title">곱셈 효과 — Foundation × Library</h1>
+  <div class="subtitle">"Pillar IV's optimized codebase provides the <strong>foundation</strong> for the shared tools in Pillar V"</div>
+  <div class="formula-box">
+    <div class="formula-label">Polynomial Productivity Formula</div>
+    <div class="formula-row">
+      <div class="f-cell result">
+        <div class="vlabel">Output</div>
+        <div class="vname">Productivity</div>
+        <div class="vsub">팀의 산출 속도</div>
+      </div>
+      <div class="f-eq">=</div>
+      <div class="f-cell factor1">
+        <div class="vlabel">Pillar IV</div>
+        <div class="vname">Code Consistency</div>
+        <div class="vsub">일관된 코드베이스</div>
+      </div>
+      <div class="f-op">×</div>
+      <div class="f-cell factor2">
+        <div class="vlabel">Pillar V</div>
+        <div class="vname">Library Size</div>
+        <div class="vsub">Working Library 자산 수</div>
+      </div>
+    </div>
+  </div>
+  <div class="compare-row">
+    <div class="compare-card bad">
+      <div class="head"><div class="ico">⚠️</div><div class="htitle">토대 없는 라이브러리</div></div>
+      <div class="body">5년 묵은 brownfield 위에 30개 Skill — <strong>모든 Skill이 variance에 노출</strong>. 어제는 <code>src/billing/</code>, 오늘은 <code>src/payment/</code>. Skill이 일관성을 못 만들어낸다 — 결과는 0에 가까움</div>
+    </div>
+    <div class="compare-card good">
+      <div class="head"><div class="ico">✅</div><div class="htitle">토대 위의 라이브러리</div></div>
+      <div class="body">Pillar IV로 다듬은 코드베이스 위에 Skill을 쌓으면 — <strong>각 Skill이 일관된 결과</strong>를 낸다. 그 결과가 다음 Skill의 안전한 입력. Productivity가 polynomial하게 증가</div>
+    </div>
+  </div>
+  <div class="foundation-note">⚡ <strong>곱셈이다.</strong> 둘 중 하나가 0에 가까우면 — 다른 하나가 100이어도 결과는 0에 가깝다. <strong>두 요소를 동시에</strong> 키워야 한다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="57-compound-definition.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">58 / 75</a></div>
+    <div class="nav-right"><a href="59-high-performing-teams.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('57-compound-definition.html');
+  if (e.key === 'ArrowRight') navigateTo('59-high-performing-teams.html');
+});
+</script>
+</body>
+</html>

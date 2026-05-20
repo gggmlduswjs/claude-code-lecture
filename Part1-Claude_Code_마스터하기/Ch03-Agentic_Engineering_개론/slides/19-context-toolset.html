@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Context Engineering Toolset 3종</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.overline { font-size: 13px; color: #7dd3fc; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 32px; text-align: center; max-width: 960px; line-height: 1.55; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.grid-3col { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.tool-card { padding: 24px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; min-height: 360px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; border-top: 3px solid #38bdf8; }
+.tool-card:nth-child(1) { animation-delay: 0.1s; }
+.tool-card:nth-child(2) { animation-delay: 0.22s; }
+.tool-card:nth-child(3) { animation-delay: 0.34s; }
+.tool-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; color: #7dd3fc; }
+.tool-icon { font-size: 32px; margin-bottom: 8px; }
+.tool-name { font-size: 18px; font-weight: 900; color: #e6edf3; margin-bottom: 4px; line-height: 1.3; }
+.tool-sub { font-size: 12px; color: #b1bac4; margin-bottom: 14px; font-style: italic; }
+.tool-quote { font-size: 12px; color: #c9d1d9; font-style: italic; padding: 10px 14px; background: rgba(56, 189, 248, 0.06); border-left: 2px solid rgba(56, 189, 248, 0.5); border-radius: 4px; margin-bottom: 14px; line-height: 1.55; }
+.tool-quote .ko { color: #94a3b8; display: block; margin-top: 4px; font-size: 11px; }
+.tool-points { list-style: none; padding: 0; margin: 0; font-size: 12.5px; color: #c9d1d9; line-height: 1.65; flex: 1; }
+.tool-points li { padding: 4px 0 4px 16px; position: relative; }
+.tool-points li::before { content: '▸'; position: absolute; left: 2px; color: #38bdf8; font-weight: 700; }
+.tool-points li strong { color: #e6edf3; font-weight: 700; }
+.tool-code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7dd3fc; background: rgba(10, 15, 26, 0.65); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 6px; padding: 6px 10px; margin-top: 10px; display: inline-block; }
+.integration { margin-top: 26px; padding: 18px 30px; background: linear-gradient(135deg, rgba(56,189,248,0.10), rgba(124,58,237,0.06)); border: 1px solid rgba(56,189,248,0.3); border-radius: 14px; max-width: 1140px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.5s ease forwards; }
+.integration .head { font-size: 11px; color: #7dd3fc; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.integration .text { font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+.integration .text strong { color: #f0f6fc; font-weight: 800; }
+.integration .text code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7dd3fc; background: rgba(56, 189, 248, 0.08); padding: 2px 6px; border-radius: 4px; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Pillar I · Toolset</div>
+  <h1 class="title">Context Engineering Toolset 3종</h1>
+  <div class="subtitle">시연에서 본 도구들 — Slash Commands · Sub-agents/Skills · MCP — <strong>세 가지가 함께 작동</strong>할 때 agent는 결정론적으로 움직인다</div>
+  <div class="grid-3col">
+    <div class="tool-card">
+      <div class="tool-num">Tool 1</div>
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">Slash Commands</div>
+      <div class="tool-sub">Specialized Triggers</div>
+      <div class="tool-quote">"Specialized triggers for precise navigation and intent signaling."<span class="ko">정확한 navigation과 의도 신호를 위한 특화 트리거</span></div>
+      <ul class="tool-points">
+        <li>워크플로우를 <strong>codify</strong>하는 1차 도구</li>
+        <li>반복 5단계를 <strong>한 줄 명령</strong>으로 압축</li>
+        <li>agent에게 "이 작업은 이 워크플로우다" 명시</li>
+      </ul>
+      <div class="tool-code">/refactor-module</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">Tool 2</div>
+      <div class="tool-icon">🧩</div>
+      <div class="tool-name">Sub-agents · Skills</div>
+      <div class="tool-sub">Modular Agents</div>
+      <div class="tool-quote">"Modular agents assigned to narrow domains to keep local context windows clean."<span class="ko">좁은 도메인의 모듈형 에이전트 — 로컬 컨텍스트를 깨끗하게</span></div>
+      <ul class="tool-points">
+        <li>특정 작업을 <strong>격리된 context</strong>로 위임</li>
+        <li><strong>narrow domain</strong>에만 책임 → clean local context</li>
+        <li>무거운 탐색은 위임, 압축된 요약만 회수</li>
+      </ul>
+      <div class="tool-code">.claude/agents/</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">Tool 3</div>
+      <div class="tool-icon">🔌</div>
+      <div class="tool-name">MCP</div>
+      <div class="tool-sub">Standardized Interface</div>
+      <div class="tool-quote">"Standardized interfaces for external data retrieval."<span class="ko">외부 데이터 retrieval을 위한 표준화된 인터페이스</span></div>
+      <ul class="tool-points">
+        <li>Jira · Notion · Linear · 사내 wiki를 <strong>agent의 도구</strong>로</li>
+        <li>각 시스템별 인터페이스 학습 ✕ → MCP 한 번</li>
+        <li><strong>Second Brain의 외부 확장판</strong></li>
+      </ul>
+      <div class="tool-code">Model Context Protocol</div>
+    </div>
+  </div>
+  <div class="integration">
+    <div class="head">🔗 Toolset의 통합</div>
+    <div class="text"><strong>개별 사용 ✕ — 연결된 그래프로</strong> &nbsp; <code>CLAUDE.md → /slash-command → sub-agent → MCP</code></div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="18-openai-principle.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">19 / 75</a></div>
+    <div class="nav-right"><a href="20-demo-before-after.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('18-openai-principle.html');
+  if (e.key === 'ArrowRight') navigateTo('20-demo-before-after.html');
+});
+</script>
+</body>
+</html>

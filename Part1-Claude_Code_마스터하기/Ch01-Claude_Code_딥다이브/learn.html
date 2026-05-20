@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part 1 · Ch01 — Claude Code 딥다이브 · 학습 자료</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  padding: 0 0 80px;
+  position: relative;
+  overflow-x: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+body::before {
+  content: '';
+  position: fixed; top: -25%; left: 50%;
+  transform: translateX(-50%);
+  width: 1200px; height: 1200px;
+  background: radial-gradient(circle, rgba(124,58,237,0.13), rgba(56,189,248,0.05) 40%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.wrapper { max-width: 1180px; margin: 0 auto; padding: 64px 40px 0; position: relative; z-index: 1; }
+
+.crumbs {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: #8b949e;
+  margin-bottom: 24px; font-weight: 600; letter-spacing: 0.3px;
+}
+.crumbs a { color: #a78bfa; text-decoration: none; transition: color 0.15s; }
+.crumbs a:hover { color: #c4b5fd; }
+.crumbs span.sep { color: #484f58; }
+
+.header { margin-bottom: 50px; }
+.eyebrow {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 2px;
+  color: #c4b5fd; font-weight: 800; text-transform: uppercase;
+  padding: 5px 11px;
+  background: rgba(167,139,250,0.13);
+  border: 1px solid rgba(167,139,250,0.30);
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-size: 44px; font-weight: 900; color: #f0f6fc;
+  line-height: 1.25; margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.header h1 .accent {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle { font-size: 17px; color: #b1bac4; line-height: 1.6; max-width: 760px; }
+.header .meta {
+  margin-top: 22px;
+  display: inline-flex; gap: 22px; flex-wrap: wrap;
+  padding: 10px 22px;
+  background: rgba(139,148,158,0.06);
+  border: 1px solid rgba(139,148,158,0.16);
+  border-radius: 999px;
+  font-size: 12px; color: #b1bac4; font-weight: 600;
+}
+.header .meta strong { color: #c4b5fd; font-family: 'JetBrains Mono', monospace; }
+
+.section { margin-bottom: 64px; }
+.section-head {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 22px; padding-bottom: 14px;
+  border-bottom: 1px solid rgba(139,148,158,0.18);
+}
+.section-head .icon { font-size: 22px; }
+.section-head h2 { font-size: 22px; font-weight: 800; color: #f0f6fc; }
+.section-head .count {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: #8b949e; font-weight: 600;
+}
+
+.slide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.slide-card {
+  display: flex; flex-direction: column;
+  padding: 16px 16px 14px;
+  background: rgba(139,148,158,0.05);
+  border: 1px solid rgba(139,148,158,0.18);
+  border-radius: 11px;
+  color: inherit; text-decoration: none;
+  transition: all 0.16s ease;
+  min-height: 96px;
+}
+.slide-card:hover {
+  border-color: rgba(167,139,250,0.50);
+  background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(56,189,248,0.06));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.30);
+}
+.slide-card .slide-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 800;
+  color: #a78bfa; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.slide-card .slide-title {
+  font-size: 14px; color: #e6edf3; font-weight: 600;
+  line-height: 1.5;
+}
+.slide-empty {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 14px;
+  padding: 28px 24px;
+  background: rgba(167,139,250,0.05);
+  border: 1px dashed rgba(167,139,250,0.34);
+  border-radius: 12px;
+  color: #c4b5fd;
+}
+.slide-empty .slide-empty-icon { font-size: 26px; }
+.slide-empty .slide-empty-text { font-size: 14px; color: #ddd6fe; font-weight: 600; }
+
+article {
+  font-size: 15px; line-height: 1.82; color: #cdd6e0;
+  max-width: 860px;
+}
+article h1 { font-size: 26px; color: #f0f6fc; font-weight: 900; margin: 6px 0 18px; line-height: 1.3; }
+article h2 { font-size: 21px; color: #e6edf3; font-weight: 800; margin: 38px 0 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(139,148,158,0.15); }
+article h3 { font-size: 17px; color: #c4b5fd; font-weight: 700; margin: 28px 0 10px; }
+article h4 { font-size: 14.5px; color: #7dd3fc; font-weight: 700; margin: 22px 0 8px; }
+article p { margin-bottom: 13px; }
+article ul, article ol { padding-left: 22px; margin-bottom: 14px; }
+article li { margin-bottom: 6px; }
+article strong { color: #f0f6fc; font-weight: 700; }
+article em { color: #ddd6fe; font-style: italic; }
+article a { color: #7dd3fc; text-decoration: underline; text-underline-offset: 3px; }
+article code {
+  background: rgba(167,139,250,0.13); color: #ddd6fe;
+  padding: 2px 6px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+article pre {
+  background: #060911; border: 1px solid rgba(139,148,158,0.18);
+  padding: 16px 18px; border-radius: 10px;
+  overflow-x: auto; margin: 14px 0 20px;
+}
+article pre code {
+  background: transparent; color: #cbd5e1; padding: 0;
+  font-size: 12.5px; line-height: 1.65;
+}
+article blockquote {
+  border-left: 3px solid #a78bfa;
+  background: rgba(167,139,250,0.06);
+  padding: 12px 16px; margin: 14px 0;
+  border-radius: 0 8px 8px 0;
+  color: #c9d1d9;
+}
+article blockquote p { margin: 0; }
+article table {
+  width: 100%; border-collapse: collapse; margin: 18px 0;
+  font-size: 13.5px;
+}
+article th, article td {
+  border: 1px solid rgba(139,148,158,0.22);
+  padding: 8px 12px; text-align: left;
+}
+article th { background: rgba(167,139,250,0.10); font-weight: 700; color: #ddd6fe; }
+article hr { border: none; border-top: 1px solid rgba(139,148,158,0.20); margin: 36px 0; }
+article input[type=checkbox] { accent-color: #a78bfa; transform: translateY(2px); margin-right: 6px; }
+
+.chapter-nav {
+  display: flex; justify-content: space-between; gap: 14px;
+  margin-top: 60px; padding-top: 30px;
+  border-top: 1px solid rgba(139,148,158,0.18);
+}
+.nav-link {
+  display: flex; flex-direction: column;
+  padding: 14px 20px;
+  background: rgba(139,148,158,0.05);
+  border: 1px solid rgba(139,148,158,0.20);
+  border-radius: 10px;
+  color: inherit; text-decoration: none;
+  min-width: 280px;
+  transition: all 0.16s ease;
+}
+.nav-link:hover {
+  border-color: rgba(167,139,250,0.40);
+  background: rgba(167,139,250,0.08);
+}
+.nav-link .nav-dir {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #a78bfa; font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.nav-link .nav-target { font-size: 14px; color: #e6edf3; font-weight: 600; margin-top: 4px; }
+.nav-link.placeholder { visibility: hidden; }
+
+.floating-hub {
+  position: fixed; top: 22px; right: 24px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px 10px 14px;
+  background: rgba(10,15,26,0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(167,139,250,0.34);
+  border-radius: 999px;
+  color: #ddd6fe;
+  font-size: 13px; font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: all 0.16s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.15s forwards;
+}
+.floating-hub:hover {
+  background: rgba(167,139,250,0.18);
+  border-color: rgba(167,139,250,0.60);
+  color: #f0e9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.40);
+}
+.floating-hub .icon { font-size: 15px; line-height: 1; }
+
+@media (max-width: 760px) {
+  .wrapper { padding: 36px 22px 0; }
+  .header h1 { font-size: 32px; }
+  .slide-grid { grid-template-columns: 1fr 1fr; }
+  .chapter-nav { flex-direction: column; }
+  .nav-link { min-width: 0; }
+  .nav-link.placeholder { display: none; }
+  .floating-hub { top: 14px; right: 14px; padding: 8px 14px 8px 12px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<a class="floating-hub" href="../../index.html" title="학습 자료 허브로 돌아가기">
+  <span class="icon">←</span>
+  <span>학습 허브</span>
+</a>
+
+<div class="wrapper">
+
+  <div class="crumbs">
+    <a href="../../index.html">학습 자료 허브</a>
+    <span class="sep">›</span>
+    <span>Part 1 · Ch01</span>
+  </div>
+
+  <header class="header">
+    <span class="eyebrow">Part 1 · Ch01</span>
+    <h1>Claude Code 딥다이브</h1>
+    <p class="subtitle">에이전트 루프부터 자동화 · 워크플로우까지</p>
+    <div class="meta">
+      <span>슬라이드 <strong>44</strong>개</span><span>실습 <strong>3</strong>개</span><span>소요 <strong>약 3시간 (실습 1: 45분 · 실습 2: 60분 · 통합 실습: 90분)</strong></span>
+    </div>
+  </header>
+
+  <section class="section" id="slides">
+    <div class="section-head">
+      <span class="icon">📊</span>
+      <h2>강의 슬라이드</h2>
+      <span class="count">44장 · 클릭하면 새 탭으로 열림</span>
+    </div>
+    <div class="slide-grid">
+      <a class="slide-card" href="slides/01-intro-hook.html" target="_blank" rel="noopener"><span class="slide-num">01</span><span class="slide-title">Claude Code 딥다이브</span></a>
+      <a class="slide-card" href="slides/02-agent-loop.html" target="_blank" rel="noopener"><span class="slide-num">02</span><span class="slide-title">에이전트 루프</span></a>
+      <a class="slide-card" href="slides/03-models-and-tools.html" target="_blank" rel="noopener"><span class="slide-num">03</span><span class="slide-title">모델 + 도구 5범주</span></a>
+      <a class="slide-card" href="slides/03b-claude-access.html" target="_blank" rel="noopener"><span class="slide-num">03b</span><span class="slide-title">Claude가 접근하는 것</span></a>
+      <a class="slide-card" href="slides/03c-environments.html" target="_blank" rel="noopener"><span class="slide-num">03c</span><span class="slide-title">환경과 인터페이스</span></a>
+      <a class="slide-card" href="slides/03d-sessions.html" target="_blank" rel="noopener"><span class="slide-num">03d</span><span class="slide-title">모든 작업의 단위</span></a>
+      <a class="slide-card" href="slides/04-extension-layers.html" target="_blank" rel="noopener"><span class="slide-num">04</span><span class="slide-title">7가지 확장 계층</span></a>
+      <a class="slide-card" href="slides/05-context-anatomy.html" target="_blank" rel="noopener"><span class="slide-num">05</span><span class="slide-title">컨텍스트의 정체</span></a>
+      <a class="slide-card" href="slides/05b-turn-accumulation.html" target="_blank" rel="noopener"><span class="slide-num">05b</span><span class="slide-title">매 턴 누적</span></a>
+      <a class="slide-card" href="slides/06-context-visualization.html" target="_blank" rel="noopener"><span class="slide-num">06</span><span class="slide-title">/context 시각화</span></a>
+      <a class="slide-card" href="slides/07-context-rot.html" target="_blank" rel="noopener"><span class="slide-num">07</span><span class="slide-title">컨텍스트 로트와 환각</span></a>
+      <a class="slide-card" href="slides/08-one-session-one-feature.html" target="_blank" rel="noopener"><span class="slide-num">08</span><span class="slide-title">한 세션 = 한 피처</span></a>
+      <a class="slide-card" href="slides/09-memory-three-layers.html" target="_blank" rel="noopener"><span class="slide-num">09</span><span class="slide-title">세션 자동 로드 5종</span></a>
+      <a class="slide-card" href="slides/10-claude-md-locations.html" target="_blank" rel="noopener"><span class="slide-num">10</span><span class="slide-title">CLAUDE.md 5곳</span></a>
+      <a class="slide-card" href="slides/11-permission-modes.html" target="_blank" rel="noopener"><span class="slide-num">11</span><span class="slide-title">Permission Mode 5가지</span></a>
+      <a class="slide-card" href="slides/12-auto-mode-vs-accept-edits.html" target="_blank" rel="noopener"><span class="slide-num">12</span><span class="slide-title">Auto Mode = 본 작업 표준</span></a>
+      <a class="slide-card" href="slides/13-pricing-tiers.html" target="_blank" rel="noopener"><span class="slide-num">13</span><span class="slide-title">요금제 비교</span></a>
+      <a class="slide-card" href="slides/14-install-flow.html" target="_blank" rel="noopener"><span class="slide-num">14</span><span class="slide-title">설치 한 줄 + 첫 로그인</span></a>
+      <a class="slide-card" href="slides/15-init-commands.html" target="_blank" rel="noopener"><span class="slide-num">15</span><span class="slide-title">초기 명령 4총사</span></a>
+      <a class="slide-card" href="slides/16-shortcuts.html" target="_blank" rel="noopener"><span class="slide-num">16</span><span class="slide-title">단축키 5종</span></a>
+      <a class="slide-card" href="slides/16b-vscode-extension.html" target="_blank" rel="noopener"><span class="slide-num">16b</span><span class="slide-title">Terminal vs VS Code Extension</span></a>
+      <a class="slide-card" href="slides/17-permission-cycle.html" target="_blank" rel="noopener"><span class="slide-num">17</span><span class="slide-title">컨텍스트·권한 사이클</span></a>
+      <a class="slide-card" href="slides/18-subagent-mechanics.html" target="_blank" rel="noopener"><span class="slide-num">18</span><span class="slide-title">Sub-Agent 작동 원리</span></a>
+      <a class="slide-card" href="slides/19-builtin-subagents.html" target="_blank" rel="noopener"><span class="slide-num">19</span><span class="slide-title">내장 Sub-Agent 5종</span></a>
+      <a class="slide-card" href="slides/20-parallel-comparison.html" target="_blank" rel="noopener"><span class="slide-num">20</span><span class="slide-title">멀티 터미널 vs Sub-Agent vs Teams</span></a>
+      <a class="slide-card" href="slides/21-skills-loading.html" target="_blank" rel="noopener"><span class="slide-num">21</span><span class="slide-title">Skills 2단계 로딩</span></a>
+      <a class="slide-card" href="slides/22-mcp-vs-cli.html" target="_blank" rel="noopener"><span class="slide-num">22</span><span class="slide-title">MCP vs CLI 추세</span></a>
+      <a class="slide-card" href="slides/23-hooks-events.html" target="_blank" rel="noopener"><span class="slide-num">23</span><span class="slide-title">Hooks 4가지 이벤트</span></a>
+      <a class="slide-card" href="slides/24-tdd-enforcer-plugin.html" target="_blank" rel="noopener"><span class="slide-num">24</span><span class="slide-title">TDD 강제 Plugin</span></a>
+      <a class="slide-card" href="slides/25-automation-time-units.html" target="_blank" rel="noopener"><span class="slide-num">25</span><span class="slide-title">자동화 시간 단위</span></a>
+      <a class="slide-card" href="slides/26-loop-modes.html" target="_blank" rel="noopener"><span class="slide-num">26</span><span class="slide-title">/loop 세 가지 모드</span></a>
+      <a class="slide-card" href="slides/27-routine-triggers.html" target="_blank" rel="noopener"><span class="slide-num">27</span><span class="slide-title">/routine 트리거</span></a>
+      <a class="slide-card" href="slides/28-validation-first.html" target="_blank" rel="noopener"><span class="slide-num">28</span><span class="slide-title">검증 미리 알리기</span></a>
+      <a class="slide-card" href="slides/29-explore-plan-code.html" target="_blank" rel="noopener"><span class="slide-num">29</span><span class="slide-title">탐색 → 계획 → 코드 → 커밋</span></a>
+      <a class="slide-card" href="slides/29b-specific-context-patterns.html" target="_blank" rel="noopener"><span class="slide-num">29b</span><span class="slide-title">구체적 컨텍스트 = 정확도</span></a>
+      <a class="slide-card" href="slides/29c-rich-input-channels.html" target="_blank" rel="noopener"><span class="slide-num">29c</span><span class="slide-title">풍부한 입력 채널</span></a>
+      <a class="slide-card" href="slides/29d-claude-interview.html" target="_blank" rel="noopener"><span class="slide-num">29d</span><span class="slide-title">Claude가 인터뷰하게 하기</span></a>
+      <a class="slide-card" href="slides/29e-claude-p-bare.html" target="_blank" rel="noopener"><span class="slide-num">29e</span><span class="slide-title">비대화형 모드</span></a>
+      <a class="slide-card" href="slides/29f-writer-reviewer.html" target="_blank" rel="noopener"><span class="slide-num">29f</span><span class="slide-title">멀티 세션</span></a>
+      <a class="slide-card" href="slides/29g-voice-input.html" target="_blank" rel="noopener"><span class="slide-num">29g</span><span class="slide-title">긴 자연어 효율</span></a>
+      <a class="slide-card" href="slides/30-failure-patterns.html" target="_blank" rel="noopener"><span class="slide-num">30</span><span class="slide-title">5가지 실패 패턴</span></a>
+      <a class="slide-card" href="slides/30b-intuition-development.html" target="_blank" rel="noopener"><span class="slide-num">30b</span><span class="slide-title">작동하는 것에 주의</span></a>
+      <a class="slide-card" href="slides/31-integration-scenarios.html" target="_blank" rel="noopener"><span class="slide-num">31</span><span class="slide-title">통합 시나리오 3가지</span></a>
+      <a class="slide-card" href="slides/32-summary.html" target="_blank" rel="noopener"><span class="slide-num">32</span><span class="slide-title">Ch01 가장 중요한 메시지 셋</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="exercises">
+    <div class="section-head">
+      <span class="icon">💻</span>
+      <h2>실습</h2>
+      <span class="count">학습자 본인 repo에 적용</span>
+    </div>
+    <article id="article"></article>
+  </section>
+
+  <nav class="chapter-nav">
+    <a class="nav-link" href="../../Part0-실리콘밸리_엔지니어의_하루/Ch02-AI_Native_엔지니어로_일하기/learn.html"><span class="nav-dir">← 이전 챕터</span><span class="nav-target">Part 0 · Ch02 · AI-Native 엔지니어로 일하기</span></a>
+    <a class="nav-link" href="../Ch02-Vibe_Coding의_본질과_한계/learn.html"><span class="nav-dir">다음 챕터 →</span><span class="nav-target">Part 1 · Ch02 · Vibe Coding의 본질과 한계</span></a>
+  </nav>
+
+</div>
+
+<script>
+(async () => {
+  const article = document.getElementById('article');
+  marked.use({ tokenizer: { del() { return false; } } });
+  try {
+    const res = await fetch('./exercises/exercises.md', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const md = await res.text();
+    article.innerHTML = DOMPurify.sanitize(marked.parse(md));
+  } catch (err) {
+    article.innerHTML =
+      '<div class="slide-empty">' +
+      '<span class="slide-empty-icon">⚠️</span>' +
+      '<span class="slide-empty-text">실습 본문을 불러오지 못했습니다 (' +
+      String(err.message || err) +
+      '). file://로 직접 열면 fetch가 차단됩니다 — 로컬에서 보려면 챕터 디렉토리에서 ' +
+      '<code>python3 -m http.server</code> 같은 dev server를 띄우거나 배포 사이트로 접속하세요.' +
+      '</span></div>';
+  }
+})();
+</script>
+
+</body>
+</html>

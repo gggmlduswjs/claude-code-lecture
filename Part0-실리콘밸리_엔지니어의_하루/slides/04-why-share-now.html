@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>업계 통계로 본 변화 속도</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 40px; text-align: center; max-width: 900px; line-height: 1.5; }
+.grid-2x2 {
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+.grid-card {
+  padding: 30px 28px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 16px;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  animation: cardAppear 0.5s ease forwards;
+}
+.grid-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #a78bfa; }
+.grid-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #38bdf8; }
+.grid-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #f97316; }
+.grid-card:nth-child(4) { animation-delay: 0.4s; border-top: 3px solid #34d399; }
+.grid-card .source {
+  font-size: 11px;
+  color: #b1bac4;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.grid-card .headline {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+.grid-card:nth-child(1) .headline { background: linear-gradient(135deg, #a78bfa, #c9a2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grid-card:nth-child(2) .headline { background: linear-gradient(135deg, #38bdf8, #7dd3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grid-card:nth-child(3) .headline { background: linear-gradient(135deg, #f97316, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grid-card:nth-child(4) .headline { background: linear-gradient(135deg, #34d399, #6ee7b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grid-card .body {
+  font-size: 14px;
+  color: #c9d1d9;
+  line-height: 1.6;
+  flex: 1;
+}
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">업계는 얼마나 빨리 움직이고 있나</h1>
+  <div class="subtitle">실리콘밸리와 한국의 속도 차이 — 지금이 격차가 가장 벌어지는 시점</div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="source">ANTHROPIC · 2025.03</div>
+      <div class="headline">AI가 코드의 90%</div>
+      <div class="body">"3~6개월 안에 AI가 코드의 90%를 작성하고, 12개월 안에는 사실상 모든 코드를 AI가 작성하게 될 것" — Dario Amodei, CEO</div>
+    </div>
+    <div class="grid-card">
+      <div class="source">Y COMBINATOR · 2025 Winter</div>
+      <div class="headline">스타트업 25%가 95%+</div>
+      <div class="body">YC 2025 겨울 배치 스타트업의 25%가 코드베이스의 95% 이상을 AI로 생성</div>
+    </div>
+    <div class="grid-card">
+      <div class="source">KOREA · 현장 관찰</div>
+      <div class="headline">인지도 낮음</div>
+      <div class="body">Claude Code가 무엇인지 모르거나, 알아도 간단한 프롬프트 수준 — 에이전틱 코딩을 몰라 효율적으로 쓰지 못하는 경우가 대다수</div>
+    </div>
+    <div class="grid-card">
+      <div class="source">OPPORTUNITY · NOW</div>
+      <div class="headline">커리어 전환점</div>
+      <div class="body">바로 지금 체화하면 경쟁력이 수직 상승. 1~2년 뒤에는 "기본 스킬"이 될 기술을 먼저 익히는 기회</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="03-ai-turning-point.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">04 / 43</a></div>
+    <div class="nav-right"><a href="05-course-differentiators.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('03-ai-turning-point.html');
+  if (e.key === 'ArrowRight') navigateTo('05-course-differentiators.html');
+});
+</script>
+</body>
+</html>

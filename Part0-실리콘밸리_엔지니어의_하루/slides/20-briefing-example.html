@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>실제 브리핑 출력 예시</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 34px; text-align: center; }
+.briefing-screen { width: 100%; max-width: 1020px; background: rgba(10, 15, 26, 0.8); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 18px; overflow: hidden; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.1s; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); }
+.briefing-header { padding: 12px 20px; background: rgba(139, 148, 158, 0.06); border-bottom: 1px solid rgba(139, 148, 158, 0.1); display: flex; align-items: center; gap: 10px; }
+.briefing-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+.briefing-header .dot.r { background: #ec4899; }
+.briefing-header .dot.y { background: #fbbf24; }
+.briefing-header .dot.g { background: #34d399; }
+.briefing-header .title-bar { flex: 1; text-align: center; font-size: 12px; color: #b1bac4; letter-spacing: 1px; font-weight: 600; }
+.briefing-body { padding: 24px 28px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75; color: #c9d1d9; }
+.briefing-section { margin-bottom: 16px; }
+.briefing-section:last-child { margin-bottom: 0; }
+.section-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 0.5px; }
+.section-title.priority { color: #fbbf24; }
+.section-title.meetings { color: #7dd3fc; }
+.section-title.prs { color: #a78bfa; }
+.section-title.comments { color: #f9a8d4; }
+.section-title.ci { color: #ec4899; }
+.section-body { padding-left: 14px; color: #c9d1d9; }
+.section-body .dim { color: #b1bac4; }
+.highlight { color: #e6edf3; font-weight: 700; }
+.mono-inline { font-family: 'Courier New', monospace; background: rgba(139, 148, 158, 0.08); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">메신저로 날아오는 브리핑</h1>
+  <div class="subtitle">실제로 받는 형태 — Claude가 우선순위까지 정해서 보냅니다</div>
+  <div class="briefing-screen">
+    <div class="briefing-header">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="title-bar">Slack · daily-briefing · 08:47 AM</div>
+    </div>
+    <div class="briefing-body">
+      <div class="briefing-section">
+        <div class="section-title priority">🎯 오늘 우선순위 (AI 판단)</div>
+        <div class="section-body">
+          1. <span class="highlight">auth.test.ts 타임아웃 원인 분석</span> — CI 회복이 선행<br/>
+          2. <span class="highlight">PR #308 N+1 이슈 답변 + 수정</span> — @sarah 리뷰 대기, 오늘 머지<br/>
+          3. <span class="highlight">티켓 #401 활동 히스토리 탭</span> — 오전 미팅 슬롯 동안 Claude에 위임<br/>
+          <span class="dim">(버퍼 시간: #382 문서 업데이트, #411 로그 포맷 정리)</span>
+        </div>
+      </div>
+      <div class="briefing-section">
+        <div class="section-title meetings">📅 오늘 미팅</div>
+        <div class="section-body">
+          • 09:30 데일리 스탠드업 (15분)<br/>
+          • 11:00 PM과 1:1 — <span class="dim">스프린트 범위 재조정</span><br/>
+          • 14:00 결제 리팩토링 디자인 리뷰 (1h)
+        </div>
+      </div>
+      <div class="briefing-section">
+        <div class="section-title prs">📋 아직 머지되지 않은 PR</div>
+        <div class="section-body">
+          • <span class="mono-inline">PR #312</span> 결제 모듈 타임아웃 설정 — <span class="dim">payments/timeout.ts</span><br/>
+          • <span class="mono-inline">PR #315</span> 사용자 프로필 캐시 무효화 로직
+        </div>
+      </div>
+      <div class="briefing-section">
+        <div class="section-title comments">💬 내 PR 코멘트</div>
+        <div class="section-body">
+          • <span class="mono-inline">PR #308</span> @sarah: <span class="dim">"이 쿼리, N+1 문제 가능성 있어 보입니다"</span>
+        </div>
+      </div>
+      <div class="briefing-section">
+        <div class="section-title ci">❌ CI 실패</div>
+        <div class="section-body">
+          • <span class="highlight">main 브랜치 빌드 실패</span> — auth.test.ts 타임아웃<br/>
+          <span class="dim">원인 추정: PR #312의 타임아웃 설정이 테스트 환경에서도 적용됨</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="19-morning-briefing.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">20 / 43</a></div>
+    <div class="nav-right"><a href="21-delegate-morning.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('19-morning-briefing.html');
+  if (e.key === 'ArrowRight') navigateTo('21-delegate-morning.html');
+});
+</script>
+</body>
+</html>

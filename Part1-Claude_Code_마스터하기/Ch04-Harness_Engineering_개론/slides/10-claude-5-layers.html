@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Claude Code 5계층 하네스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; text-align: center; margin-bottom: 36px; max-width: 920px; line-height: 1.55; }
+.subtitle strong { color: #6ee7b7; }
+.step-flow { width: 100%; max-width: 1080px; display: flex; flex-direction: column; gap: 14px; }
+.step-item { display: flex; align-items: center; gap: 22px; padding: 20px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; transform: translateX(-20px); animation: stepIn 0.5s ease forwards; }
+.step-item:nth-child(1) { animation-delay: 0.1s; border-left: 3px solid #34d399; }
+.step-item:nth-child(2) { animation-delay: 0.22s; border-left: 3px solid #34d399; }
+.step-item:nth-child(3) { animation-delay: 0.34s; border-left: 3px solid #34d399; }
+.step-item:nth-child(4) { animation-delay: 0.46s; border-left: 3px solid #34d399; }
+.step-item:nth-child(5) { animation-delay: 0.58s; border-left: 3px solid #34d399; }
+.step-num { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #34d399, #38bdf8); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: #0a0f1a; }
+.step-body { flex: 1; }
+.step-name-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.step-title { font-size: 19px; font-weight: 900; color: #e6edf3; }
+.step-path { font-size: 12px; color: #b1bac4; font-family: 'Courier New', monospace; padding: 2px 8px; background: rgba(10, 15, 26, 0.6); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 6px; }
+.step-desc { font-size: 14px; color: #b1bac4; line-height: 1.55; }
+.step-axis { flex: 0 0 180px; text-align: right; }
+.step-axis-label { font-size: 10px; color: #b1bac4; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.step-axis-value { font-size: 13px; color: #6ee7b7; font-weight: 800; }
+@keyframes stepIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">Claude Code · 5계층 하네스</h1>
+  <div class="subtitle">현재 흔히 보는 입문 자료는 3계층(CLAUDE.md / Rules / Hooks)만 다룬다. <strong>진짜는 5계층.</strong></div>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-name-row"><div class="step-title">CLAUDE.md</div><div class="step-path">/CLAUDE.md</div></div>
+        <div class="step-desc">항상 보이는 기본 규칙. 사무실 벽의 규칙표. 200줄 이하.</div>
+      </div>
+      <div class="step-axis"><div class="step-axis-label">4축 대응</div><div class="step-axis-value">Memory + Skills</div></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-name-row"><div class="step-title">Skills</div><div class="step-path">.claude/skills/*.md</div></div>
+        <div class="step-desc">필요할 때만 열리는 반복 업무 매뉴얼. Progressive disclosure.</div>
+      </div>
+      <div class="step-axis"><div class="step-axis-label">4축 대응</div><div class="step-axis-value">Skills</div></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-name-row"><div class="step-title">Hooks</div><div class="step-path">.claude/settings.json</div></div>
+        <div class="step-desc">자동 실행되는 결정론적 점검. PreToolUse · PostToolUse.</div>
+      </div>
+      <div class="step-axis"><div class="step-axis-label">4축 대응</div><div class="step-axis-value">Mediating</div></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-name-row"><div class="step-title">Subagents</div><div class="step-path">.claude/agents/*.md</div></div>
+        <div class="step-desc">역할별 격리 전문가. researcher · builder · reviewer 분리.</div>
+      </div>
+      <div class="step-axis"><div class="step-axis-label">4축 대응</div><div class="step-axis-value">Protocols</div></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-name-row"><div class="step-title">Permissions</div><div class="step-path">.claude/settings.json</div></div>
+        <div class="step-desc">도구별 위험도 통제. allow / ask / deny.</div>
+      </div>
+      <div class="step-axis"><div class="step-axis-label">4축 대응</div><div class="step-axis-value">Mediating</div></div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="09-twelve-vs-five.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">10 / 24</a></div>
+    <div class="nav-right"><a href="11-layer-4axes-mapping.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('09-twelve-vs-five.html');
+  if (e.key === 'ArrowRight') navigateTo('11-layer-4axes-mapping.html');
+});
+</script>
+</body>
+</html>

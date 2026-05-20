@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>마구 & CI/CD — 다른 분야의 교훈</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+}
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle {
+  font-size: 16px;
+  color: #b1bac4;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.analogy-grid {
+  width: 100%;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.analogy-card {
+  padding: 32px 30px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  animation: cardAppear 0.6s ease forwards;
+}
+.analogy-card.left { animation-delay: 0.1s; border-top: 3px solid #fbbf24; }
+.analogy-card.right { animation-delay: 0.3s; border-top: 3px solid #34d399; }
+.analogy-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+.analogy-tag {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.analogy-card.left .analogy-tag { color: #fde68a; }
+.analogy-card.right .analogy-tag { color: #6ee7b7; }
+.analogy-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: #e6edf3;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+.analogy-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #b1bac4;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.analogy-section-label:first-of-type { margin-top: 0; }
+.analogy-text {
+  font-size: 14px;
+  color: #c9d1d9;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+.analogy-card.left .analogy-text strong { color: #fde68a; font-weight: 700; }
+.analogy-card.right .analogy-text strong { color: #6ee7b7; font-weight: 700; }
+.analogy-mapping {
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: rgba(10, 15, 26, 0.55);
+  border: 1px solid rgba(139, 148, 158, 0.15);
+  border-radius: 10px;
+  font-size: 13px;
+  color: #c9d1d9;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.analogy-mapping .arrow {
+  color: #b1bac4;
+  font-weight: 900;
+}
+.analogy-card.left .analogy-mapping { border-left: 3px solid #fbbf24; }
+.analogy-card.right .analogy-mapping { border-left: 3px solid #34d399; }
+
+.lesson-box {
+  width: 100%;
+  max-width: 1120px;
+  padding: 22px 32px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(52, 211, 153, 0.08));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.6s ease forwards;
+  animation-delay: 0.55s;
+}
+.lesson-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e6edf3;
+  line-height: 1.5;
+}
+.lesson-text strong {
+  background: linear-gradient(135deg, #fde68a, #6ee7b7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.slide-nav-inner {
+  width: 1280px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 60px;
+}
+.slide-nav a {
+  text-decoration: none; font-size: 14px; font-weight: 700;
+  color: #7c3aed; transition: color 0.2s;
+}
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+body { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">다른 분야의 교훈</h1>
+  <div class="subtitle">강력한 힘을 제어하는 시스템은 이미 다른 영역에 답이 있다</div>
+
+  <div class="analogy-grid">
+    <div class="analogy-card left">
+      <div class="analogy-icon">🐎</div>
+      <div class="analogy-tag">Lesson 1</div>
+      <div class="analogy-title">마구 (Harness)</div>
+      <div class="analogy-section-label">문제</div>
+      <div class="analogy-text">말은 강력한 동물이지만, 풀어놓으면 원하는 방향으로 가지 않는다.</div>
+      <div class="analogy-section-label">해법</div>
+      <div class="analogy-text">마구를 씌우면 말의 힘을 <strong>제어</strong>할 수 있다. 능력을 줄이는 게 아니라 <strong>원하는 방향으로 발휘하게 만드는 것</strong>.</div>
+      <div class="analogy-mapping">
+        <span>Claude Code</span>
+        <span class="arrow">→</span>
+        <span>마구가 없으면 강력하지만 통제되지 않는다</span>
+      </div>
+    </div>
+
+    <div class="analogy-card right">
+      <div class="analogy-icon">🔄</div>
+      <div class="analogy-tag">Lesson 2</div>
+      <div class="analogy-title">CI/CD 파이프라인</div>
+      <div class="analogy-section-label">문제</div>
+      <div class="analogy-text">개발자가 코드를 직접 서버에 올리던 시절 — 사람의 실수가 곧 장애였다.</div>
+      <div class="analogy-section-label">해법</div>
+      <div class="analogy-text">커밋하면 자동으로 <strong>테스트·빌드·배포</strong>가 실행되며 품질을 보장하는 시스템.</div>
+      <div class="analogy-mapping">
+        <span>AI 코딩</span>
+        <span class="arrow">→</span>
+        <span>같은 패턴 — 출력을 시스템으로 검증하는 파이프라인</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-box">
+    <div class="lesson-text">두 분야 모두 같은 답에 도달했다 — <strong>"제어와 구조"</strong>. AI 코딩의 답도 같다.</div>
+  </div>
+</div>
+
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="15-root-limitation.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">16 / 20</a></div>
+    <div class="nav-right"><a href="17-agentic-engineering.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+
+<script>
+function navigateTo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() { window.location.href = url; }, 300);
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('15-root-limitation.html');
+  if (e.key === 'ArrowRight') navigateTo('17-agentic-engineering.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>왜 프롬프트만으론 부족한가</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; text-align: center; margin-bottom: 36px; max-width: 900px; line-height: 1.55; }
+.subtitle .quote { color: #fde68a; font-style: italic; }
+.comparison { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: stretch; }
+.comparison-col { padding: 32px 32px; border-radius: 18px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.comparison-col.left { animation-delay: 0.1s; border-left: 3px solid #ec4899; }
+.comparison-col.right { animation-delay: 0.3s; border-left: 3px solid #34d399; }
+.comparison-icon { text-align: center; font-size: 50px; margin-bottom: 8px; }
+.comparison-header { font-size: 22px; font-weight: 900; margin-bottom: 18px; text-align: center; }
+.comparison-col.left .comparison-header { color: #f9a8d4; }
+.comparison-col.right .comparison-header { color: #6ee7b7; }
+.comparison-vs { display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; color: #b1bac4; padding: 0 8px; }
+.comparison-row { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(139, 148, 158, 0.08); align-items: flex-start; }
+.comparison-row:last-child { border-bottom: none; }
+.comparison-row .left-tag { flex: 0 0 130px; font-size: 13px; color: #b1bac4; font-weight: 700; padding-top: 1px; }
+.comparison-row .arrow { color: #484f58; font-weight: 700; padding-top: 1px; }
+.comparison-row .right-content { flex: 1; font-size: 14px; color: #c9d1d9; line-height: 1.55; }
+.comparison-col.left .comparison-row .right-content { color: #f9a8d4; font-style: italic; }
+.bottom-note { margin-top: 32px; padding: 22px 36px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 14px; max-width: 980px; text-align: center; font-size: 16px; color: #c9d1d9; line-height: 1.65; opacity: 0; animation: cardAppear 0.6s ease 0.5s forwards; }
+.bottom-note strong { background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">왜 프롬프트만으론 부족한가</h1>
+  <div class="subtitle"><span class="quote">"조심해서 운전하세요"</span>라는 말만으로 안전한 운전이 되지 않는다. 차선·신호등·브레이크·안전벨트가 필요하다.</div>
+  <div class="comparison">
+    <div class="comparison-col left">
+      <div class="comparison-icon">🗣️</div>
+      <div class="comparison-header">프롬프트 (운전자에게 하는 말)</div>
+      <div class="comparison-row">
+        <div class="left-tag">"보안 지켜"</div>
+        <div class="arrow">→</div>
+        <div class="right-content">비밀 유출이 막히지 않는다</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">"테스트해"</div>
+        <div class="arrow">→</div>
+        <div class="right-content">실제 테스트가 실행되지 않는다</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">"조심해"</div>
+        <div class="arrow">→</div>
+        <div class="right-content">위험 명령을 그대로 실행할 수 있다</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">"기억해"</div>
+        <div class="arrow">→</div>
+        <div class="right-content">세션이 끝나면 사라진다</div>
+      </div>
+    </div>
+    <div class="comparison-vs">vs</div>
+    <div class="comparison-col right">
+      <div class="comparison-icon">🛤️</div>
+      <div class="comparison-header">하네스 (도로 · 신호 · 차량)</div>
+      <div class="comparison-row">
+        <div class="left-tag">차선·신호등</div>
+        <div class="arrow">↔</div>
+        <div class="right-content">CLAUDE.md · 컨벤션 문서</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">브레이크·벨트</div>
+        <div class="arrow">↔</div>
+        <div class="right-content">Permissions · Hooks</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">운전면허</div>
+        <div class="arrow">↔</div>
+        <div class="right-content">평가 하네스 (Eval)</div>
+      </div>
+      <div class="comparison-row">
+        <div class="left-tag">보험·정비</div>
+        <div class="arrow">↔</div>
+        <div class="right-content">거버넌스 · Audit log</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note">프롬프트는 무가치한 게 아니다. 그것 하나로는 <strong>충분하지 않다.</strong> 하네스 = "사람에게 부탁하는 것 → 시스템이 보장하는 것"으로의 전환.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="06-workflow-vs-agent.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">07 / 24</a></div>
+    <div class="nav-right"><a href="08-four-axes.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('06-workflow-vs-agent.html');
+  if (e.key === 'ArrowRight') navigateTo('08-four-axes.html');
+});
+</script>
+</body>
+</html>

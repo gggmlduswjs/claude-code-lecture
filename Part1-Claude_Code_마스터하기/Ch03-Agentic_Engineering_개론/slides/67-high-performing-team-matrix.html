@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>High-Performing 팀 패턴 매트릭스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 70px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 12px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; background: linear-gradient(90deg, #a78bfa, #38bdf8, #fdba74, #34d399, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.title { font-size: 38px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; text-align: center; margin-bottom: 24px; line-height: 1.55; max-width: 1040px; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.pattern-table { width: 100%; max-width: 1160px; border-radius: 14px; overflow: hidden; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); opacity: 0; animation: tableAppear 0.5s ease forwards; animation-delay: 0.1s; }
+.row { display: grid; grid-template-columns: 0.85fr 1.5fr 1.1fr 1.05fr; border-bottom: 1px solid rgba(139, 148, 158, 0.08); }
+.row:last-child { border-bottom: none; }
+.row.header { background: rgba(252, 191, 36, 0.06); }
+.row.header .cell { font-size: 11px; font-weight: 800; color: #fde68a; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 18px; }
+.cell { padding: 16px 18px; font-size: 13px; color: #c9d1d9; line-height: 1.55; display: flex; align-items: center; }
+.cell.pname { flex-direction: column; align-items: flex-start; gap: 4px; }
+.cell.pname .num { font-size: 10px; letter-spacing: 1.5px; font-weight: 700; color: #8b949e; }
+.cell.pname .nm { font-size: 15px; font-weight: 900; line-height: 1.3; }
+.row.r-c .cell.pname .nm { color: #c4b5fd; }
+.row.r-v .cell.pname .nm { color: #7dd3fc; }
+.row.r-t .cell.pname .nm { color: #fdba74; }
+.row.r-cb .cell.pname .nm { color: #6ee7b7; }
+.row.r-cp .cell.pname .nm { color: #f9a8d4; }
+.row.r-c  { border-left: 3px solid #a78bfa; }
+.row.r-v  { border-left: 3px solid #38bdf8; }
+.row.r-t  { border-left: 3px solid #f97316; }
+.row.r-cb { border-left: 3px solid #34d399; }
+.row.r-cp { border-left: 3px solid #ec4899; }
+.cell strong { color: #f0f6fc; font-weight: 700; }
+.cell em { font-style: normal; color: #fde68a; font-weight: 700; }
+.footnote { margin-top: 18px; font-size: 12.5px; color: #c9d1d9; text-align: center; max-width: 1100px; line-height: 1.65; opacity: 0; animation: tableAppear 0.5s ease forwards; animation-delay: 0.4s; padding: 14px 28px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 10px; }
+.footnote strong { color: #a78bfa; font-weight: 700; }
+.footnote em { font-style: normal; color: #fde68a; font-weight: 700; }
+@keyframes tableAppear { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">High-Performing Teams · OpenAI / Anthropic 패턴</div>
+  <h1 class="title">5 Pillars · 투자방식 · 측정지표 · 효과 매트릭스</h1>
+  <div class="subtitle">시나리오는 이상화된 그림이 아니라 — <strong>실제 high-performing 팀이 일하는 방식</strong> · 5 Pillars 모두에 <strong>동시에 투자</strong>해야 synergy</div>
+  <div class="pattern-table">
+    <div class="row header">
+      <div class="cell">PILLAR</div>
+      <div class="cell">투자 방식</div>
+      <div class="cell">측정 지표</div>
+      <div class="cell">효과</div>
+    </div>
+    <div class="row r-c">
+      <div class="cell pname"><div class="num">PILLAR I</div><div class="nm">Context</div></div>
+      <div class="cell">진입점 <strong>CLAUDE.md</strong> + hierarchical markdown 색인을 모든 코드베이스에 정착</div>
+      <div class="cell">새 엔지니어 <strong>"첫 PR까지"</strong> 시간</div>
+      <div class="cell"><em>probabilistic confusion 0건</em> · onboarding 비용 감소</div>
+    </div>
+    <div class="row r-v">
+      <div class="cell pname"><div class="num">PILLAR II</div><div class="nm">Validation</div></div>
+      <div class="cell">스택별 자동 검증 (test + visual + log) + <strong>LogQL CI 통합</strong></div>
+      <div class="cell">머지 후 <strong>rollback 비율</strong></div>
+      <div class="cell">사람 개입 0회로 의도 일치까지 self-correct</div>
+    </div>
+    <div class="row r-t">
+      <div class="cell pname"><div class="num">PILLAR III</div><div class="nm">Tooling</div></div>
+      <div class="cell">신규 friction은 <strong>24시간 내 bridge</strong> 만들기 rule</div>
+      <div class="cell">매주 추가되는 <strong>shared Skill 개수</strong></div>
+      <div class="cell"><em>human bottleneck decoupled</em> · manual 작업 0 수렴</div>
+    </div>
+    <div class="row r-cb">
+      <div class="cell pname"><div class="num">PILLAR IV</div><div class="nm">Codebases</div></div>
+      <div class="cell">분기별 <strong>"consistency audit"</strong> — dead code 제거 + 컨벤션 통일</div>
+      <div class="cell">agent 출력의 <strong>variance 측정</strong></div>
+      <div class="cell">50% 룰 → 0% · 위치 예측 정확도 상승</div>
+    </div>
+    <div class="row r-cp">
+      <div class="cell pname"><div class="num">PILLAR V</div><div class="nm">Compound</div></div>
+      <div class="cell">Working Library에 <strong>commit cadence 강제</strong> + 회고에서 자산 공유</div>
+      <div class="cell">라이브러리 사이즈 + <strong>재사용률</strong></div>
+      <div class="cell">개별 작업 → 영구 자산 · <em>polynomial 누적</em></div>
+    </div>
+  </div>
+  <div class="footnote">이 팀들은 <strong>5 Pillars 모두에 동시에 투자</strong> — 어느 하나에만 비대해진 팀은 synergy를 못 얻는다 · 1년 전 대비 같은 인원으로 출시 가능한 제품 수가 <em>3배 → 5배</em></div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="66-scenario-day4-5.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">67 / 75</a></div>
+    <div class="nav-right"><a href="68-architect-evolution.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('66-scenario-day4-5.html');
+  if (e.key === 'ArrowRight') navigateTo('68-architect-evolution.html');
+});
+</script>
+</body>
+</html>

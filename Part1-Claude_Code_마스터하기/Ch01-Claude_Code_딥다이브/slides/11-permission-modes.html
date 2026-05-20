@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>Permission Mode 5가지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 48px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 36px; }
+
+.modes-grid { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.mode-card { padding: 22px 18px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 14px; min-height: 200px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; transition: transform 0.3s; }
+.mode-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #34d399; }
+.mode-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #7c3aed; }
+.mode-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.mode-card:nth-child(4) { animation-delay: 0.4s; border-top: 3px solid #38bdf8; box-shadow: 0 0 24px rgba(56,189,248,0.15); }
+.mode-card:nth-child(5) { animation-delay: 0.5s; border-top: 3px solid #ec4899; }
+.mode-card:hover { transform: translateY(-3px); }
+.mode-toggle { font-size: 11px; color: #8b949e; letter-spacing: 1px; margin-bottom: 8px; }
+.mode-name { font-size: 17px; font-weight: 900; color: #e6edf3; margin-bottom: 12px; }
+.mode-card.recommended .mode-name { color: #7dd3fc; }
+.mode-perms { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.mode-perm { font-size: 11px; color: #b1bac4; line-height: 1.5; }
+.mode-risk { margin-top: auto; font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 700; align-self: flex-start; letter-spacing: 0.5px; }
+.mode-card:nth-child(1) .mode-risk { background: rgba(52,211,153,0.15); color: #6ee7b7; }
+.mode-card:nth-child(2) .mode-risk { background: rgba(124,58,237,0.15); color: #a78bfa; }
+.mode-card:nth-child(3) .mode-risk { background: rgba(251,191,36,0.15); color: #fde68a; }
+.mode-card:nth-child(4) .mode-risk { background: rgba(56,189,248,0.15); color: #7dd3fc; }
+.mode-card:nth-child(5) .mode-risk { background: rgba(236,72,153,0.15); color: #f9a8d4; }
+
+.toggle-cycle { margin-top: 28px; padding: 14px 28px; background: rgba(139,148,158,0.04); border-radius: 12px; max-width: 1140px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.6s ease forwards; }
+.toggle-cycle-text { font-size: 14px; color: #c9d1d9; font-family: 'Courier New', monospace; }
+.toggle-cycle-text strong { color: #a78bfa; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">Permission Mode 5가지</h1>
+  <div class="subtitle">Shift+Tab으로 토글 — 화면 하단 인디케이터를 항상 의식</div>
+  <div class="modes-grid">
+    <div class="mode-card">
+      <div class="mode-toggle">시작 상태</div>
+      <div class="mode-name">Default</div>
+      <div class="mode-perms">
+        <div class="mode-perm">✅ Read</div>
+        <div class="mode-perm">❓ Write/Edit</div>
+        <div class="mode-perm">❓ Bash</div>
+      </div>
+      <span class="mode-risk">🟢 안전</span>
+    </div>
+    <div class="mode-card">
+      <div class="mode-toggle">Shift+Tab ×1</div>
+      <div class="mode-name">Plan Mode</div>
+      <div class="mode-perms">
+        <div class="mode-perm">✅ Read</div>
+        <div class="mode-perm">❌ Write 차단</div>
+        <div class="mode-perm">❌ Bash 차단</div>
+      </div>
+      <span class="mode-risk">🟢 새 작업</span>
+    </div>
+    <div class="mode-card">
+      <div class="mode-toggle">Shift+Tab ×2</div>
+      <div class="mode-name">Accept Edits</div>
+      <div class="mode-perms">
+        <div class="mode-perm">✅ Read</div>
+        <div class="mode-perm">⚡ Write 자동</div>
+        <div class="mode-perm">❓ Bash 묻기</div>
+      </div>
+      <span class="mode-risk">🟡 비추천</span>
+    </div>
+    <div class="mode-card recommended">
+      <div class="mode-toggle">Shift+Tab ×3</div>
+      <div class="mode-name">Auto Mode ⭐</div>
+      <div class="mode-perms">
+        <div class="mode-perm">✅ Read</div>
+        <div class="mode-perm">⚡ Write 자동</div>
+        <div class="mode-perm">⚡ Bash 자동 (검증)</div>
+      </div>
+      <span class="mode-risk">🟡 본 작업 표준</span>
+    </div>
+    <div class="mode-card">
+      <div class="mode-toggle">Shift+Tab ×4</div>
+      <div class="mode-name">Bypass</div>
+      <div class="mode-perms">
+        <div class="mode-perm">✅ Read</div>
+        <div class="mode-perm">⚡ 모든 자동</div>
+        <div class="mode-perm">⚠️ 검증 X</div>
+      </div>
+      <span class="mode-risk">🔴 yolo</span>
+    </div>
+  </div>
+  <div class="toggle-cycle">
+    <div class="toggle-cycle-text"><strong>Default</strong> → Plan → Accept Edits → <strong>Auto</strong> → Bypass → <strong>Default</strong></div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="10-claude-md-locations.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">11 / 44</a></div>
+  <div class="nav-right"><a href="12-auto-mode-vs-accept-edits.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('10-claude-md-locations.html');
+  if (e.key === 'ArrowRight') navigateTo('12-auto-mode-vs-accept-edits.html');
+});
+</script></body></html>

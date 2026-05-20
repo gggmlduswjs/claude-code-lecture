@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Pillar V 인트로 · Compound Engineering</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(251, 191, 36, 0.16), rgba(249, 115, 22, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.overline { font-size: 14px; color: #fde68a; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 16px; }
+.title { font-size: 54px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 16px; line-height: 1.22; }
+.title .em { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.subtitle { font-size: 18px; color: #c9d1d9; text-align: center; margin-bottom: 44px; line-height: 1.55; max-width: 940px; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.hero-cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 1120px; }
+.hero-card { flex: 1 1 320px; max-width: 360px; min-height: 240px; padding: 28px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.hero-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #fbbf24; }
+.hero-card:nth-child(2) { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.hero-card:nth-child(3) { animation-delay: 0.5s; border-top: 3px solid #fbbf24; }
+.hero-card .emoji { font-size: 44px; margin-bottom: 12px; }
+.hero-card .label { font-size: 11px; color: #fde68a; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.hero-card .value { font-size: 19px; font-weight: 900; color: #e6edf3; margin-bottom: 10px; line-height: 1.3; }
+.hero-card .desc { font-size: 13.5px; color: #b1bac4; line-height: 1.55; }
+.bottom-claim { margin-top: 28px; padding: 16px 32px; background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.28); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.6; max-width: 1100px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.7s; }
+.bottom-claim strong { color: #fde68a; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Part 1 · Ch03 · Clip 06 · Pillar V</div>
+  <h1 class="title"><span class="em">Compound Engineering</span><br/>— Working Library의 누적 효과</h1>
+  <div class="subtitle">개인의 도구가 팀의 자본으로 격상되는 순간 — <strong>polynomial productivity</strong>가 시작된다. Pillar IV가 환경이면, Pillar V는 그 위에 쌓이는 <strong>복리(compounding)</strong></div>
+  <div class="hero-cards">
+    <div class="hero-card">
+      <div class="emoji">📚</div>
+      <div class="label">WORKING LIBRARY</div>
+      <div class="value">개인 도구 → 팀 자본</div>
+      <div class="desc">한 명의 1시간 투자가 18명의 도구가 된다 — 자산이 commit되는 순간 격상</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">📈</div>
+      <div class="label">CUMULATIVE EFFECT</div>
+      <div class="value">복리(compounding)</div>
+      <div class="desc">매주 한 개씩 추가 — 1년 후 50+개. 조합 가능성은 N²로 늘어난다</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">🚀</div>
+      <div class="label">THE THRESHOLD</div>
+      <div class="value">Code Builds Itself</div>
+      <div class="desc">임계점을 넘으면 — 코드가 가드레일 안에서 자기 자신을 만들기 시작한다</div>
+    </div>
+  </div>
+  <div class="bottom-claim">⏱ 약 <strong>10분</strong> · 5 Pillars의 마지막 — 가장 짧지만 메시지의 무게는 가장 큽니다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="54-philosophy-shift.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">55 / 75</a></div>
+    <div class="nav-right"><a href="56-dan-schipper-origin.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('54-philosophy-shift.html');
+  if (e.key === 'ArrowRight') navigateTo('56-dan-schipper-origin.html');
+});
+</script>
+</body>
+</html>

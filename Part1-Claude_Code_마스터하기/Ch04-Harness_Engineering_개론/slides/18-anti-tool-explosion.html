@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>안티패턴 1 — 도구 폭발 (Vercel d0)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(236, 72, 153, 0.12), rgba(124, 58, 237, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 12px; color: #f9a8d4; letter-spacing: 3px; text-transform: uppercase; font-weight: 800; margin-bottom: 14px; padding: 4px 12px; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 999px; }
+.title { font-size: 52px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 16px; line-height: 1.25; }
+.subtitle { font-size: 18px; color: #c9d1d9; text-align: center; margin-bottom: 44px; max-width: 920px; line-height: 1.55; }
+.subtitle em { color: #f9a8d4; font-style: italic; }
+.hero-cards { display: flex; gap: 28px; justify-content: center; width: 100%; max-width: 1080px; }
+.hero-card { flex: 1; padding: 32px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; animation: cardAppear 0.55s ease forwards; }
+.hero-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #f9a8d4; }
+.hero-card:nth-child(2) { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.hero-card:nth-child(3) { animation-delay: 0.5s; border-top: 3px solid #34d399; }
+.metric-label { font-size: 11px; color: #b1bac4; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
+.metric-value { font-size: 60px; font-weight: 900; line-height: 1; margin-bottom: 10px; }
+.hero-card:nth-child(1) .metric-value { color: #f9a8d4; }
+.hero-card:nth-child(2) .metric-value { background: linear-gradient(135deg, #fbbf24, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-card:nth-child(3) .metric-value { color: #34d399; }
+.metric-name { font-size: 16px; font-weight: 800; color: #e6edf3; margin-bottom: 8px; }
+.metric-desc { font-size: 13px; color: #b1bac4; line-height: 1.55; }
+.takeaway { margin-top: 36px; padding: 22px 36px; background: rgba(236, 72, 153, 0.06); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 16px; max-width: 980px; text-align: center; font-size: 17px; color: #c9d1d9; line-height: 1.6; opacity: 0; animation: cardAppear 0.6s ease 0.7s forwards; }
+.takeaway strong { background: linear-gradient(135deg, #f9a8d4, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">ANTI-PATTERN 1</div>
+  <h1 class="title">"도구 많을수록 똑똑하다"</h1>
+  <div class="subtitle"><em>거짓이다.</em> Vercel d0의 실증 사례 — 복잡한 도구를 80% 제거하고 단순 파일시스템으로 바꾸자…</div>
+  <div class="hero-cards">
+    <div class="hero-card">
+      <div class="metric-label">TOOLS REMOVED</div>
+      <div class="metric-value">−80%</div>
+      <div class="metric-name">도구 제거</div>
+      <div class="metric-desc">복잡한 전용 도구 세트를<br/>단순 파일시스템 접근으로 대체</div>
+    </div>
+    <div class="hero-card">
+      <div class="metric-label">EXECUTION TIME</div>
+      <div class="metric-value">×3.5</div>
+      <div class="metric-name">실행 속도</div>
+      <div class="metric-desc">의사결정 부담이 줄어<br/>3.5배 빠르게 완료</div>
+    </div>
+    <div class="hero-card">
+      <div class="metric-label">SUCCESS RATE</div>
+      <div class="metric-value">100%</div>
+      <div class="metric-name">성공률 (← 80%)</div>
+      <div class="metric-desc">잘못된 도구 선택 가능성이<br/>구조적으로 사라짐</div>
+    </div>
+  </div>
+  <div class="takeaway"><strong>원칙: 도구는 추가하지 말고 *제거*하라.</strong> 버튼 200개 만능 리모컨 vs 5개짜리 스마트 리모컨 — 채널 바꾸는 데 어느 쪽이 빠른가?</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="17-12-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">18 / 24</a></div>
+    <div class="nav-right"><a href="19-anti-react.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('17-12-patterns.html');
+  if (e.key === 'ArrowRight') navigateTo('19-anti-react.html');
+});
+</script>
+</body>
+</html>

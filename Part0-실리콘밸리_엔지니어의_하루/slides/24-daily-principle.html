@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>사람이 판단, AI가 실행</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(124, 58, 237, 0.15), rgba(56, 189, 248, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.overline { font-size: 13px; color: #b1bac4; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 16px; }
+.title { font-size: 64px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 18px; line-height: 1.2; max-width: 1060px; }
+.subtitle { font-size: 18px; color: #c9d1d9; text-align: center; margin-bottom: 52px; line-height: 1.5; max-width: 840px; }
+.hero-cards { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 1080px; }
+.hero-card { flex: 1 1 300px; max-width: 340px; min-height: 220px; padding: 32px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.hero-card.human { animation-delay: 0.15s; border-top: 3px solid #f9a8d4; }
+.hero-card.ai { animation-delay: 0.35s; border-top: 3px solid #6ee7b7; }
+.hero-card .emoji { font-size: 56px; margin-bottom: 16px; }
+.hero-card .role { font-size: 12px; letter-spacing: 2.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.hero-card.human .role { color: #f9a8d4; }
+.hero-card.ai .role { color: #6ee7b7; }
+.hero-card .what { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 10px; line-height: 1.3; }
+.hero-card .desc { font-size: 14px; color: #b1bac4; line-height: 1.6; }
+.closing { margin-top: 44px; padding: 20px 40px; font-size: 17px; color: #c9d1d9; text-align: center; line-height: 1.6; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.6s; }
+.closing strong { font-size: 20px; background: linear-gradient(135deg, #a78bfa, #7dd3fc, #6ee7b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">THE CORE PRINCIPLE</div>
+  <h1 class="title">사람이 판단하고,<br/>AI가 실행한다</h1>
+  <div class="subtitle">어떤 작업이든 최종 결정과 검증은 엔지니어가 합니다.<br/>AI는 속도를 올려주는 도구이지, 판단을 대신하는 존재가 아닙니다.</div>
+  <div class="hero-cards">
+    <div class="hero-card human">
+      <div class="emoji">🧠</div>
+      <div class="role">HUMAN</div>
+      <div class="what">판단</div>
+      <div class="desc">우선순위 결정, 구현 방향 수정, 코드 리뷰 최종 결정, 비즈니스 컨텍스트 해석</div>
+    </div>
+    <div class="hero-card ai">
+      <div class="emoji">⚙️</div>
+      <div class="role">AGENT</div>
+      <div class="what">실행</div>
+      <div class="desc">코드 작성, 반복 구현, 테스트 실행, 결과 요약, 작업 병렬 처리</div>
+    </div>
+  </div>
+  <div class="closing">이게 바로 <strong>Agentic Engineering</strong> — 즉, <strong>위임의 워크플로우</strong>입니다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="23-eod-autoreport.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">24 / 43</a></div>
+    <div class="nav-right"><a href="25-step1-briefing-demo.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('23-eod-autoreport.html');
+  if (e.key === 'ArrowRight') navigateTo('25-step1-briefing-demo.html');
+});
+</script>
+</body>
+</html>

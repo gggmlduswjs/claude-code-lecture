@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>5단계 점진적 도입 로드맵</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #c9d1d9; text-align: center; margin-bottom: 36px; max-width: 920px; line-height: 1.55; }
+.subtitle em { color: #fde68a; font-style: italic; }
+.roadmap { width: 100%; max-width: 1180px; display: flex; align-items: flex-start; gap: 0; position: relative; padding: 30px 0; }
+.roadmap-segment { flex: 1; text-align: center; position: relative; opacity: 0; animation: cardAppear 0.5s ease forwards; padding: 0 10px; }
+.roadmap-segment:nth-child(1) { animation-delay: 0.1s; }
+.roadmap-segment:nth-child(2) { animation-delay: 0.2s; }
+.roadmap-segment:nth-child(3) { animation-delay: 0.3s; }
+.roadmap-segment:nth-child(4) { animation-delay: 0.4s; }
+.roadmap-segment:nth-child(5) { animation-delay: 0.5s; }
+.roadmap-dot { width: 56px; height: 56px; border-radius: 50%; background: rgba(139, 148, 158, 0.08); border: 2px solid rgba(139, 148, 158, 0.2); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; color: #e6edf3; margin: 0 auto 16px; position: relative; z-index: 2; }
+.roadmap-segment:nth-child(1) .roadmap-dot { background: rgba(52, 211, 153, 0.15); border-color: #34d399; color: #6ee7b7; }
+.roadmap-segment:nth-child(2) .roadmap-dot { background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #7dd3fc; }
+.roadmap-segment:nth-child(3) .roadmap-dot { background: rgba(124, 58, 237, 0.15); border-color: #7c3aed; color: #a78bfa; }
+.roadmap-segment:nth-child(4) .roadmap-dot { background: rgba(236, 72, 153, 0.15); border-color: #ec4899; color: #f9a8d4; }
+.roadmap-segment:nth-child(5) .roadmap-dot { background: rgba(251, 191, 36, 0.15); border-color: #fbbf24; color: #fde68a; }
+.roadmap-segment:not(:last-child)::after { content: ''; position: absolute; top: 28px; left: 60%; right: -40%; height: 2px; background: rgba(139, 148, 158, 0.2); z-index: 1; }
+.r-time { font-size: 11px; color: #b1bac4; letter-spacing: 2px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+.r-name { font-size: 16px; color: #e6edf3; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+.r-detail { font-size: 12.5px; color: #b1bac4; line-height: 1.5; }
+.bottom-msg { margin-top: 36px; padding: 24px 38px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(56, 189, 248, 0.06)); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 16px; max-width: 980px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease 0.65s forwards; }
+.bottom-msg .top { font-size: 19px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+.bottom-msg .sub { font-size: 14.5px; color: #c9d1d9; line-height: 1.6; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">5단계 점진적 도입 로드맵</h1>
+  <div class="subtitle"><em>"처음부터 12요소 다 만들지 마세요. 5단계를 다 거치는 데 6주가 정상입니다."</em></div>
+  <div class="roadmap">
+    <div class="roadmap-segment">
+      <div class="roadmap-dot">1</div>
+      <div class="r-time">Week 0</div>
+      <div class="r-name">CLAUDE.md 30줄</div>
+      <div class="r-detail">개요 · 명령어 · 컨벤션 3~5개 · 금지사항. 이것만으로 60% 효과.</div>
+    </div>
+    <div class="roadmap-segment">
+      <div class="roadmap-dot">2</div>
+      <div class="r-time">Week 1~2</div>
+      <div class="r-name">Skill 1~2개</div>
+      <div class="r-detail">매주 반복하는 업무를 발견할 때마다 Skill로 패키징.</div>
+    </div>
+    <div class="roadmap-segment">
+      <div class="roadmap-dot">3</div>
+      <div class="r-time">Week 2</div>
+      <div class="r-name">Prettier Hook</div>
+      <div class="r-detail">PostToolUse 한 줄. 포맷팅 자동화로 PR 노이즈 제거.</div>
+    </div>
+    <div class="roadmap-segment">
+      <div class="roadmap-dot">4</div>
+      <div class="r-time">Week 3</div>
+      <div class="r-name">Permissions</div>
+      <div class="r-detail">위험 도구에 ask/deny. 운영 환경 진입 전 필수.</div>
+    </div>
+    <div class="roadmap-segment">
+      <div class="roadmap-dot">5</div>
+      <div class="r-time">Month 2+</div>
+      <div class="r-name">Subagents</div>
+      <div class="r-detail">reviewer/researcher 분리. 코드 베이스가 커지면 추가.</div>
+    </div>
+  </div>
+  <div class="bottom-msg">
+    <div class="top">하네스는 코드처럼 점진적으로 진화시킨다</div>
+    <div class="sub">처음에 30줄짜리 CLAUDE.md로 시작 → 사용하면서 보완 → Rules·Skills 분리 → Hooks 추가 → Subagents·Permissions. "이게 어느 계층의 일이지?"를 매번 자문.</div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="22-allow-ask-deny.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">23 / 24</a></div>
+    <div class="nav-right"><a href="24-summary.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('22-allow-ask-deny.html');
+  if (e.key === 'ArrowRight') navigateTo('24-summary.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>패러다임 전환 4가지 동인</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 13px; color: #c4b5fd; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 16px; color: #c9d1d9; text-align: center; margin-bottom: 30px; line-height: 1.55; max-width: 940px; }
+.subtitle strong { color: #c4b5fd; font-weight: 700; }
+.grid-2x2 { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.grid-card { padding: 24px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 16px; min-height: 200px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.grid-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #a78bfa; }
+.grid-card:nth-child(2) { animation-delay: 0.22s; border-top: 3px solid #c4b5fd; }
+.grid-card:nth-child(3) { animation-delay: 0.34s; border-top: 3px solid #ddd6fe; }
+.grid-card:nth-child(4) { animation-delay: 0.46s; border-top: 3px solid #f0abfc; }
+.grid-card .head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.grid-card .num { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #c4b5fd; text-transform: uppercase; }
+.grid-card .icon { font-size: 30px; }
+.grid-card .title-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.grid-card .title-text { font-size: 18px; font-weight: 900; color: #e6edf3; line-height: 1.3; }
+.grid-card .title-kr { font-size: 13px; color: #c4b5fd; font-weight: 600; }
+.grid-card .desc { font-size: 13.5px; color: #c9d1d9; line-height: 1.7; flex: 1; }
+.grid-card .desc strong { color: #e6edf3; font-weight: 700; }
+.grid-card .desc em { color: #c4b5fd; font-style: normal; font-weight: 600; }
+.grid-card .keyword { display: inline-block; margin-top: 10px; padding: 4px 10px; background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 6px; font-size: 11.5px; color: #c4b5fd; font-weight: 700; letter-spacing: 0.5px; }
+.bottom-claim { margin-top: 22px; padding: 16px 30px; background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(196, 181, 253, 0.08), rgba(240, 171, 252, 0.06)); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: 14px; font-size: 14px; color: #e6edf3; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; max-width: 1120px; }
+.bottom-claim strong { background: linear-gradient(135deg, #a78bfa, #f0abfc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Four Drivers of the Paradigm Shift</div>
+  <h1 class="title">패러다임 전환을 밀어붙이는 4가지 동인</h1>
+  <div class="subtitle">우연이 아니다 — <strong>4개의 화살표가 동시에 같은 방향</strong>을 가리킨다</div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="title-row">
+        <div class="icon">🏗️</div>
+        <div class="num">DRIVER 01</div>
+      </div>
+      <div class="title-row">
+        <div class="title-text">Architectural Rigor</div>
+        <div class="title-kr">아키텍처 엄격성</div>
+      </div>
+      <div class="desc">즉흥 prompting을 떠나 — <strong>의도적 시스템 설계</strong>와 메인 → sub-agent → skill의 <em>다층 위임 구조</em>를 설계한다. 단일 agent를 풀어두는 게 아니라 <strong>계층 자체</strong>를 그리는 것.</div>
+      <div class="keyword">Hierarchical Agent Management</div>
+    </div>
+    <div class="grid-card">
+      <div class="title-row">
+        <div class="icon">📜</div>
+        <div class="num">DRIVER 02</div>
+      </div>
+      <div class="title-row">
+        <div class="title-text">Professional Standards</div>
+        <div class="title-kr">프로페셔널 표준</div>
+      </div>
+      <div class="desc">copy-paste 워크플로우는 <strong>유지보수 불가능</strong>. agent 작업도 git diff처럼 <em>추적·리뷰·롤백</em> 가능한 professional grade로 — 1년 뒤, 3년 뒤에도 이해 가능한 <strong>재산</strong>으로서의 코드.</div>
+      <div class="keyword">Long-Term Maintainability</div>
+    </div>
+    <div class="grid-card">
+      <div class="title-row">
+        <div class="icon">📈</div>
+        <div class="num">DRIVER 03</div>
+      </div>
+      <div class="title-row">
+        <div class="title-text">Capability Scaling</div>
+        <div class="title-kr">역량 스케일링</div>
+      </div>
+      <div class="desc"><strong>Opus 4.5 · GPT 5.2</strong> 같은 frontier 모델은 <em>increased reasoning depth</em>를 가짐. 1턴짜리 prompt로 접근하면 역량의 90%를 버린다 — <strong>모델만큼 그릇도 발전</strong>해야 한다.</div>
+      <div class="keyword">Reasoning Depth · Robust Framework</div>
+    </div>
+    <div class="grid-card">
+      <div class="title-row">
+        <div class="icon">⚡</div>
+        <div class="num">DRIVER 04</div>
+      </div>
+      <div class="title-row">
+        <div class="title-text">Operational Efficiency</div>
+        <div class="title-kr">운영 효율</div>
+      </div>
+      <div class="desc">엔지니어의 시간 단가는 안 떨어진다. manual coder로서의 한계 수익은 빠르게 사라짐 — 엔지니어의 시간은 <strong>agent가 작동하는 루프 자체의 architect</strong>로 써야 ROI가 나온다.</div>
+      <div class="keyword">Architect of the Loops</div>
+    </div>
+  </div>
+  <div class="bottom-claim">네 동인 모두 같은 방향 — <strong>"코딩의 손작업화"에서 "시스템의 설계"로</strong>. 동시에 작용하므로 전환은 <em>불가피</em>하다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="08-agentic-eng-definition.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">09 / 75</a></div>
+    <div class="nav-right"><a href="10-pillar1-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('08-agentic-eng-definition.html');
+  if (e.key === 'ArrowRight') navigateTo('10-pillar1-intro.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>세션 — 모든 작업의 단위</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 38px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 15px; color: #b1bac4; margin-bottom: 26px; }
+
+.path-box { font-family: 'Courier New', monospace; font-size: 14px; color: #6ee7b7; padding: 14px 24px; background: rgba(10,15,26,0.8); border: 1px solid rgba(52,211,153,0.25); border-radius: 10px; margin-bottom: 8px; max-width: 1000px; opacity: 0; animation: cardAppear 0.5s 0.05s ease forwards; }
+.path-caption { font-size: 12px; color: #8b949e; margin-bottom: 28px; opacity: 0; animation: cardAppear 0.5s 0.1s ease forwards; }
+
+.cmd-grid { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.cmd-card { padding: 22px 22px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 14px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; transition: transform 0.3s, border-color 0.3s; }
+.cmd-card:nth-child(1) { animation-delay: 0.18s; border-left: 3px solid #38bdf8; }
+.cmd-card:nth-child(2) { animation-delay: 0.26s; border-left: 3px solid #a78bfa; }
+.cmd-card:nth-child(3) { animation-delay: 0.34s; border-left: 3px solid #34d399; }
+.cmd-card:nth-child(4) { animation-delay: 0.42s; border-left: 3px solid #f97316; }
+.cmd-card:hover { transform: translateY(-3px); }
+.cmd-card .cmd-keys { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cmd-card .cmd-name { font-family: 'Courier New', monospace; font-size: 16px; font-weight: 700; padding: 4px 12px; background: rgba(10,15,26,0.6); border-radius: 6px; }
+.cmd-card:nth-child(1) .cmd-name { color: #7dd3fc; }
+.cmd-card:nth-child(2) .cmd-name { color: #c4b5fd; }
+.cmd-card:nth-child(3) .cmd-name { color: #6ee7b7; }
+.cmd-card:nth-child(4) .cmd-name { color: #fdba74; }
+.cmd-card .cmd-title { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 6px; }
+.cmd-card .cmd-desc { font-size: 13px; color: #b1bac4; line-height: 1.55; }
+
+.callout { margin-top: 24px; padding: 14px 28px; background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.25); border-radius: 14px; max-width: 1120px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.55s ease forwards; }
+.callout strong { background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.callout-text { font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">세션 — 모든 작업의 단위</h1>
+  <div class="subtitle">메시지 · 도구 호출 · 결과가 JSONL로 남는다</div>
+
+  <div class="path-box">~/.claude/projects/&lt;프로젝트id&gt;/sessions/*.jsonl</div>
+  <div class="path-caption">→ 그래서 되감기 · 잇기 · 분기가 가능</div>
+
+  <div class="cmd-grid">
+    <div class="cmd-card">
+      <div class="cmd-keys"><span class="cmd-name">/rewind</span></div>
+      <div class="cmd-title">체크포인트 복원</div>
+      <div class="cmd-desc">이전 시점으로 되감기 — <strong>파일 변경까지 함께 복원</strong>. 잘못된 방향 빠르게 폐기.</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-keys"><span class="cmd-name">claude --continue</span></div>
+      <div class="cmd-title">최근 세션 잇기</div>
+      <div class="cmd-desc">가장 최근 세션을 그대로 이어 작업. 한 줄로 다시 진입.</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-keys"><span class="cmd-name">claude --resume</span></div>
+      <div class="cmd-title">세션 목록에서 선택</div>
+      <div class="cmd-desc">과거 세션 목록을 띄우고 골라서 재진입. 어제·지난주 세션도 OK.</div>
+    </div>
+    <div class="cmd-card">
+      <div class="cmd-keys"><span class="cmd-name">/branch</span></div>
+      <div class="cmd-title">같은 시점 분기</div>
+      <div class="cmd-desc"><code>--fork-session</code>과 동일. 같은 컨텍스트에서 다른 방향을 동시에 시도.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-text">각 세션은 <strong>독립</strong> — 새 세션은 깨끗한 컨텍스트에서 시작. 자동 메모리(MEMORY.md) + CLAUDE.md가 세션 간 지속성을 책임진다.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="03c-environments.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">03d / 44</a></div>
+  <div class="nav-right"><a href="04-extension-layers.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('03c-environments.html');
+  if (e.key === 'ArrowRight') navigateTo('04-extension-layers.html');
+});
+</script></body></html>

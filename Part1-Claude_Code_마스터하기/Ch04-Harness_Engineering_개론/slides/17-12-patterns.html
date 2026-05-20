@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>12가지 실전 패턴 카탈로그</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 10px; line-height: 1.3; }
+.subtitle { font-size: 15px; color: #b1bac4; text-align: center; margin-bottom: 26px; }
+.grid-2x2 { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1.3fr 0.85fr 0.85fr 0.55fr; gap: 16px; }
+.cat-card { padding: 18px 20px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; display: flex; flex-direction: column; }
+.cat-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #38bdf8; }
+.cat-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #34d399; }
+.cat-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #f97316; }
+.cat-card:nth-child(4) { animation-delay: 0.4s; border-top: 3px solid #ec4899; }
+.cat-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.cat-icon { font-size: 22px; }
+.cat-name { font-size: 14px; font-weight: 800; }
+.cat-card:nth-child(1) .cat-name { color: #7dd3fc; }
+.cat-card:nth-child(2) .cat-name { color: #6ee7b7; }
+.cat-card:nth-child(3) .cat-name { color: #fdba74; }
+.cat-card:nth-child(4) .cat-name { color: #f9a8d4; }
+.cat-count { margin-left: auto; font-size: 11px; color: #b1bac4; font-weight: 700; padding: 2px 8px; background: rgba(139, 148, 158, 0.1); border-radius: 4px; }
+.pattern-list { display: flex; flex-direction: column; gap: 10px; }
+.pattern-item { display: flex; gap: 9px; align-items: baseline; padding: 7px 9px; background: rgba(10, 15, 26, 0.4); border-radius: 7px; }
+.p-num { font-size: 11px; color: #b1bac4; font-weight: 800; min-width: 16px; }
+.p-name { font-size: 12.5px; color: #e6edf3; font-weight: 700; line-height: 1.4; }
+.bottom-note { margin-top: 24px; padding: 16px 32px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 12px; max-width: 1020px; text-align: center; font-size: 14px; color: #c9d1d9; line-height: 1.6; opacity: 0; animation: cardAppear 0.6s ease 0.55s forwards; }
+.bottom-note strong { background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">12가지 실전 패턴 카탈로그</h1>
+  <div class="subtitle">외울 필요 없음. "필요할 때 찾아보는 체크리스트"로 쓰자. 4개 카테고리.</div>
+  <div class="grid-2x2">
+    <div class="cat-card">
+      <div class="cat-head"><div class="cat-icon">🗂️</div><div class="cat-name">메모리·문맥</div><div class="cat-count">5</div></div>
+      <div class="pattern-list">
+        <div class="pattern-item"><div class="p-num">01</div><div class="p-name">영구 지침 파일 (CLAUDE.md)</div></div>
+        <div class="pattern-item"><div class="p-num">02</div><div class="p-name">범위별 문맥 조립</div></div>
+        <div class="pattern-item"><div class="p-num">03</div><div class="p-name">계층형 메모리<br/>책상·서랍·창고</div></div>
+        <div class="pattern-item"><div class="p-num">04</div><div class="p-name">메모리 정리 (월 1회)</div></div>
+        <div class="pattern-item"><div class="p-num">05</div><div class="p-name">점진적 문맥 압축</div></div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-head"><div class="cat-icon">🔀</div><div class="cat-name">워크플로</div><div class="cat-count">3</div></div>
+      <div class="pattern-list">
+        <div class="pattern-item"><div class="p-num">06</div><div class="p-name">탐색-계획-실행 (Plan Mode)</div></div>
+        <div class="pattern-item"><div class="p-num">07</div><div class="p-name">문맥 격리 Subagents</div></div>
+        <div class="pattern-item"><div class="p-num">08</div><div class="p-name">포크-조인 병렬성</div></div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-head"><div class="cat-icon">🛠️</div><div class="cat-name">도구·권한</div><div class="cat-count">3</div></div>
+      <div class="pattern-list">
+        <div class="pattern-item"><div class="p-num">09</div><div class="p-name">점진적 도구 확장</div></div>
+        <div class="pattern-item"><div class="p-num">10</div><div class="p-name">명령 위험 분류<br/>allow / ask / deny</div></div>
+        <div class="pattern-item"><div class="p-num">11</div><div class="p-name">단일 목적 도구 설계</div></div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-head"><div class="cat-icon">⚙️</div><div class="cat-name">자동화</div><div class="cat-count">1</div></div>
+      <div class="pattern-list">
+        <div class="pattern-item"><div class="p-num">12</div><div class="p-name">결정론적 수명 주기 훅<br/>자동 포매터·자동 승인</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note">"이 중 단 4개만 — <strong>1·2·10·12</strong> — 적용해도 60% 효과를 본다." 나머지는 프로젝트가 커지면 추가.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="16-stage-4-5-subagent-perm.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">17 / 24</a></div>
+    <div class="nav-right"><a href="18-anti-tool-explosion.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('16-stage-4-5-subagent-perm.html');
+  if (e.key === 'ArrowRight') navigateTo('18-anti-tool-explosion.html');
+});
+</script>
+</body>
+</html>

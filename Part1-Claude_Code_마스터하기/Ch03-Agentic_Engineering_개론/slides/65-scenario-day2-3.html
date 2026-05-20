@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Day 2-3 — Pillar IV (Codebase) 작동</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 70px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 12px; color: #6ee7b7; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 10px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; text-align: center; margin-bottom: 28px; line-height: 1.55; max-width: 980px; }
+.subtitle strong { color: #6ee7b7; font-weight: 700; }
+.step-flow { width: 100%; max-width: 1160px; display: flex; flex-direction: row; gap: 14px; align-items: stretch; }
+.step-item { flex: 1; padding: 22px 20px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.step-item:nth-child(1) { animation-delay: 0.10s; border-top: 3px solid #34d399; }
+.step-item:nth-child(3) { animation-delay: 0.22s; border-top: 3px solid #6ee7b7; }
+.step-item:nth-child(5) { animation-delay: 0.34s; border-top: 3px solid #a7f3d0; }
+.step-arr { display: flex; align-items: center; justify-content: center; font-size: 24px; color: #484f58; font-weight: 900; }
+.step-num { font-size: 10px; letter-spacing: 2px; font-weight: 700; color: #8b949e; margin-bottom: 4px; }
+.step-name { font-size: 15px; font-weight: 900; color: #6ee7b7; margin-bottom: 10px; line-height: 1.3; }
+.step-body { font-size: 13px; color: #c9d1d9; line-height: 1.6; }
+.step-body code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: rgba(52, 211, 153, 0.08); color: #6ee7b7; padding: 1px 6px; border-radius: 4px; }
+.step-body strong { color: #f0f6fc; font-weight: 700; }
+.bottom-effect { margin-top: 28px; padding: 18px 32px; background: rgba(52, 211, 153, 0.06); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.5s; max-width: 1100px; }
+.bottom-effect strong { color: #6ee7b7; font-weight: 700; }
+.bottom-effect em { font-style: normal; color: #fde68a; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Day 2-3 · Pillar IV — Agentic Codebase</div>
+  <h1 class="title">Day 2-3 — Codebase 작동</h1>
+  <div class="subtitle">agent가 새 Adyen wrapper 코드를 작성 — <strong>"어디에 둘까?"를 묻지 않고 위치를 예측</strong>해서 곧장 진입 · 50% 룰이 0%로</div>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">STEP 01</div>
+      <div class="step-name">디렉토리 컨벤션</div>
+      <div class="step-body">새 wrapper 경로 → <code>src/payment/clients/adyen/</code>. CLAUDE.md에 <strong>consistent file structure</strong>가 명시 — agent가 위치를 묻지 않는다.</div>
+    </div>
+    <div class="step-arr">→</div>
+    <div class="step-item">
+      <div class="step-num">STEP 02</div>
+      <div class="step-name">Consistency over DRY</div>
+      <div class="step-body">코드 패턴은 기존 <code>src/payment/clients/stripe/</code>와 <strong>정확히 동일한 모양</strong>. 한 줄도 더 추상화하지 않고 일관성에 수렴.</div>
+    </div>
+    <div class="step-arr">→</div>
+    <div class="step-item">
+      <div class="step-num">STEP 03</div>
+      <div class="step-name">Agent-specific logging</div>
+      <div class="step-body">로그는 <code>logger.payment</code> 사용 — Golden Rule 위반 <strong>0건</strong>. agent가 자기 행동을 traceable 하게 남긴다.</div>
+    </div>
+  </div>
+  <div class="bottom-effect"><strong>Pillar IV 작동</strong> — Consistency가 미리 정착되어 있어서 새 코드는 자동으로 기존 패턴에 수렴 · <em>50% 룰 → 0%</em> · agent variance도 함께 줄어든다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="64-scenario-day1.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">65 / 75</a></div>
+    <div class="nav-right"><a href="66-scenario-day4-5.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('64-scenario-day1.html');
+  if (e.key === 'ArrowRight') navigateTo('66-scenario-day4-5.html');
+});
+</script>
+</body>
+</html>

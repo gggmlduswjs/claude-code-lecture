@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>안티패턴 3 — 허용적 권한의 함정</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 12px; color: #f9a8d4; letter-spacing: 3px; text-transform: uppercase; font-weight: 800; margin-bottom: 14px; padding: 4px 12px; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 999px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.25; }
+.subtitle { font-size: 17px; color: #c9d1d9; text-align: center; margin-bottom: 36px; max-width: 920px; line-height: 1.55; }
+.subtitle em { color: #f9a8d4; font-style: italic; }
+.comparison { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: stretch; }
+.comparison-col { padding: 26px 28px; border-radius: 18px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.comparison-col.left { animation-delay: 0.1s; border-left: 3px solid #ec4899; }
+.comparison-col.right { animation-delay: 0.3s; border-left: 3px solid #34d399; }
+.scenario-tag { font-size: 11px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 8px; }
+.scenario-name { font-size: 22px; font-weight: 900; margin-bottom: 16px; }
+.comparison-col.left .scenario-name { color: #f9a8d4; }
+.comparison-col.right .scenario-name { color: #6ee7b7; }
+.comparison-vs { display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; color: #b1bac4; padding: 0 8px; }
+.dialog-step { padding: 12px 14px; background: rgba(10, 15, 26, 0.4); border-radius: 8px; font-size: 13.5px; line-height: 1.5; margin-bottom: 8px; color: #c9d1d9; }
+.dialog-step .speaker { font-weight: 700; }
+.dialog-step .ai { color: #7dd3fc; }
+.dialog-step .user { color: #fdba74; }
+.dialog-arrow { text-align: center; font-size: 14px; color: #484f58; margin: 4px 0; }
+.outcome { margin-top: 12px; padding: 10px 14px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 800; }
+.outcome.bad { background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.4); color: #f9a8d4; }
+.outcome.good { background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7; }
+.bottom-note { margin-top: 28px; padding: 22px 38px; background: rgba(124, 58, 237, 0.07); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 14px; max-width: 980px; text-align: center; font-size: 16px; color: #c9d1d9; line-height: 1.65; opacity: 0; animation: cardAppear 0.6s ease 0.5s forwards; }
+.bottom-note .quote { font-size: 19px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; margin-bottom: 6px; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">ANTI-PATTERN 3</div>
+  <h1 class="title">"승인 없으면 더 빠르다"</h1>
+  <div class="subtitle"><em>거짓이다.</em> 개발 중엔 빠르지만, 운영에선 돌이킬 수 없는 사고가 발생한다.</div>
+  <div class="comparison">
+    <div class="comparison-col left">
+      <div class="scenario-tag">SCENARIO A — 승인 없이 자유</div>
+      <div class="scenario-name">"마찰 없는 자유"</div>
+      <div class="dialog-step"><span class="speaker ai">AI:</span> "스키마 정리하는 김에 안 쓰이는 user_archive 테이블 drop 할게요"</div>
+      <div class="dialog-arrow">↓</div>
+      <div class="dialog-step"><span style="font-family: 'Courier New', monospace; color: #f9a8d4;">→ DROP TABLE user_archive;</span></div>
+      <div class="dialog-arrow">↓</div>
+      <div class="dialog-step">사실 그 테이블은 분기별 백업용이었음.</div>
+      <div class="outcome bad">💥 데이터 영구 손실</div>
+    </div>
+    <div class="comparison-vs">vs</div>
+    <div class="comparison-col right">
+      <div class="scenario-tag">SCENARIO B — DROP에 ask 게이트</div>
+      <div class="scenario-name">"필요한 마찰"</div>
+      <div class="dialog-step"><span class="speaker ai">AI:</span> "DROP TABLE user_archive 실행해도 될까요?"</div>
+      <div class="dialog-arrow">↓</div>
+      <div class="dialog-step"><span class="speaker user">사용자:</span> "잠깐, 그거 백업용 테이블이야. 하지 마."</div>
+      <div class="dialog-arrow">↓</div>
+      <div class="dialog-step">→ 실행 취소</div>
+      <div class="outcome good">✓ 사고 회피</div>
+    </div>
+  </div>
+  <div class="bottom-note">
+    <span class="quote">"제한적 하네스의 마찰은 비용이 아니라 보험이다."</span>
+    매번 "네 진행해" 누르는 작은 마찰 100번 vs 한 번의 큰 사고 — 어느 쪽이 비싼가?
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="19-anti-react.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">20 / 24</a></div>
+    <div class="nav-right"><a href="21-gen-eval.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('19-anti-react.html');
+  if (e.key === 'ArrowRight') navigateTo('21-gen-eval.html');
+});
+</script>
+</body>
+</html>

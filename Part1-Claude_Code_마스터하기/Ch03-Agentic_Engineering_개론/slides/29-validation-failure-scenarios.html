@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Validation 없는 Loop — 시나리오 A vs B</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 70px; display: flex; flex-direction: column; align-items: center; }
+.overline { font-size: 13px; color: #6ee7b7; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.title { font-size: 40px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.25; }
+.subtitle { font-size: 14.5px; color: #b1bac4; text-align: center; margin-bottom: 24px; line-height: 1.55; max-width: 1000px; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.scenarios { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.sc { background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 16px; padding: 22px 24px; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.sc.a { animation-delay: 0.1s; border-top: 3px solid #f43f5e; }
+.sc.b { animation-delay: 0.25s; border-top: 3px solid #34d399; }
+.sc .label { font-size: 11px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+.sc.a .label { color: #fda4af; }
+.sc.b .label { color: #6ee7b7; }
+.sc .scname { font-size: 18px; font-weight: 900; color: #f0f6fc; margin-bottom: 4px; line-height: 1.3; }
+.sc .tag-line { font-size: 12px; color: #8b949e; margin-bottom: 14px; }
+.steps { display: flex; flex-direction: column; gap: 7px; }
+.step { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: flex-start; padding: 8px 10px; background: rgba(10, 15, 26, 0.4); border-radius: 7px; }
+.step .num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+.sc.a .step .num { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); }
+.sc.b .step .num { background: rgba(52, 211, 153, 0.15); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.3); }
+.step .text { font-size: 12.5px; color: #c9d1d9; line-height: 1.55; padding-top: 3px; }
+.step .text strong { color: #e6edf3; font-weight: 700; }
+.sc.a .step .text em { color: #fda4af; font-style: normal; font-weight: 700; }
+.sc.b .step .text em { color: #6ee7b7; font-style: normal; font-weight: 700; }
+.outcome { margin-top: 14px; padding: 14px 18px; border-radius: 10px; text-align: center; }
+.sc.a .outcome { background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.3); }
+.sc.b .outcome { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); }
+.outcome .ho { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.sc.a .outcome .ho { color: #fda4af; }
+.sc.b .outcome .ho { color: #6ee7b7; }
+.outcome .res { font-size: 16px; font-weight: 900; color: #f0f6fc; line-height: 1.35; }
+.bottom-note { margin-top: 22px; padding: 16px 32px; background: rgba(52, 211, 153, 0.06); border: 1px solid rgba(52, 211, 153, 0.25); border-radius: 12px; font-size: 13.5px; color: #c9d1d9; text-align: center; line-height: 1.7; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.5s; max-width: 1140px; }
+.bottom-note strong { color: #6ee7b7; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(52, 211, 153, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #34d399; transition: color 0.2s; }
+.slide-nav a:hover { color: #6ee7b7; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">실패 시나리오 — 같은 모델, 같은 작업</div>
+  <h1 class="title">검증 없는 Loop는 어떻게 깨지는가</h1>
+  <div class="subtitle">"신용카드 환불 기능 추가해줘" — <strong>검증 인프라의 유무</strong>만 차이</div>
+  <div class="scenarios">
+    <div class="sc a">
+      <div class="label">SCENARIO A · 검증 부재</div>
+      <div class="scname">❌ 자체 평가만 — 운영 사고</div>
+      <div class="tag-line">"잘 동작할 것 같습니다" → 머지 → 배포</div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><div class="text">엔지니어: <strong>"환불 기능 추가"</strong></div></div>
+        <div class="step"><div class="num">2</div><div class="text">agent 코드 작성 → 자체 평가: <em>"잘 동작할 것 같습니다"</em></div></div>
+        <div class="step"><div class="num">3</div><div class="text">PR 머지, 배포</div></div>
+        <div class="step"><div class="num">4</div><div class="text"><strong>운영 발견</strong>: minor unit 변환 오류 — <em>금액 100배</em> 환불 발생</div></div>
+        <div class="step"><div class="num">5</div><div class="text">1주일치 환불 정정, customer support 폭주</div></div>
+        <div class="step"><div class="num">6</div><div class="text">post-mortem 결론 — <em>"agent가 자기 작업을 검증하지 못했다"</em></div></div>
+      </div>
+      <div class="outcome">
+        <div class="ho">결과</div>
+        <div class="res">장애 1주 · 환불 정정 폭주</div>
+      </div>
+    </div>
+    <div class="sc b">
+      <div class="label">SCENARIO B · 2-Layer Validation</div>
+      <div class="scname">✅ Self-correction loop 가동</div>
+      <div class="tag-line">pytest + LogQL → 통과 → 머지</div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><div class="text">엔지니어: <strong>"환불 기능 추가"</strong></div></div>
+        <div class="step"><div class="num">2</div><div class="text">agent 코드 작성 → <em>pytest -x 자동 실행</em> (Layer 1) — edge case 실패</div></div>
+        <div class="step"><div class="num">3</div><div class="text">실패 traceback 분석 → <strong>코드 수정</strong> → 재실행 → 통과</div></div>
+        <div class="step"><div class="num">4</div><div class="text"><em>LogQL 쿼리</em> 실행 (Layer 2) — 비정상 금액 0건 확인</div></div>
+        <div class="step"><div class="num">5</div><div class="text">두 layer 모두 통과 → PR 머지</div></div>
+        <div class="step"><div class="num">6</div><div class="text">운영 환경 — <em>사고 0건</em></div></div>
+      </div>
+      <div class="outcome">
+        <div class="ho">결과</div>
+        <div class="res">사고 0건 · validated work</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note">⚡ 같은 모델, 같은 작업 — 차이는 <strong>self-correction loop의 인프라</strong> 하나. 그 하나가 <strong>장애 1주</strong>와 <strong>사고 0건</strong>을 가른다.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="28-logql-self-correction.html" onclick="event.preventDefault(); navigateTo(this.href, 'prev')">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">29 / 75</a></div>
+    <div class="nav-right"><a href="30-pillar2-summary.html" onclick="event.preventDefault(); navigateTo(this.href, 'next')">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('28-logql-self-correction.html');
+  if (e.key === 'ArrowRight') navigateTo('30-pillar2-summary.html');
+});
+</script>
+</body>
+</html>

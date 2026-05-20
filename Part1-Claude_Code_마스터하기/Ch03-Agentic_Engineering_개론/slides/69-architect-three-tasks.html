@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>새 Architect의 3가지 일</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 70px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 12px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; background: linear-gradient(90deg, #a78bfa, #38bdf8, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.title { font-size: 40px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.25; }
+.quote-band { width: 100%; max-width: 1100px; padding: 18px 26px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 12px; text-align: center; margin-bottom: 32px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.05s; }
+.quote-band .q { font-size: 15px; color: #e6edf3; font-style: italic; line-height: 1.55; }
+.quote-band .q strong { color: #c4b5fd; font-style: normal; font-weight: 800; }
+.three-col { width: 100%; max-width: 1160px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+.task { padding: 26px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; animation: cardAppear 0.6s ease forwards; display: flex; flex-direction: column; }
+.task.t1 { animation-delay: 0.12s; border-top: 3px solid #a78bfa; }
+.task.t2 { animation-delay: 0.22s; border-top: 3px solid #38bdf8; }
+.task.t3 { animation-delay: 0.32s; border-top: 3px solid #fdba74; }
+.task .num-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; margin-bottom: 12px; }
+.task.t1 .num-badge { background: rgba(167, 139, 250, 0.12); color: #c4b5fd; border: 1px solid rgba(167, 139, 250, 0.4); }
+.task.t2 .num-badge { background: rgba(56, 189, 248, 0.12); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); }
+.task.t3 .num-badge { background: rgba(253, 186, 116, 0.12); color: #fdba74; border: 1px solid rgba(253, 186, 116, 0.4); }
+.task .en-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; line-height: 1.25; }
+.task.t1 .en-title { color: #c4b5fd; }
+.task.t2 .en-title { color: #7dd3fc; }
+.task.t3 .en-title { color: #fdba74; }
+.task .ko-title { font-size: 13px; color: #b1bac4; margin-bottom: 14px; font-weight: 500; }
+.task .body { font-size: 13px; color: #c9d1d9; line-height: 1.65; margin-bottom: 14px; flex: 1; }
+.task .body strong { color: #f0f6fc; font-weight: 700; }
+.task .pillar-tag { padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-size: 11px; color: #b1bac4; letter-spacing: 0.5px; line-height: 1.5; }
+.task .pillar-tag strong { font-weight: 700; }
+.task.t1 .pillar-tag strong { color: #c4b5fd; }
+.task.t2 .pillar-tag strong { color: #7dd3fc; }
+.task.t3 .pillar-tag strong { color: #fdba74; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">새 Architect의 3가지 일 — 직업이 다시 그려졌다</div>
+  <h1 class="title">Loops · Context · Tooling</h1>
+  <div class="quote-band">
+    <div class="q">"it is about <strong>architecting the loops</strong>, <strong>managing the context</strong>, and <strong>building the tooling infrastructure</strong> that allows agents to execute <strong>at scale</strong>."</div>
+  </div>
+  <div class="three-col">
+    <div class="task t1">
+      <div class="num-badge">01</div>
+      <div class="en-title">Architecting<br/>the Loops</div>
+      <div class="ko-title">agent 작업 loop의 설계자</div>
+      <div class="body">agent가 <strong>어디서 시작</strong>하고, 어디서 검증하고, 어디서 멈추는지 — 흐름의 <strong>전체 모양</strong>을 설계. 코드 작성자가 아니라 흐름의 설계자.</div>
+      <div class="pillar-tag"><strong>Pillar II</strong> self-correction loop · <strong>Pillar III</strong> friction bridge — 모두 loop architecture의 영역</div>
+    </div>
+    <div class="task t2">
+      <div class="num-badge">02</div>
+      <div class="en-title">Managing<br/>the Context</div>
+      <div class="ko-title">Second Brain의 큐레이터</div>
+      <div class="body"><strong>CLAUDE.md를 누가 업데이트</strong>하나? Second Brain의 trees는 탐색 가능하게 유지되나? <strong>tacit knowledge</strong>가 codify되고 있나? — architect가 답한다.</div>
+      <div class="pillar-tag"><strong>Pillar I</strong>의 일상 책임 — context의 큐레이터로서의 매일</div>
+    </div>
+    <div class="task t3">
+      <div class="num-badge">03</div>
+      <div class="en-title">Building Tooling<br/>Infrastructure</div>
+      <div class="ko-title">at scale — 팀 전체가 동시에</div>
+      <div class="body">friction이 생기면 <strong>다리를 놓고</strong>, 그 다리를 <strong>Skill로 codify</strong>하고, 팀 Working Library로 격상. "at scale" — 한 명이 아니라 <strong>팀 전체</strong>가 동시에 잘하게.</div>
+      <div class="pillar-tag"><strong>Pillar III + V</strong>의 책임 — friction을 자산으로 전환하는 인프라</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="68-architect-evolution.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">69 / 75</a></div>
+    <div class="nav-right"><a href="70-adoption-speed.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('68-architect-evolution.html');
+  if (e.key === 'ArrowRight') navigateTo('70-adoption-speed.html');
+});
+</script>
+</body>
+</html>

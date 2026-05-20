@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Working Library의 4가지 자산</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; margin-bottom: 26px; text-align: center; max-width: 1000px; line-height: 1.55; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.grid-2x2 { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.grid-card { padding: 22px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 14px; min-height: 200px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.grid-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #fbbf24; }
+.grid-card:nth-child(2) { animation-delay: 0.22s; border-top: 3px solid #f59e0b; }
+.grid-card:nth-child(3) { animation-delay: 0.34s; border-top: 3px solid #fdba74; }
+.grid-card:nth-child(4) { animation-delay: 0.46s; border-top: 3px solid #ec4899; }
+.grid-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.grid-card .num { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #fde68a; text-transform: uppercase; }
+.grid-card .icon { font-size: 26px; }
+.grid-card .title-text { font-size: 17px; font-weight: 900; color: #e6edf3; line-height: 1.3; flex: 1; }
+.grid-card .path { font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; font-size: 11px; color: #fdba74; background: rgba(249, 115, 22, 0.08); padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 10px; align-self: flex-start; }
+.grid-card .desc { font-size: 12.5px; color: #c9d1d9; line-height: 1.55; margin-bottom: 10px; }
+.grid-card .desc strong { color: #e6edf3; font-weight: 700; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.ex-chip { font-size: 10.5px; padding: 4px 9px; border-radius: 6px; background: rgba(251, 191, 36, 0.08); color: #fde68a; font-weight: 700; font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace; border: 1px solid rgba(251, 191, 36, 0.18); }
+.grid-card:nth-child(2) .ex-chip { background: rgba(245, 158, 11, 0.08); color: #fcd34d; border-color: rgba(245, 158, 11, 0.18); }
+.grid-card:nth-child(3) .ex-chip { background: rgba(253, 186, 116, 0.08); color: #fed7aa; border-color: rgba(253, 186, 116, 0.2); }
+.grid-card:nth-child(4) .ex-chip { background: rgba(236, 72, 153, 0.08); color: #f9a8d4; border-color: rgba(236, 72, 153, 0.2); }
+.bottom-claim { width: 100%; max-width: 1120px; margin-top: 18px; padding: 14px 28px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.28); border-radius: 12px; text-align: center; font-size: 13px; color: #fef3c7; line-height: 1.6; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; }
+.bottom-claim strong { color: #fde68a; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Working Library · 4 Categories</div>
+  <h1 class="title">팀이 모아야 할 4가지 자산</h1>
+  <div class="subtitle">이 네 가지가 <strong>함께 진화</strong>할 때 Working Library가 동작한다 — 서로 참조하며 graph를 형성</div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="head"><div class="icon">⚡</div><div class="num">자산 1</div></div>
+      <div class="title-text">Shared Skills</div>
+      <div class="path">.claude/commands/</div>
+      <div class="desc">팀이 commit하는 슬래시 명령 모음. 새 엔지니어가 입사하면 — <strong>첫날부터 이 명령들을 쓴다</strong>. 온보딩 시간이 극적으로 줄어든다.</div>
+      <div class="examples">
+        <span class="ex-chip">/pr-review</span>
+        <span class="ex-chip">/deploy-staging</span>
+        <span class="ex-chip">/db-migrate</span>
+        <span class="ex-chip">/incident-triage</span>
+      </div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">🔌</div><div class="num">자산 2</div></div>
+      <div class="title-text">Shared MCP Servers</div>
+      <div class="path">team-internal MCPs</div>
+      <div class="desc">팀 내부 시스템을 <strong>표준화된 MCP 서버</strong>로 노출. 한 번 만들면 모든 엔지니어가 동일 인터페이스로 접근.</div>
+      <div class="examples">
+        <span class="ex-chip">mcp-internal-wiki</span>
+        <span class="ex-chip">mcp-incident-history</span>
+        <span class="ex-chip">mcp-vendor-portal</span>
+      </div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">📋</div><div class="num">자산 3</div></div>
+      <div class="title-text">Shared CLAUDE.md</div>
+      <div class="path">team-wide templates</div>
+      <div class="desc">각 프로젝트의 CLAUDE.md를 <strong>공통 템플릿</strong>에서 시작. 결제 · 인증 · frontend 등 표준 골격을 팀 메타 repo에 둔다. 신규 프로젝트는 fork로 시작.</div>
+      <div class="examples">
+        <span class="ex-chip">payment.md</span>
+        <span class="ex-chip">auth.md</span>
+        <span class="ex-chip">frontend.md</span>
+      </div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">🛡️</div><div class="num">자산 4</div></div>
+      <div class="title-text">Shared Golden Rules</div>
+      <div class="path">GOLDEN_RULES.md (team-wide)</div>
+      <div class="desc">위반 금지 룰의 마스터 리스트. <strong>"이건 절대 안 됨"</strong>의 팀 차원 합의. Pillar IV의 GOLDEN_RULES를 team-wide standard로 격상.</div>
+      <div class="examples">
+        <span class="ex-chip">no-direct-db-write</span>
+        <span class="ex-chip">no-secret-in-log</span>
+        <span class="ex-chip">no-skip-migration</span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">🔗 각자 자기 영역만 책임지는 게 아니라 — <strong>상호 참조한다</strong>. Skill이 MCP를 호출, MCP가 Golden Rules를 검사, Rules가 CLAUDE.md 템플릿을 가리킨다. 진정한 <strong>graph</strong>가 형성</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="59-high-performing-teams.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">60 / 75</a></div>
+    <div class="nav-right"><a href="61-code-builds-itself.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('59-high-performing-teams.html');
+  if (e.key === 'ArrowRight') navigateTo('61-code-builds-itself.html');
+});
+</script>
+</body>
+</html>

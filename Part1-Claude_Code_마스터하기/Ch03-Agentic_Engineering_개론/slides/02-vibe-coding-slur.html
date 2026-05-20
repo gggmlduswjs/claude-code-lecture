@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>"Vibe Coding은 slur" — Peter Steinberger</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 13px; color: #f472b6; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.25; }
+.subtitle { font-size: 16px; color: #c9d1d9; text-align: center; margin-bottom: 36px; line-height: 1.55; max-width: 920px; }
+.subtitle strong { color: #f472b6; font-weight: 700; }
+.two-col { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.col { padding: 28px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; min-height: 360px; display: flex; flex-direction: column; }
+.col.left { animation-delay: 0.1s; border-top: 3px solid #94a3b8; }
+.col.right { animation-delay: 0.25s; border-top: 3px solid #f472b6; }
+.col .head { font-size: 12px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; }
+.col.left .head { color: #cbd5e1; }
+.col.right .head { color: #f9a8d4; }
+.col .col-title { font-size: 20px; font-weight: 900; color: #e6edf3; margin-bottom: 16px; line-height: 1.3; }
+.col .col-body { font-size: 14px; color: #c9d1d9; line-height: 1.7; }
+.col .col-body strong { color: #e6edf3; font-weight: 700; }
+.col .col-body em { font-style: italic; color: #b1bac4; }
+.timeline { margin-top: 6px; padding-top: 12px; border-top: 1px dashed rgba(139, 148, 158, 0.2); }
+.timeline-item { display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: #c9d1d9; line-height: 1.5; }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-year { flex-shrink: 0; padding: 2px 8px; background: rgba(148, 163, 184, 0.15); border-radius: 4px; font-size: 11px; font-weight: 700; color: #cbd5e1; height: 22px; }
+.quote-block { padding: 18px 22px; background: rgba(244, 114, 182, 0.06); border-left: 3px solid #f472b6; border-radius: 8px; margin-top: 14px; }
+.quote-block .q { font-size: 18px; font-weight: 800; color: #fce7f3; line-height: 1.5; margin-bottom: 8px; }
+.quote-block .src { font-size: 12px; color: #f9a8d4; letter-spacing: 0.5px; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Vibe Coding이 slur가 된 이유</div>
+  <h1 class="title">"Vibe Coding은 이제 slur(비하어)다"</h1>
+  <div class="subtitle">2년 만에 <strong>혁신의 상징</strong>에서 <strong>비하어</strong>로 — 2025년 후반의 단어 추락기</div>
+  <div class="two-col">
+    <div class="col left">
+      <div class="head">의미 변천 · 2 Years</div>
+      <div class="col-title">"Vibe Coding"의 의미 추락</div>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-year">2023</div><div><strong>Andrej Karpathy의 가벼운 트윗</strong> — "AI에게 자연어로 말하면 코드가 나온다"는 환상을 정확히 포착. 누구나 코딩할 수 있다는 <em>민주화의 깃발</em>.</div></div>
+        <div class="timeline-item"><div class="timeline-year">2024</div><div><em>"infinity side projects"</em> 시대의 혁신어 — 진입장벽을 무너뜨린 <strong>해방의 단어</strong>로 사용.</div></div>
+        <div class="timeline-item"><div class="timeline-year">2025</div><div><strong>"지금 vibe coding 중이야"</strong> = <em>"지금 제대로 안 하고 있어"</em>의 점잖은 동의어. 정당화 회로로 변질.</div></div>
+      </div>
+    </div>
+    <div class="col right">
+      <div class="head">⚡ The Verdict</div>
+      <div class="col-title">Peter Steinberger의 선언</div>
+      <div class="col-body">2025년 후반, OpenAI 소속 <strong>Peter Steinberger</strong>가 한 줄로 못박았습니다.</div>
+      <div class="quote-block">
+        <div class="q">"Vibe Coding은 이제 slur(비하어)다."</div>
+        <div class="src">— Peter Steinberger · OpenAI · 2025</div>
+      </div>
+      <div class="col-body" style="margin-top: 14px;">이 발언이 충격적인 이유 — 불과 2년 전만 해도 vibe coding은 <strong>혁신의 상징</strong>이었기 때문. Steinberger의 발언은 <em>이 정당화 회로를 끊겠다는 선언</em>입니다.</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="01-paradigm-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">02 / 75</a></div>
+    <div class="nav-right"><a href="03-stateless-limit.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('01-paradigm-intro.html');
+  if (e.key === 'ArrowRight') navigateTo('03-stateless-limit.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Step 3 — AI에게 작업 위임</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.step-label { font-size: 13px; color: #fbbf24; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 38px; text-align: center; max-width: 960px; line-height: 1.5; }
+.step-flow { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 14px; }
+.step-item { display: flex; align-items: flex-start; gap: 20px; padding: 20px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; transform: translateX(-20px); animation: stepIn 0.5s ease forwards; }
+.step-item:nth-child(1) { animation-delay: 0.1s; }
+.step-item:nth-child(2) { animation-delay: 0.22s; }
+.step-item:nth-child(3) { animation-delay: 0.34s; }
+.step-item:nth-child(4) { animation-delay: 0.46s; }
+.step-num { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 11px; background: linear-gradient(135deg, #f97316, #fbbf24); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #fff; }
+.step-body { flex: 1; }
+.step-title { font-size: 17px; font-weight: 800; color: #e6edf3; margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: #b1bac4; line-height: 1.55; }
+.step-desc strong { color: #c9d1d9; font-weight: 700; }
+.step-desc code { font-family: 'Courier New', monospace; background: rgba(139, 148, 158, 0.1); padding: 2px 6px; border-radius: 4px; color: #a78bfa; font-size: 12px; }
+.prompt-sample { margin-top: 10px; padding: 10px 14px; background: rgba(10, 15, 26, 0.6); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; color: #c9d1d9; line-height: 1.6; }
+.prompt-sample .comment { color: #b1bac4; }
+.closing-insight { margin-top: 28px; padding: 18px 32px; background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; max-width: 1000px; }
+.closing-insight strong { color: #fde68a; font-weight: 700; }
+@keyframes stepIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="step-label">Step 03 of 03</div>
+  <h1 class="title">AI에게 작업 위임</h1>
+  <div class="subtitle">우선순위가 정해지면, 첫 번째 작업을 Claude Code에 넘깁니다</div>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">이슈 트래커 MCP로 태스크 읽어오기</div>
+        <div class="step-desc">Linear MCP가 연결되어 있어서, 티켓 번호만 주면 전체 컨텍스트를 가져옵니다.</div>
+        <div class="prompt-sample"><span class="comment"># 프롬프트 예시</span><br/>이 이슈를 구현해야 해: <span style="color:#7dd3fc;">"결제 페이지에 할인 코드 입력 필드 추가"</span><br/>먼저 현재 결제 페이지 코드를 분석하고, <strong style="color:#fde68a;">구현 계획을 세워줘</strong>. 코드는 아직 쓰지 마.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Claude가 관련 파일 탐색 → 계획 제시</div>
+        <div class="step-desc"><code>CheckoutPage.tsx</code>, <code>PaymentForm.tsx</code> 같은 파일을 찾아 읽고, 기존 패턴 분석 후 <strong>1. CouponInput 생성 · 2. PaymentForm 연결 · 3. API 엔드포인트 추가</strong>처럼 단계별 계획 출력.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">위임 후 "관찰하지 않기"</div>
+        <div class="step-desc">AI가 일하는 동안 나는 <strong>미팅에 들어가거나, 다른 작업을 정리</strong>합니다. 지켜보면 위임의 의미가 사라집니다. 블로커 발생 시 하네스가 알림.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">작업 완료 = PR이 이미 올라와 있음</div>
+        <div class="step-desc">Claude가 브랜치 생성 → 커밋 → PR 올리기까지 자동. <strong>PR 본문에 변경사항 요약과 테스트 방법 자동 포함</strong>. 하네스가 이 순서를 강제.</div>
+      </div>
+    </div>
+  </div>
+  <div class="closing-insight">AI는 <strong>판단을 대신하는 존재가 아니라, 내가 내린 결정을 실행에 옮기는 파트너</strong>입니다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="26-step2-status-priority.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">27 / 43</a></div>
+    <div class="nav-right"><a href="28-collect-judge-execute.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('26-step2-status-priority.html');
+  if (e.key === 'ArrowRight') navigateTo('28-collect-judge-execute.html');
+});
+</script>
+</body>
+</html>

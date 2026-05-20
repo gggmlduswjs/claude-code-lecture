@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>카테고리 2 · Identify API Gaps</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 28px; text-align: center; max-width: 1020px; line-height: 1.55; font-style: italic; }
+.subtitle strong { color: #fdba74; font-weight: 700; font-style: normal; }
+.diagram { width: 100%; max-width: 1080px; padding: 28px 28px; background: rgba(249, 115, 22, 0.05); border: 2px solid rgba(249, 115, 22, 0.3); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; }
+.diagram .head-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px dashed rgba(249, 115, 22, 0.3); margin-bottom: 18px; }
+.diagram .cat-num { font-size: 11px; color: #fdba74; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+.diagram .cat-name { font-size: 18px; font-weight: 900; color: #e6edf3; }
+.diagram .tool-badge { font-size: 11px; padding: 6px 14px; background: rgba(249, 115, 22, 0.15); color: #fdba74; border-radius: 999px; font-weight: 800; letter-spacing: 1px; }
+.scope-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; margin-bottom: 16px; align-items: stretch; }
+.scope-card { padding: 18px 18px; background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 10px; }
+.scope-card .head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.scope-card .icon { font-size: 22px; }
+.scope-card .label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #fb923c; }
+.scope-card .title-text { font-size: 14px; font-weight: 800; color: #e6edf3; margin-bottom: 6px; }
+.scope-card .desc { font-size: 12px; color: #b1bac4; line-height: 1.55; }
+.scope-card .desc strong { color: #c9d1d9; font-weight: 700; }
+.vs-cell { display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fb923c; font-weight: 900; }
+.target-row { padding: 14px 18px; background: rgba(10, 15, 26, 0.4); border-left: 3px solid #f97316; border-radius: 8px; }
+.target-row .key { font-size: 11px; color: #fb923c; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.target-row .targets { display: flex; gap: 10px; flex-wrap: wrap; }
+.target-row .target { font-size: 12px; padding: 5px 11px; background: rgba(249, 115, 22, 0.12); color: #fdba74; border-radius: 6px; font-weight: 700; }
+.bottom-quote { margin-top: 18px; padding: 12px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; font-size: 13px; color: #b1bac4; text-align: center; line-height: 1.6; max-width: 1080px; }
+.bottom-quote strong { color: #fdba74; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Category 2 of 4</div>
+  <h1 class="title">Identify API Gaps</h1>
+  <div class="subtitle">"Pinpoint tasks that currently require <strong>manual UI navigation</strong> — build or expose API endpoints so the agent can interact programmatically."</div>
+  <div class="diagram">
+    <div class="head-row">
+      <div><div class="cat-num">Category 2</div><div class="cat-name">🔌 API 공백 식별</div></div>
+      <div class="tool-badge">대응: API endpoint / 스크립트</div>
+    </div>
+    <div class="scope-row">
+      <div class="scope-card">
+        <div class="head"><div class="icon">📁</div><div class="label">Category 1 scope</div></div>
+        <div class="title-text">로컬 파일·데이터 편집</div>
+        <div class="desc">파일 수정, 포맷팅, 설정 파일 변경 — <strong>로컬 환경</strong> 안.</div>
+      </div>
+      <div class="vs-cell">vs</div>
+      <div class="scope-card">
+        <div class="head"><div class="icon">🌐</div><div class="label">Category 2 scope</div></div>
+        <div class="title-text">외부 UI 시스템 조작</div>
+        <div class="desc">웹 dashboard, cloud 콘솔 — <strong>외부 서비스의 UI</strong>를 사람이 클릭.</div>
+      </div>
+    </div>
+    <div class="target-row">
+      <div class="key">대표 타겟 시스템</div>
+      <div class="targets">
+        <span class="target">AWS 콘솔</span>
+        <span class="target">Stripe dashboard</span>
+        <span class="target">Notion 페이지</span>
+        <span class="target">GitHub Settings UI</span>
+        <span class="target">기타 모든 SaaS 대시보드</span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-quote">카테고리 1과 <strong>scope가 다름</strong>. 카테고리 2는 다음 섹션의 <strong>CLI-First Integration</strong>과 직결.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="37-category1-audit.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">38 / 75</a></div>
+    <div class="nav-right"><a href="39-category3-wait-states.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('37-category1-audit.html');
+  if (e.key === 'ArrowRight') navigateTo('39-category3-wait-states.html');
+});
+</script>
+</body>
+</html>

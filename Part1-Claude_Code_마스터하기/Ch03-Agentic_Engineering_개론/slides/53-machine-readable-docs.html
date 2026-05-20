@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>원칙 4 — Machine-Readable Docs + Golden Rules</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #f9a8d4; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 20px; text-align: center; max-width: 980px; line-height: 1.6; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.quote-block { width: 100%; max-width: 1120px; padding: 14px 26px; background: rgba(236, 72, 153, 0.08); border-left: 4px solid #ec4899; border-radius: 8px; margin-bottom: 22px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.1s; }
+.quote-block .en { font-size: 13px; color: #f9a8d4; font-weight: 700; line-height: 1.55; margin-bottom: 4px; font-style: italic; }
+.quote-block .ko { font-size: 12.5px; color: #c9d1d9; line-height: 1.55; }
+.grid-2x2 { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.grid-card { padding: 22px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; display: flex; flex-direction: column; }
+.grid-card:nth-child(1) { animation-delay: 0.2s; border-top: 3px solid #ec4899; }
+.grid-card:nth-child(2) { animation-delay: 0.35s; border-top: 3px solid #f472b6; }
+.grid-card .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.grid-card .icon { font-size: 24px; }
+.grid-card .card-title { font-size: 16px; font-weight: 800; color: #e6edf3; }
+.grid-card .card-sub { font-size: 12px; color: #b1bac4; margin-bottom: 12px; line-height: 1.55; }
+.feature-list { font-size: 12.5px; color: #c9d1d9; line-height: 1.65; }
+.feature-list .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 7px; padding: 7px 10px; background: rgba(10, 15, 26, 0.45); border-radius: 6px; }
+.feature-list .row .ic { color: #f9a8d4; font-weight: 700; }
+.feature-list .row strong { color: #e6edf3; font-weight: 700; }
+.feature-list .row code { font-family: 'Courier New', monospace; background: rgba(236, 72, 153, 0.12); color: #f9a8d4; padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+.rules-code { background: rgba(10, 15, 26, 0.75); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 10px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 11.5px; line-height: 1.7; color: #c9d1d9; }
+.rules-code .hd { color: #f9a8d4; font-weight: 700; margin-bottom: 4px; }
+.rules-code .num { color: #79c0ff; font-weight: 700; }
+.rules-code .key { color: #ff7b72; }
+.rules-code .cmt { color: #6e7681; }
+.bottom-claim { margin-top: 20px; padding: 12px 28px; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 12px; font-size: 12.5px; color: #c9d1d9; text-align: center; line-height: 1.65; max-width: 1120px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.65s; }
+.bottom-claim strong { color: #f9a8d4; font-weight: 700; }
+.bottom-claim code { font-family: 'Courier New', monospace; background: rgba(236, 72, 153, 0.15); color: #f9a8d4; padding: 1px 6px; border-radius: 4px; font-size: 11.5px; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(236, 72, 153, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #ec4899; transition: color 0.2s; }
+.slide-nav a:hover { color: #f9a8d4; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Principle 4 · Agent RAG</div>
+  <h1 class="title">Machine-Readable Docs + <span style="color:#f9a8d4">Golden Rules</span></h1>
+  <div class="subtitle"><strong>"Golden Rules"</strong>를 — agent RAG(Retrieval-Augmented Generation) 시스템에 최적화된 포맷으로 — 직접 저장소에 인코딩</div>
+  <div class="quote-block">
+    <div class="en">"Encoding 'Golden Rules' directly into the repository in formats optimized for agent RAG (Retrieval-Augmented Generation) systems."</div>
+    <div class="ko">"Golden Rules"를 — agent RAG에 최적화된 포맷으로 — 직접 저장소에 인코딩.</div>
+  </div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="head"><div class="icon">📑</div><div class="card-title">RAG-Optimized 4 특징</div></div>
+      <div class="card-sub">RAG가 잘 끌어오는 문서의 모양 — chunk·키워드·참조·메타데이터</div>
+      <div class="feature-list">
+        <div class="row"><div class="ic">▸</div><div><strong>짧은 문단</strong> — RAG의 chunk 단위. 한 문단 = 한 주제로 분절</div></div>
+        <div class="row"><div class="ic">▸</div><div><strong>명시적 키워드</strong> — "결제 환불 정책" 같은 검색어가 본문에 등장</div></div>
+        <div class="row"><div class="ic">▸</div><div><strong>상호 참조</strong> — <code>@docs/payments.md</code> 명시 참조로 graph traversal</div></div>
+        <div class="row"><div class="ic">▸</div><div><strong>Frontmatter 메타</strong> — <code>type:</code> <code>tags:</code> <code>last_reviewed:</code>로 필터링</div></div>
+      </div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">📜</div><div class="card-title">Golden Rules 예시</div></div>
+      <div class="card-sub"><code>@GOLDEN_RULES.md</code> — CLAUDE.md에서 참조 → 매 작업마다 RAG retrieve</div>
+      <div class="rules-code">
+<span class="hd"># Golden Rules — 절대 위반 금지</span><br/>
+<br/>
+<span class="num">1.</span> 결제 코드는 <span class="key">src/payment/</span>에만.<br/>
+&nbsp;&nbsp;&nbsp;billing/, pay-utils/는 <span class="key">DEPRECATED</span>.<br/>
+<span class="num">2.</span> 외부 API는 항상 <span class="key">lib/clients/</span> wrapper 경유<br/>
+<span class="num">3.</span> 통화는 minor unit으로만 저장<br/>
+<span class="num">4.</span> 결제 액션은 <span class="key">logger.payment</span> 사용<br/>
+<span class="num">5.</span> 새 dependency는 architect 승인<br/>
+<span class="cmt">// → CLAUDE.md에서 @GOLDEN_RULES.md 참조</span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">CLAUDE.md → <code>@GOLDEN_RULES.md</code>로 참조되면 — agent가 <strong>매 작업마다 RAG로 retrieve</strong>해서 룰 위반 가능성이 급감</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="52-agent-logging.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">53 / 75</a></div>
+    <div class="nav-right"><a href="54-philosophy-shift.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('52-agent-logging.html');
+  if (e.key === 'ArrowRight') navigateTo('54-philosophy-shift.html');
+});
+</script>
+</body>
+</html>

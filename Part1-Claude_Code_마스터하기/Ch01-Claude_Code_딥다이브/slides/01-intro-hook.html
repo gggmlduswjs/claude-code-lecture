@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>Ch01 — Claude Code 딥다이브</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 52px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 18px; line-height: 1.25; }
+.subtitle { font-size: 18px; color: #b1bac4; margin-bottom: 44px; letter-spacing: 0.5px; }
+
+.hero-cards { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 1120px; }
+.hero-card { flex: 1 1 300px; max-width: 340px; min-height: 260px; padding: 36px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; transition: transform 0.3s, border-color 0.3s; }
+.hero-card:nth-child(1) { animation-delay: 0.1s; }
+.hero-card:nth-child(2) { animation-delay: 0.3s; }
+.hero-card:nth-child(3) { animation-delay: 0.5s; }
+.hero-card:hover { transform: translateY(-4px); border-color: rgba(124, 58, 237, 0.4); }
+.hero-card .emoji { font-size: 56px; margin-bottom: 18px; }
+.hero-card .value { font-size: 30px; font-weight: 900; background: linear-gradient(135deg, #7c3aed, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; line-height: 1.2; }
+.hero-card .desc { font-size: 15px; color: #c9d1d9; line-height: 1.5; margin-bottom: 14px; }
+.hero-card .label { font-size: 12px; color: #b1bac4; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">Ch01 — Claude Code 딥다이브</h1>
+  <div class="subtitle">도구를 손에 익히는 챕터 · 10 클립 · 140분</div>
+  <div class="hero-cards">
+    <div class="hero-card">
+      <div class="emoji">🧠</div>
+      <div class="value">컨텍스트</div>
+      <div class="desc">베테랑과 입문자의 가장 큰 차이</div>
+      <div class="label">FUNDAMENTALS</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">⚡</div>
+      <div class="value">권한 + 자동화</div>
+      <div class="desc">AI를 믿고 맡기는 마인드셋</div>
+      <div class="label">WORKFLOW</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">🔧</div>
+      <div class="value">확장 7가지</div>
+      <div class="desc">Skills · MCP · Hook · Plugin · Teams</div>
+      <div class="label">EXTENSIONS</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><span class="nav-disabled">&larr; 이전</span></div>
+  <div class="nav-center"><a href="index.html">01 / 44</a></div>
+  <div class="nav-right"><a href="02-agent-loop.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) { if (e.key === 'ArrowRight') navigateTo('02-agent-loop.html'); });
+</script></body></html>

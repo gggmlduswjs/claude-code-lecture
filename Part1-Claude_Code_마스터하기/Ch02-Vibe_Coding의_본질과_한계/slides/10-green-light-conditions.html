@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>잘 먹히는 5가지 조건</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+}
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle {
+  font-size: 16px;
+  color: #b1bac4;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.conditions {
+  width: 100%;
+  max-width: 1140px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.condition-card {
+  padding: 24px 18px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.5s ease forwards;
+  transition: transform 0.3s, border-color 0.3s;
+  min-height: 220px;
+}
+.condition-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #f97316; }
+.condition-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #fdba74; }
+.condition-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.condition-card:nth-child(4) { animation-delay: 0.4s; border-top: 3px solid #34d399; }
+.condition-card:nth-child(5) { animation-delay: 0.5s; border-top: 3px solid #38bdf8; }
+.condition-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+.condition-icon { font-size: 38px; margin-bottom: 14px; }
+.condition-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #e6edf3;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.condition-desc {
+  font-size: 13px;
+  color: #b1bac4;
+  line-height: 1.55;
+}
+
+.judgment-box {
+  width: 100%;
+  max-width: 1080px;
+  padding: 26px 36px;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(251, 191, 36, 0.08));
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: 16px;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.6s ease forwards;
+  animation-delay: 0.7s;
+}
+.judgment-headline {
+  font-size: 22px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fdba74, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.judgment-sub {
+  font-size: 14px;
+  color: #c9d1d9;
+  line-height: 1.6;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.slide-nav-inner {
+  width: 1280px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 60px;
+}
+.slide-nav a {
+  text-decoration: none; font-size: 14px; font-weight: 700;
+  color: #7c3aed; transition: color 0.2s;
+}
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+body { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">잘 먹히는 5가지 조건</h1>
+  <div class="subtitle">앞 4가지 시나리오의 공통점 — 3개 이상 해당되면 Vibe Coding이 좋은 선택</div>
+
+  <div class="conditions">
+    <div class="condition-card">
+      <div class="condition-icon">🟢</div>
+      <div class="condition-title">낮은 위험도</div>
+      <div class="condition-desc">코드가 실패해도 심각한 결과가 발생하지 않는다</div>
+    </div>
+    <div class="condition-card">
+      <div class="condition-icon">📦</div>
+      <div class="condition-title">작은 규모</div>
+      <div class="condition-desc">코드베이스가 작아 전체를 한눈에 파악 가능</div>
+    </div>
+    <div class="condition-card">
+      <div class="condition-icon">⏳</div>
+      <div class="condition-title">짧은 수명</div>
+      <div class="condition-desc">버리거나 나중에 다시 만들 코드</div>
+    </div>
+    <div class="condition-card">
+      <div class="condition-icon">👥</div>
+      <div class="condition-title">제한된 사용자</div>
+      <div class="condition-desc">불특정 다수가 아닌 소수 대상</div>
+    </div>
+    <div class="condition-card">
+      <div class="condition-icon">⚡</div>
+      <div class="condition-title">빠른 피드백</div>
+      <div class="condition-desc">문제를 즉시 발견하고 수정할 수 있다</div>
+    </div>
+  </div>
+
+  <div class="judgment-box">
+    <div class="judgment-headline">"프로덕션에 갈 코드인가?" — 이 한 질문이 핵심 분기점</div>
+    <div class="judgment-sub">YES → Vibe Coding 부적합 (Ch03~05 방법론으로) · NO → 위 5조건 매칭하면 Vibe Coding으로 빠르게</div>
+  </div>
+</div>
+
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="09-when-it-works.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">10 / 20</a></div>
+    <div class="nav-right"><a href="11-security-stats.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+
+<script>
+function navigateTo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() { window.location.href = url; }, 300);
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('09-when-it-works.html');
+  if (e.key === 'ArrowRight') navigateTo('11-security-stats.html');
+});
+</script>
+</body>
+</html>

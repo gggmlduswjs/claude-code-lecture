@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>"10x Engineer is Obsolete Metric"</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(124, 58, 237, 0.14), rgba(167, 139, 250, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 13px; color: #c4b5fd; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.attribution { font-size: 14px; color: #b1bac4; letter-spacing: 1px; margin-bottom: 28px; }
+.attribution strong { color: #c4b5fd; font-weight: 700; }
+.quote-box { width: 100%; max-width: 1100px; padding: 46px 60px; background: rgba(124, 58, 237, 0.06); border: 2px solid rgba(124, 58, 237, 0.35); border-radius: 24px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 28px; position: relative; }
+.quote-box::before { content: '“'; position: absolute; top: 4px; left: 28px; font-size: 100px; color: rgba(167, 139, 250, 0.3); font-family: Georgia, serif; line-height: 1; }
+.quote-box::after { content: '”'; position: absolute; bottom: -32px; right: 32px; font-size: 100px; color: rgba(167, 139, 250, 0.3); font-family: Georgia, serif; line-height: 1; }
+.quote { font-size: 26px; font-weight: 800; color: #f0f6fc; line-height: 1.5; }
+.quote .em { background: linear-gradient(135deg, #a78bfa, #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.quote .small { display: block; margin-top: 14px; font-size: 18px; color: #c9d1d9; font-weight: 600; }
+.takeaways { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+.takeaway { padding: 20px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 12px; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.takeaway:nth-child(1) { animation-delay: 0.4s; border-top: 3px solid #a78bfa; }
+.takeaway:nth-child(2) { animation-delay: 0.5s; border-top: 3px solid #c4b5fd; }
+.takeaway .word { font-size: 17px; font-weight: 900; color: #c4b5fd; margin-bottom: 6px; }
+.takeaway .desc { font-size: 13.5px; color: #c9d1d9; line-height: 1.6; }
+.takeaway .desc strong { color: #e6edf3; font-weight: 700; }
+.bottom-claim { padding: 16px 32px; background: rgba(139, 148, 158, 0.06); border: 1px solid rgba(139, 148, 158, 0.18); border-radius: 12px; font-size: 13.5px; color: #c9d1d9; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.65s; max-width: 1100px; }
+.bottom-claim strong { color: #a78bfa; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">10x Engineer is Obsolete</div>
+  <h1 class="title">"10x Engineer"는 폐기된 측정 단위</h1>
+  <div class="attribution">— 산출량 차이가 <strong>traditional productivity</strong>를 <em>meaningless</em>하게 만든다</div>
+  <div class="quote-box">
+    <div class="quote">Agentic engineer는 <span class="em">"10x ceiling"</span>을 훨씬 넘어 <span class="em">peaks(정점)</span>에 도달한다 —<br/><span class="small">fleets of agents를 지휘하며, Twitter clone을 <em>months</em>가 아닌 <em>hours</em> 안에.</span></div>
+  </div>
+  <div class="takeaways">
+    <div class="takeaway">
+      <div class="word">🚢 Fleets of Agents</div>
+      <div class="desc">한 명의 엔지니어가 여러 <strong>sub-agent · Skill · MCP</strong>를 동시에 지휘. 솔로 작업이 아닌 <strong>함대 사령관</strong>.</div>
+    </div>
+    <div class="takeaway">
+      <div class="word">⏱️ Hours rather than Months</div>
+      <div class="desc">시간 단위가 <strong>두세 차원 압축</strong>. 옛 "PR 머지 시간"으로는 측정 불가능 — 차원이 다른 산출량.</div>
+    </div>
+  </div>
+  <div class="bottom-claim">그래서 — 진지한 분과로 분리해서 부를 새 이름이 필요했다. 그 이름이 <strong>Agentic Engineering</strong>이다.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="04-floor-ceiling.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">05 / 75</a></div>
+    <div class="nav-right"><a href="06-karpathy-engineering.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('04-floor-ceiling.html');
+  if (e.key === 'ArrowRight') navigateTo('06-karpathy-engineering.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>에이전트 루프</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 48px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 44px; }
+
+.three-flow { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0; align-items: stretch; }
+.three-flow-stage { padding: 36px 28px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.three-flow-stage.s1 { animation-delay: 0.1s; border-top: 3px solid #38bdf8; }
+.three-flow-stage.s2 { animation-delay: 0.3s; border-top: 3px solid #7c3aed; }
+.three-flow-stage.s3 { animation-delay: 0.5s; border-top: 3px solid #34d399; }
+.three-flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 36px; color: rgba(139,148,158,0.4); font-weight: 900; padding: 0 8px; }
+.three-flow-label { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: 700; }
+.three-flow-stage.s1 .three-flow-label { color: #7dd3fc; }
+.three-flow-stage.s2 .three-flow-label { color: #a78bfa; }
+.three-flow-stage.s3 .three-flow-label { color: #6ee7b7; }
+.three-flow-icon { font-size: 44px; margin-bottom: 14px; }
+.three-flow-title { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 12px; line-height: 1.3; }
+.three-flow-desc { font-size: 14px; color: #b1bac4; line-height: 1.6; margin-bottom: 14px; }
+.three-flow-tools { font-family: 'Courier New', monospace; font-size: 12px; color: #8b949e; padding: 8px 12px; background: rgba(10,15,26,0.6); border-radius: 6px; }
+.callout { margin-top: 36px; padding: 18px 28px; background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.25); border-radius: 14px; max-width: 1080px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.7s ease forwards; }
+.callout strong { background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.callout-text { font-size: 15px; color: #c9d1d9; line-height: 1.6; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">에이전트 루프</h1>
+  <div class="subtitle">Claude가 작업을 처리하는 세 단계</div>
+  <div class="three-flow">
+    <div class="three-flow-stage s1">
+      <div class="three-flow-icon">🔍</div>
+      <div class="three-flow-label">Stage 1</div>
+      <div class="three-flow-title">컨텍스트 수집</div>
+      <div class="three-flow-desc">파일 탐색·읽기, 명령 출력 확인. 작업에 필요한 정보 모으기.</div>
+      <div class="three-flow-tools">Read · Glob · Grep · Bash</div>
+    </div>
+    <div class="three-flow-arrow">→</div>
+    <div class="three-flow-stage s2">
+      <div class="three-flow-icon">⚙️</div>
+      <div class="three-flow-label">Stage 2</div>
+      <div class="three-flow-title">작업 수행</div>
+      <div class="three-flow-desc">파일 편집, 명령 실행, 외부 호출. 의도된 변경 적용.</div>
+      <div class="three-flow-tools">Edit · Write · Bash · MCP</div>
+    </div>
+    <div class="three-flow-arrow">→</div>
+    <div class="three-flow-stage s3">
+      <div class="three-flow-icon">✅</div>
+      <div class="three-flow-label">Stage 3</div>
+      <div class="three-flow-title">결과 검증</div>
+      <div class="three-flow-desc">테스트, 빌드, 출력 확인. 의도대로 됐는지 점검.</div>
+      <div class="three-flow-tools">Bash · Read · Test</div>
+    </div>
+  </div>
+  <div class="callout">
+    <div class="callout-text">사용자도 이 루프의 일부 — 언제든 <strong>Esc로 중단</strong>해서 방향을 바꾸거나 추가 컨텍스트를 줄 수 있다.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="01-intro-hook.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">02 / 44</a></div>
+  <div class="nav-right"><a href="03-models-and-tools.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('01-intro-hook.html');
+  if (e.key === 'ArrowRight') navigateTo('03-models-and-tools.html');
+});
+</script></body></html>

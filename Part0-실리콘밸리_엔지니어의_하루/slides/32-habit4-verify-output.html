@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>습관 4 — AI 출력 검증</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.habit-label { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 38px; text-align: center; max-width: 960px; line-height: 1.5; }
+.grid-2x2 { width: 100%; max-width: 1080px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-card { padding: 26px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; min-height: 200px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.grid-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #34d399; }
+.grid-card:nth-child(2) { animation-delay: 0.2s; border-top: 3px solid #a78bfa; }
+.grid-card:nth-child(3) { animation-delay: 0.3s; border-top: 3px solid #38bdf8; }
+.grid-card:nth-child(4) { animation-delay: 0.4s; border-top: 3px solid #f97316; }
+.grid-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.grid-card .icon { font-size: 32px; }
+.grid-card .title-text { font-size: 18px; font-weight: 800; color: #e6edf3; line-height: 1.3; }
+.grid-card .desc { font-size: 13px; color: #c9d1d9; line-height: 1.6; flex: 1; }
+.grid-card .desc strong { color: #e6edf3; font-weight: 700; }
+.grid-card .watch { margin-top: 12px; padding: 8px 12px; background: rgba(236, 72, 153, 0.05); border-left: 2px solid rgba(236, 72, 153, 0.4); font-size: 12px; color: #c9d1d9; line-height: 1.5; }
+.grid-card .watch strong { color: #f9a8d4; }
+.closing-bar { margin-top: 28px; padding: 18px 36px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.6; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; max-width: 1020px; }
+.closing-bar strong { background: linear-gradient(135deg, #a78bfa, #7dd3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="habit-label">Habit 04 of 05</div>
+  <h1 class="title">AI 출력 검증 — 4가지 방법</h1>
+  <div class="subtitle">"테스트를 돌려라"는 원칙이 아니라, <strong>구체적인 검증 루프</strong>를 돕니다</div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="head">
+        <div class="icon">✅</div>
+        <div class="title-text">1. 테스트 실행</div>
+      </div>
+      <div class="desc">Claude에게 <strong>"코드에 대한 테스트를 만들고 실행해봐"</strong>. 실패하면 자동 수정. <strong>생성 → 테스트 → 수정</strong> 루프 자체가 검증.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head">
+        <div class="icon">🔍</div>
+        <div class="title-text">2. PR 검수</div>
+      </div>
+      <div class="desc">실제 변경된 코드를 PR로 확인. 한 줄씩 볼 필요는 없지만 <strong>삭제된 코드</strong>는 꼭 확인.</div>
+      <div class="watch"><strong>주의:</strong> AI가 "더 좋은 방법"이라며 기존 로직을 날려버리는 경우가 있음.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head">
+        <div class="icon">🔄</div>
+        <div class="title-text">3. CI/CD 체크 & 개선</div>
+      </div>
+      <div class="desc">테스트 통과했는데 버그가 있다면 테스트를 업데이트. CI가 fail 하면 <strong>그 패턴을 분석</strong>해서 다시 실수하지 않게 만듭니다.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head">
+        <div class="icon">🤖</div>
+        <div class="title-text">4. 서브 에이전트 리뷰</div>
+      </div>
+      <div class="desc">별도 세션으로 띄운 <strong>독립된 컨텍스트</strong>에서 리뷰. 같은 세션에선 자기 코드에 편향되어 문제를 잘 못 짚습니다.</div>
+      <div class="watch"><strong>효과:</strong> 엣지 케이스 · 컨벤션 위반 · 보안 허점을 훨씬 잘 잡아냄.</div>
+    </div>
+  </div>
+  <div class="closing-bar"><strong>검증에 시간을 아끼지 마세요</strong>. 코드 생성 5분 걸렸다고 리뷰도 5분이면 된다는 법은 없습니다.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="31-habit3-plan-review.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">32 / 43</a></div>
+    <div class="nav-right"><a href="33-habit5-memory.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('31-habit3-plan-review.html');
+  if (e.key === 'ArrowRight') navigateTo('33-habit5-memory.html');
+});
+</script>
+</body>
+</html>

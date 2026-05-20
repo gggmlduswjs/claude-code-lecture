@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Decoupling the Human Bottleneck</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 30px; text-align: center; max-width: 980px; line-height: 1.55; font-style: italic; }
+.subtitle strong { color: #fdba74; font-weight: 700; font-style: normal; }
+.compare-2col { width: 100%; max-width: 1080px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.col-card { padding: 26px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; opacity: 0; animation: cardAppear 0.5s ease forwards; min-height: 290px; display: flex; flex-direction: column; }
+.col-card.agent { animation-delay: 0.1s; border-top: 3px solid #fb923c; }
+.col-card.human { animation-delay: 0.25s; border-top: 3px solid #f97316; }
+.col-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.col-card .icon { font-size: 30px; }
+.col-card .who { font-size: 11px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; color: #fb923c; }
+.col-card .layer { font-size: 19px; font-weight: 900; color: #e6edf3; }
+.col-card .definition { font-size: 13px; color: #b1bac4; line-height: 1.55; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed rgba(249, 115, 22, 0.2); }
+.col-card .definition strong { color: #c9d1d9; font-weight: 700; }
+.col-card ul { list-style: none; padding: 0; }
+.col-card li { font-size: 13px; color: #c9d1d9; line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 6px; }
+.col-card li::before { content: '•'; position: absolute; left: 0; color: #fb923c; font-weight: 700; font-size: 16px; line-height: 1; }
+.col-card li strong { color: #e6edf3; font-weight: 700; }
+.col-card.human li em { font-style: italic; color: #fdba74; }
+.loop-note { margin-top: 28px; padding: 16px 32px; background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.4); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.5s; max-width: 1080px; }
+.loop-note .head-line { font-size: 12px; color: #fb923c; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-align: center; margin-bottom: 6px; }
+.loop-note .text { font-size: 15px; color: #f0f6fc; text-align: center; line-height: 1.55; }
+.loop-note .text strong { color: #fdba74; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">The Ultimate Objective</div>
+  <h1 class="title">Decoupling the Human Bottleneck</h1>
+  <div class="subtitle">"agent handles all <strong>middle-tier orchestrations</strong>, leaving the human to focus on <strong>high-level architectural decisions</strong>."</div>
+  <div class="compare-2col">
+    <div class="col-card agent">
+      <div class="head"><div class="icon">🤖</div><div><div class="who">Agent's Layer</div><div class="layer">Middle-Tier Orchestration</div></div></div>
+      <div class="definition">"API 호출 → 결과 → 다음 호출 → 변환 → 저장" — <strong>이미 어떻게 해야 하는지 명확한 작업의 연쇄</strong>. 결정 없이 <strong>execution만</strong> 필요한 모든 일.</div>
+      <ul>
+        <li>지치지 않음</li>
+        <li>빠르고 일관됨</li>
+        <li>병렬 처리 가능</li>
+        <li>사람이 손으로 하면 <strong>시간 낭비</strong></li>
+      </ul>
+    </div>
+    <div class="col-card human">
+      <div class="head"><div class="icon">🧑‍🏫</div><div><div class="who">Human's Layer</div><div class="layer">High-Level Architectural</div></div></div>
+      <div class="definition">middle-tier에서 빠져나와서 — <strong>decoupling</strong>. 사람의 시간은 결정·trade-off·방향성에만 쓴다.</div>
+      <ul>
+        <li><em>"이 시스템을 어떤 방향으로 진화시킬 것인가?"</em></li>
+        <li><em>"어떤 trade-off를 받아들일 것인가?"</em></li>
+        <li><em>"어떤 friction에 다음 다리를 놓을 것인가?"</em></li>
+        <li>답을 다시 <strong>Skill / CLI / MCP로 codify</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="loop-note">
+    <div class="head-line">The Loop Closes</div>
+    <div class="text">사람이 high-level 결정 → <strong>agent가 실행할 수 있는 형태로 codify</strong> → agent가 middle-tier 처리 → 사람이 다음 결정. <strong>루프가 닫힌다.</strong></div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="41-skill-automation-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">42 / 75</a></div>
+    <div class="nav-right"><a href="43-pillar3-summary.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('41-skill-automation-patterns.html');
+  if (e.key === 'ArrowRight') navigateTo('43-pillar3-summary.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Compound Engineering 공식 정의 — 3 키워드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; margin-bottom: 22px; text-align: center; max-width: 1080px; line-height: 1.55; font-style: italic; }
+.subtitle strong { color: #c9d1d9; font-style: normal; font-weight: 700; }
+.diagram { width: 100%; max-width: 1100px; padding: 26px 28px; background: rgba(251, 191, 36, 0.05); border: 2px solid rgba(251, 191, 36, 0.28); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.1s; }
+.diagram .label { font-size: 12px; color: #fde68a; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+.flow-row { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; margin-bottom: 12px; }
+.flow-cell { padding: 16px 14px; background: rgba(10, 15, 26, 0.6); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 12px; text-align: center; }
+.flow-cell.input { border-color: rgba(139, 148, 158, 0.25); }
+.flow-cell.middle { border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.08); }
+.flow-cell.output { border-color: rgba(249, 115, 22, 0.45); background: rgba(249, 115, 22, 0.06); }
+.flow-cell .key { font-size: 10px; color: #fde68a; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.flow-cell.input .key { color: #b1bac4; }
+.flow-cell.output .key { color: #fdba74; }
+.flow-cell .name { font-size: 15px; font-weight: 900; color: #e6edf3; margin-bottom: 6px; line-height: 1.3; }
+.flow-cell .sub { font-size: 11.5px; color: #b1bac4; line-height: 1.5; }
+.flow-arr { display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fbbf24; font-weight: 900; }
+.input-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.in-item { padding: 8px 10px; background: rgba(139, 148, 158, 0.06); border: 1px solid rgba(139, 148, 158, 0.18); border-radius: 8px; text-align: center; font-size: 11px; color: #c9d1d9; font-weight: 700; }
+.in-item:nth-child(1) { border-top: 2px solid #38bdf8; }
+.in-item:nth-child(2) { border-top: 2px solid #34d399; }
+.in-item:nth-child(3) { border-top: 2px solid #a78bfa; }
+.quote-band { width: 100%; max-width: 1100px; margin-top: 18px; padding: 16px 28px; background: rgba(251, 191, 36, 0.04); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 12px; text-align: center; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; }
+.quote-band .q { font-size: 13.5px; color: #fef3c7; line-height: 1.6; font-style: italic; }
+.quote-band .q strong { color: #fde68a; font-weight: 800; }
+.poly-note { margin-top: 12px; padding: 12px 24px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 10px; font-size: 12.5px; color: #c9d1d9; text-align: center; max-width: 1100px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.7s; }
+.poly-note strong { color: #a78bfa; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Pillar V · 공식 정의</div>
+  <h1 class="title">Compound Engineering — 3 키워드</h1>
+  <div class="subtitle">"the cumulative effect realized when individual optimizations are shared across a team and integrated into a central <strong>Working Library</strong>"</div>
+  <div class="diagram">
+    <div class="label">정의 분해 — 산출물 → 공유 → 누적</div>
+    <div class="flow-row">
+      <div class="flow-cell input">
+        <div class="key">키워드 1 · 산출물</div>
+        <div class="name">개별 최적화</div>
+        <div class="sub">Pillar I~IV에서 만든 것들</div>
+        <div class="input-list">
+          <div class="in-item">Skills</div>
+          <div class="in-item">MCPs</div>
+          <div class="in-item">Code Standards</div>
+        </div>
+      </div>
+      <div class="flow-arr">→</div>
+      <div class="flow-cell middle">
+        <div class="key">키워드 2 · 공유</div>
+        <div class="name">Working Library</div>
+        <div class="sub">대문자 W·L<br/>개인 도구함 → <strong style="color:#fde68a">팀 자본</strong>으로 격상</div>
+      </div>
+      <div class="flow-arr">→</div>
+      <div class="flow-cell output">
+        <div class="key">키워드 3 · 시간</div>
+        <div class="name">누적 효과</div>
+        <div class="sub">매주 +1 · 1년 후 50+<br/>조합 가능성 <strong style="color:#fdba74">N²</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="quote-band">
+    <div class="q">"Compound Engineering is the cumulative effect realized when individual optimizations—<strong>skills, MCPs, and code standards</strong>—are shared across a team and integrated into a central <strong>'Working Library.'</strong>"</div>
+  </div>
+  <div class="poly-note">⚡ 누적은 <strong>polynomial</strong>(다항식) — 도구가 N개면 조합 가능성은 N²에 가깝게 증가. 1년 후 라이브러리의 표현력은 1년 전과 비교 불가능</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="56-dan-schipper-origin.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">57 / 75</a></div>
+    <div class="nav-right"><a href="58-pillar4x5-synergy.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('56-dan-schipper-origin.html');
+  if (e.key === 'ArrowRight') navigateTo('58-pillar4x5-synergy.html');
+});
+</script>
+</body>
+</html>

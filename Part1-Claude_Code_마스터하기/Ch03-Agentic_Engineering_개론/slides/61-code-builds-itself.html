@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Code Begins to Build Itself — 임계점</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(circle, rgba(251, 191, 36, 0.14), rgba(249, 115, 22, 0.08) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.attribution { font-size: 13px; color: #b1bac4; letter-spacing: 1px; margin-bottom: 22px; }
+.attribution strong { color: #fde68a; font-weight: 700; }
+.quote-box { width: 100%; max-width: 1120px; padding: 40px 56px; background: rgba(251, 191, 36, 0.05); border: 2px solid rgba(251, 191, 36, 0.35); border-radius: 24px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 24px; position: relative; }
+.quote-box::before { content: '\201C'; position: absolute; top: 4px; left: 28px; font-size: 100px; color: rgba(251, 191, 36, 0.32); font-family: Georgia, serif; line-height: 1; }
+.quote-box::after { content: '\201D'; position: absolute; bottom: -32px; right: 32px; font-size: 100px; color: rgba(251, 191, 36, 0.32); font-family: Georgia, serif; line-height: 1; }
+.quote { font-size: 26px; font-weight: 800; color: #fef3c7; line-height: 1.45; margin-bottom: 12px; }
+.quote .em { background: linear-gradient(135deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.quote-trans { font-size: 14px; color: #c9d1d9; line-height: 1.55; font-weight: 500; max-width: 920px; margin: 0 auto; font-style: italic; }
+.guardrails-row { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.4s; }
+.guardrail { padding: 12px 14px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 10px; text-align: center; }
+.guardrail:nth-child(1) { border-top: 2px solid #7dd3fc; }
+.guardrail:nth-child(2) { border-top: 2px solid #34d399; }
+.guardrail:nth-child(3) { border-top: 2px solid #a78bfa; }
+.guardrail:nth-child(4) { border-top: 2px solid #ec4899; }
+.guardrail .pillar { font-size: 10px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.guardrail .name { font-size: 13px; font-weight: 800; color: #e6edf3; margin-bottom: 2px; }
+.guardrail .sub { font-size: 10.5px; color: #8b949e; line-height: 1.4; }
+.bottom-row { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; }
+.bottom-card { padding: 14px 22px; border-radius: 12px; }
+.bottom-card.left { background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.25); }
+.bottom-card.right { background: rgba(249, 115, 22, 0.06); border: 1px solid rgba(249, 115, 22, 0.3); }
+.bottom-card .blabel { font-size: 10px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.bottom-card.left .blabel { color: #a78bfa; }
+.bottom-card.right .blabel { color: #fdba74; }
+.bottom-card .btext { font-size: 13px; color: #c9d1d9; line-height: 1.6; }
+.bottom-card .btext strong { color: #e6edf3; font-weight: 700; }
+.bottom-card.right .btext strong { color: #fed7aa; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">⭐ Pillar V의 종착점</div>
+  <div class="attribution">— Code Begins to Build Itself <strong>within the Established Guardrails</strong></div>
+  <div class="quote-box">
+    <div class="quote">Over time, this compounding knowledge enables a state where<br/>the <span class="em">code effectively begins to build itself</span><br/>through <span class="em">collective, automated intelligence</span>.</div>
+    <div class="quote-trans">시간이 지남에 따라 — 이 compound 지식은 코드가 사실상 자기 자신을 만들기 시작하는 상태로 진입한다. <strong style="color:#fde68a;font-style:normal">collective(집합적), automated(자동화된) intelligence</strong>를 통해서.</div>
+  </div>
+  <div class="guardrails-row">
+    <div class="guardrail">
+      <div class="pillar">Pillar I</div>
+      <div class="name">Context</div>
+      <div class="sub">CLAUDE.md · knowledge graph</div>
+    </div>
+    <div class="guardrail">
+      <div class="pillar">Pillar II</div>
+      <div class="name">Validation</div>
+      <div class="sub">closed-loop 인프라</div>
+    </div>
+    <div class="guardrail">
+      <div class="pillar">Pillar III</div>
+      <div class="name">Tooling</div>
+      <div class="sub">표준 CLI · Skill · MCP</div>
+    </div>
+    <div class="guardrail">
+      <div class="pillar">Pillar IV</div>
+      <div class="name">Codebase</div>
+      <div class="sub">Golden Rules · 패턴 정합</div>
+    </div>
+  </div>
+  <div class="bottom-row">
+    <div class="bottom-card left">
+      <div class="blabel">Collective Intelligence</div>
+      <div class="btext">개인의 지능이 아니라 — <strong>팀이 누적해온 라이브러리의 지능</strong>. agent가 라이브러리를 retrieve해서 적용할 때, 사실상 팀 전체의 누적 지식이 동원된다.</div>
+    </div>
+    <div class="bottom-card right">
+      <div class="blabel">90 / 10 Rule</div>
+      <div class="btext">새 기능의 <strong>90% 이상</strong>이 기존 자산의 조합으로 해결. 새로 작성하는 코드는 10% 미만. 엔지니어는 <strong>조합을 설계</strong>한다 — 처음부터 코딩하지 않는다.</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="60-working-library.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">61 / 75</a></div>
+    <div class="nav-right"><a href="62-pillar5-summary.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('60-working-library.html');
+  if (e.key === 'ArrowRight') navigateTo('62-pillar5-summary.html');
+});
+</script>
+</body>
+</html>

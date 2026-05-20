@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>12요소 → 최소 5요소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 15px; color: #b1bac4; text-align: center; margin-bottom: 30px; }
+.two-col { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: stretch; }
+.left-col { padding: 24px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; border-top: 3px solid #b1bac4; opacity: 0; animation: cardAppear 0.5s ease 0.1s forwards; }
+.left-col .header { font-size: 13px; color: #b1bac4; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.left-col .name { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 16px; }
+.twelve-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 14px; }
+.twelve-item { font-size: 13px; color: #c9d1d9; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+.twelve-item .num { font-size: 11px; color: #b1bac4; font-weight: 800; min-width: 18px; }
+.right-col { display: flex; flex-direction: column; gap: 12px; }
+.right-header { font-size: 13px; color: #a78bfa; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+.right-name { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+.step-item { display: flex; align-items: center; gap: 16px; padding: 14px 18px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 12px; opacity: 0; animation: stepIn 0.45s ease forwards; }
+.step-item:nth-child(3) { animation-delay: 0.15s; }
+.step-item:nth-child(4) { animation-delay: 0.25s; }
+.step-item:nth-child(5) { animation-delay: 0.35s; }
+.step-item:nth-child(6) { animation-delay: 0.45s; }
+.step-item:nth-child(7) { animation-delay: 0.55s; }
+.step-num { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #7c3aed, #38bdf8); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; }
+.step-body { flex: 1; }
+.step-name { font-size: 14px; font-weight: 800; color: #e6edf3; margin-bottom: 2px; }
+.step-desc { font-size: 12px; color: #b1bac4; line-height: 1.45; }
+.bottom-note { margin-top: 24px; padding: 16px 28px; background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; max-width: 1000px; text-align: center; font-size: 14px; color: #c9d1d9; line-height: 1.6; opacity: 0; animation: cardAppear 0.6s ease 0.7s forwards; }
+.bottom-note strong { color: #7dd3fc; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes stepIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">12요소 → 최소 5요소</h1>
+  <div class="subtitle">처음부터 12개를 다 만들지 마라. 5개로 시작해서 점진적으로 키워라.</div>
+  <div class="two-col">
+    <div class="left-col">
+      <div class="header">FULL SET — 제품급</div>
+      <div class="name">12 Components</div>
+      <div class="twelve-grid">
+        <div class="twelve-item"><span class="num">01</span>목표·성공기준</div>
+        <div class="twelve-item"><span class="num">02</span>오케스트레이션 루프</div>
+        <div class="twelve-item"><span class="num">03</span>도구 레이어</div>
+        <div class="twelve-item"><span class="num">04</span>메모리</div>
+        <div class="twelve-item"><span class="num">05</span>컨텍스트 관리</div>
+        <div class="twelve-item"><span class="num">06</span>프롬프트 구성</div>
+        <div class="twelve-item"><span class="num">07</span>출력 파싱</div>
+        <div class="twelve-item"><span class="num">08</span>상태·체크포인트</div>
+        <div class="twelve-item"><span class="num">09</span>오류 처리</div>
+        <div class="twelve-item"><span class="num">10</span>가드레일·권한</div>
+        <div class="twelve-item"><span class="num">11</span>검증 루프</div>
+        <div class="twelve-item"><span class="num">12</span>관측성·분업</div>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="right-header">MINIMUM — 시작점</div>
+      <div class="right-name">5 Essentials</div>
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body"><div class="step-name">목표 문서</div><div class="step-desc">무엇을 해야/하지 말아야 하는지</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body"><div class="step-name">컨텍스트 지도</div><div class="step-desc">필요한 문서·데이터의 위치</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body"><div class="step-name">도구 목록</div><div class="step-desc">사용 가능한 도구와 금지된 도구</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body"><div class="step-name">검증 방법</div><div class="step-desc">결과를 확인할 테스트·체크리스트</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body"><div class="step-name">기록 방식</div><div class="step-desc">다음 세션에 넘길 메모</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note">좋은 하네스의 공통점 = <strong>최소주의.</strong> CLAUDE.md 30~80줄, Rules 3~8개, Skills 5~10개. "이건 정말 중요한가?" 통과한 것만.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="08-four-axes.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">09 / 24</a></div>
+    <div class="nav-right"><a href="10-claude-5-layers.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('08-four-axes.html');
+  if (e.key === 'ArrowRight') navigateTo('10-claude-5-layers.html');
+});
+</script>
+</body>
+</html>

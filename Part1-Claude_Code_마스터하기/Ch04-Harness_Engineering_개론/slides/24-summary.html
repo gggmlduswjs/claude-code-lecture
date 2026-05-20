@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Ch04 마무리 — 모델 밖으로 무엇을 꺼낼까</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(124, 58, 237, 0.18), rgba(56, 189, 248, 0.08) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.title.summary-title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 32px; line-height: 1.3; }
+.summary-grid { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+.summary-card { padding: 18px 18px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 14px; min-height: 130px; display: flex; flex-direction: column; align-items: flex-start; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.summary-card:nth-child(1) { animation-delay: 0.08s; border-left: 3px solid #7c3aed; }
+.summary-card:nth-child(2) { animation-delay: 0.16s; border-left: 3px solid #38bdf8; }
+.summary-card:nth-child(3) { animation-delay: 0.24s; border-left: 3px solid #34d399; }
+.summary-card:nth-child(4) { animation-delay: 0.32s; border-left: 3px solid #f97316; }
+.summary-card:nth-child(5) { animation-delay: 0.40s; border-left: 3px solid #ec4899; }
+.summary-card:nth-child(6) { animation-delay: 0.48s; border-left: 3px solid #fbbf24; }
+.summary-card:nth-child(7) { animation-delay: 0.56s; border-left: 3px solid #a78bfa; }
+.summary-card:nth-child(8) { animation-delay: 0.64s; border-left: 3px solid #e879f9; }
+.summary-card .num { font-size: 11px; font-weight: 800; color: #b1bac4; letter-spacing: 1.5px; margin-bottom: 6px; }
+.summary-card .point { font-size: 15px; font-weight: 800; color: #e6edf3; margin-bottom: 5px; line-height: 1.3; }
+.summary-card .detail { font-size: 12px; color: #b1bac4; line-height: 1.5; }
+.conclusion-box { width: 100%; max-width: 1080px; padding: 28px 40px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(236, 72, 153, 0.08)); border: 1px solid rgba(124, 58, 237, 0.35); border-radius: 20px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease 0.75s forwards; }
+.conclusion-box .headline { font-size: 28px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #f9a8d4, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; line-height: 1.3; }
+.conclusion-box .sub { font-size: 15px; color: #c9d1d9; line-height: 1.6; }
+.next-chapter { margin-top: 20px; padding: 14px 28px; background: rgba(139, 148, 158, 0.04); border: 1px dashed rgba(139, 148, 158, 0.3); border-radius: 12px; max-width: 980px; text-align: center; font-size: 13.5px; color: #b1bac4; line-height: 1.5; opacity: 0; animation: cardAppear 0.6s ease 0.9s forwards; }
+.next-chapter strong { color: #e6edf3; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title summary-title">Ch04 마무리 — 오늘 배운 것</h1>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="num">01 · 본질</div>
+      <div class="point">OS 없는 CPU</div>
+      <div class="detail">원시 LLM은 계산만. 하네스가 OS다.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">02 · 정의</div>
+      <div class="point">Agent = Model + Harness</div>
+      <div class="detail">우리가 통제할 수 있는 변수는 하네스.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">03 · 프레임</div>
+      <div class="point">4축 · 12요소 · 5요소</div>
+      <div class="detail">Memory · Skills · Protocols · Mediating.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">04 · 구현</div>
+      <div class="point">Claude Code 5계층</div>
+      <div class="detail">CLAUDE.md · Skills · Hooks · Subagents · Permissions.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">05 · 패턴</div>
+      <div class="point">12가지 실전 패턴</div>
+      <div class="detail">1·2·10·12만으로도 60% 효과.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">06 · 함정</div>
+      <div class="point">3가지 역발상</div>
+      <div class="detail">도구 폭발 · ReAct 환상 · 허용적 권한.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">07 · 신뢰</div>
+      <div class="point">Generator-Evaluator + allow/ask/deny</div>
+      <div class="detail">자기평가 편향 깨기 + 위험 게이트.</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">08 · 실행</div>
+      <div class="point">점진적 도입 6주</div>
+      <div class="detail">CLAUDE.md → Skill → Hook → Permission → Subagent.</div>
+    </div>
+  </div>
+  <div class="conclusion-box">
+    <div class="headline">"모델 밖으로 무엇을 꺼내 구조화할까"</div>
+    <div class="sub">이 한 문장이 하네스 엔지니어링 전체를 관통한다. 모델을 더 똑똑하게 만들려 하지 마라.<br/>모델이 혼자 떠안지 않아도 되는 기억·절차·규칙·통제 장치를 <strong>바깥에 잘 정리해 두라.</strong></div>
+  </div>
+  <div class="next-chapter">▸ <strong>Next · Ch05 실전 바이브코딩 테크닉</strong> — 이번 챕터에서 만든 5계층 위에서, CLAUDE.md 심화 전략 · AI-Ready 코드베이스 · TDD/SDD · AI 시대 코드 리뷰까지.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="23-adoption-roadmap.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">24 / 24</a></div>
+    <div class="nav-right"><span class="nav-disabled">다음 &rarr;</span></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) { if (e.key === 'ArrowLeft') navigateTo('23-adoption-roadmap.html'); });
+</script>
+</body>
+</html>

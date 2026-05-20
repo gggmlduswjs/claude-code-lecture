@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Ch03 종합 — 5 Pillars + 회고 + Ch04 예고</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(circle, rgba(124, 58, 237, 0.18), rgba(236, 72, 153, 0.1) 30%, rgba(249, 115, 22, 0.06) 55%, transparent 75%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 34px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.outro-tag { font-size: 13px; color: #f0abfc; letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.title { font-size: 46px; font-weight: 900; background: linear-gradient(135deg, #7c3aed 0%, #ec4899 35%, #f97316 65%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 10px; line-height: 1.2; }
+.subtitle { font-size: 15px; color: #c9d1d9; margin-bottom: 22px; text-align: center; line-height: 1.55; max-width: 980px; }
+.subtitle strong { color: #e6edf3; font-weight: 700; }
+.pillars-grid { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
+.pillar-card { padding: 14px 12px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 12px; min-height: 130px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.pillar-card:nth-child(1) { animation-delay: 0.05s; border-top: 3px solid #7c3aed; }
+.pillar-card:nth-child(2) { animation-delay: 0.10s; border-top: 3px solid #ec4899; }
+.pillar-card:nth-child(3) { animation-delay: 0.15s; border-top: 3px solid #f97316; }
+.pillar-card:nth-child(4) { animation-delay: 0.20s; border-top: 3px solid #fbbf24; }
+.pillar-card:nth-child(5) { animation-delay: 0.25s; border-top: 3px solid #a78bfa; }
+.pillar-card .roman { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px; }
+.pillar-card:nth-child(1) .roman { color: #a78bfa; }
+.pillar-card:nth-child(2) .roman { color: #f9a8d4; }
+.pillar-card:nth-child(3) .roman { color: #fdba74; }
+.pillar-card:nth-child(4) .roman { color: #fde68a; }
+.pillar-card:nth-child(5) .roman { color: #c4b5fd; }
+.pillar-card .name { font-size: 14px; font-weight: 900; color: #e6edf3; margin-bottom: 6px; line-height: 1.25; }
+.pillar-card .one-line { font-size: 11px; color: #b1bac4; line-height: 1.5; }
+.adoption-box { width: 100%; max-width: 1120px; padding: 18px 32px; background: rgba(10, 15, 26, 0.55); border: 1px solid rgba(236, 72, 153, 0.28); border-radius: 14px; text-align: center; margin-bottom: 12px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.35s; }
+.adoption-box .label { font-size: 11px; color: #f9a8d4; letter-spacing: 2.5px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+.adoption-box .quote { font-size: 17px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #f9a8d4, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.35; margin-bottom: 6px; }
+.adoption-box .ko { font-size: 13px; color: #c9d1d9; line-height: 1.55; }
+.adoption-box .ko strong { color: #f0abfc; font-weight: 700; }
+.next-box { width: 100%; max-width: 1120px; padding: 20px 32px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.14), rgba(236, 72, 153, 0.09), rgba(249, 115, 22, 0.06)); border: 1px solid rgba(124, 58, 237, 0.32); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.45s; }
+.next-box .next-tag { font-size: 11px; color: #f0abfc; letter-spacing: 3px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; text-align: center; }
+.next-box .headline { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #f9a8d4, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; line-height: 1.3; text-align: center; }
+.next-box .sub { font-size: 13px; color: #c9d1d9; line-height: 1.6; text-align: center; margin-bottom: 12px; }
+.next-box .sub strong { color: #e6edf3; font-weight: 700; }
+.next-topics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.next-topic { padding: 8px 10px; background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 8px; font-size: 11px; color: #c9d1d9; text-align: center; line-height: 1.45; }
+.next-topic strong { color: #a78bfa; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="outro-tag">Ch03 · Complete · 96분</div>
+  <h1 class="title">Agentic Engineering — 5 Pillars 회고</h1>
+  <div class="subtitle">이론 7개 클립 + 손으로 한 미니실습 — <strong>4개 Pillar는 직접 적용</strong>해봤고, Pillar V는 다음 챕터로 자연스럽게 이어집니다</div>
+  <div class="pillars-grid">
+    <div class="pillar-card">
+      <div class="roman">PILLAR I</div>
+      <div class="name">Context Engineering</div>
+      <div class="one-line">Second Brain · hierarchical indexing · fresh + condensed</div>
+    </div>
+    <div class="pillar-card">
+      <div class="roman">PILLAR II</div>
+      <div class="name">Agentic Validation</div>
+      <div class="one-line">Self-correction loop · 스택 매트릭스 · log-based</div>
+    </div>
+    <div class="pillar-card">
+      <div class="roman">PILLAR III</div>
+      <div class="name">Agentic Tooling</div>
+      <div class="one-line">Stalls → bridges · CLI-first · Skill 자동화</div>
+    </div>
+    <div class="pillar-card">
+      <div class="roman">PILLAR IV</div>
+      <div class="name">Agentic Codebase</div>
+      <div class="one-line">⭐ Consistency over DRY · machine-readable · 50% 룰 차단</div>
+    </div>
+    <div class="pillar-card">
+      <div class="roman">PILLAR V</div>
+      <div class="name">Compound Engineering</div>
+      <div class="one-line">Working Library · IV × V synergy · 팀 차원 → Ch04</div>
+    </div>
+  </div>
+  <div class="adoption-box">
+    <div class="label">Closing Message</div>
+    <div class="quote">"The transition is inevitable; the only question is the speed of adoption."</div>
+    <div class="ko">전환은 불가피합니다 — 유일한 변수는 <strong>adoption 속도</strong>뿐. CLAUDE.md 한 개, Skill 한 개, self-correction loop 한 번 — 여러분은 이미 첫 발을 디뎠습니다.</div>
+  </div>
+  <div class="next-box">
+    <div class="next-tag">Next · Ch04</div>
+    <div class="headline">Harness Engineering — 4 Pillar를 영구화하기</div>
+    <div class="sub">한 명의 실천을 <strong>팀 차원의 Working Library</strong>로 격상 — "매번 똑같이 시키지 않아도 잘 동작하게"</div>
+    <div class="next-topics">
+      <div class="next-topic"><strong>CLAUDE.md</strong><br/>팀 표준화</div>
+      <div class="next-topic"><strong>Hooks</strong><br/>가드레일</div>
+      <div class="next-topic"><strong>5계층 하네스</strong><br/>점진 도입</div>
+      <div class="next-topic"><strong>Working Library</strong><br/>cadence 설계</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="74-lab-flow.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">75 / 75</a></div>
+    <div class="nav-right"><span class="nav-disabled">다음 &rarr;</span></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('74-lab-flow.html');
+});
+</script>
+</body>
+</html>

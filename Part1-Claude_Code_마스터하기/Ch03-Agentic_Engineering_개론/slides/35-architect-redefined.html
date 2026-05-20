@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Architect 역할의 재정의</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 34px; text-align: center; max-width: 920px; line-height: 1.5; }
+.subtitle strong { color: #fdba74; font-weight: 700; }
+.compare-2col { width: 100%; max-width: 1080px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
+.col-card { padding: 30px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.col-card.old { animation-delay: 0.1s; border-top: 3px solid #6b7280; }
+.col-card.new { animation-delay: 0.3s; border-top: 3px solid #f97316; }
+.col-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.col-card .icon { font-size: 32px; }
+.col-card .label { font-size: 11px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.col-card.old .label { color: #9ca3af; }
+.col-card.new .label { color: #fdba74; }
+.col-card .title-text { font-size: 19px; font-weight: 800; color: #e6edf3; line-height: 1.3; }
+.col-card ul { list-style: none; padding: 0; }
+.col-card li { font-size: 14px; color: #c9d1d9; line-height: 1.7; padding-left: 18px; position: relative; margin-bottom: 6px; }
+.col-card.old li::before { content: '✕'; position: absolute; left: 0; color: #6b7280; font-weight: 700; }
+.col-card.new li::before { content: '✓'; position: absolute; left: 0; color: #fdba74; font-weight: 700; }
+.col-card li strong { color: #e6edf3; font-weight: 700; }
+.col-card.new li strong { color: #fdba74; }
+.arrow-cell { display: flex; align-items: center; justify-content: center; font-size: 32px; color: #f97316; font-weight: 900; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.2s; }
+.tagline { margin-top: 32px; padding: 18px 36px; background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.4); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.5s; max-width: 980px; }
+.tagline .text { font-size: 20px; font-weight: 800; color: #f0f6fc; text-align: center; line-height: 1.5; }
+.tagline .text strong { color: #fdba74; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Architect Redefined</div>
+  <h1 class="title">Architect 역할의 재정의</h1>
+  <div class="subtitle"><strong>primary task</strong> — stall을 식별하고, agent가 건너야 할 다리를 건설하는 것</div>
+  <div class="compare-2col">
+    <div class="col-card old">
+      <div class="head"><div class="icon">🏗️</div><div><div class="label">옛 Architect</div><div class="title-text">강을 건너는 사람</div></div></div>
+      <ul>
+        <li>코드 리뷰</li>
+        <li>기술 부채 분류</li>
+        <li>채용 결정</li>
+        <li>매 stall마다 <strong>본인이 직접 처리</strong></li>
+      </ul>
+    </div>
+    <div class="arrow-cell">→</div>
+    <div class="col-card new">
+      <div class="head"><div class="icon">🌉</div><div><div class="label">새 Architect</div><div class="title-text">다리를 만드는 사람</div></div></div>
+      <ul>
+        <li><strong>Stall 식별</strong> — 반복되는 friction 추적</li>
+        <li><strong>Bridge 건설</strong> — CLI · Skill · MCP 제작</li>
+        <li><strong>Bridge codify</strong> — 팀 자산으로 전환</li>
+        <li>friction reduction이 <strong>일상 업무</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tagline"><div class="text">Architect = "강을 건너는 사람"이 아니라, <strong>"다리를 만드는 사람"</strong></div></div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="34-friction-definition.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">35 / 75</a></div>
+    <div class="nav-right"><a href="36-tooling-4-categories.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('34-friction-definition.html');
+  if (e.key === 'ArrowRight') navigateTo('36-tooling-4-categories.html');
+});
+</script>
+</body>
+</html>

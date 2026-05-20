@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Clip 06 요약 · 5 Pillars의 위상</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(circle, rgba(251, 191, 36, 0.16), rgba(249, 115, 22, 0.08) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 34px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.outro-tag { font-size: 13px; color: #fde68a; letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.title { font-size: 44px; font-weight: 900; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 10px; line-height: 1.22; }
+.subtitle { font-size: 15px; color: #c9d1d9; margin-bottom: 22px; text-align: center; line-height: 1.5; max-width: 980px; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.section-label { width: 100%; max-width: 1120px; font-size: 11px; color: #fde68a; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; text-align: left; }
+.summary-grid { width: 100%; max-width: 1120px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }
+.summary-card { padding: 14px 12px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 11px; min-height: 110px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.summary-card:nth-child(1) { animation-delay: 0.05s; border-left: 3px solid #fbbf24; }
+.summary-card:nth-child(2) { animation-delay: 0.12s; border-left: 3px solid #f59e0b; }
+.summary-card:nth-child(3) { animation-delay: 0.19s; border-left: 3px solid #fdba74; }
+.summary-card:nth-child(4) { animation-delay: 0.26s; border-left: 3px solid #ec4899; }
+.summary-card:nth-child(5) { animation-delay: 0.33s; border-left: 3px solid #f97316; }
+.summary-card .clip { font-size: 9px; font-weight: 700; color: #b1bac4; letter-spacing: 1.5px; margin-bottom: 5px; }
+.summary-card .point { font-size: 12.5px; font-weight: 800; color: #e6edf3; margin-bottom: 4px; line-height: 1.3; }
+.summary-card .detail { font-size: 10.5px; color: #b1bac4; line-height: 1.45; }
+.pillars-section { width: 100%; max-width: 1120px; padding: 18px 22px; background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.25); border-radius: 14px; margin-bottom: 16px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.45s; }
+.pillars-section .ph { font-size: 11px; color: #a78bfa; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
+.pillars-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.pillar-cell { padding: 10px 8px; background: rgba(10, 15, 26, 0.5); border-radius: 10px; text-align: center; border: 1px solid rgba(139, 148, 158, 0.15); }
+.pillar-cell:nth-child(1) { border-top: 2px solid #7dd3fc; }
+.pillar-cell:nth-child(2) { border-top: 2px solid #34d399; }
+.pillar-cell:nth-child(3) { border-top: 2px solid #a78bfa; }
+.pillar-cell:nth-child(4) { border-top: 2px solid #ec4899; }
+.pillar-cell:nth-child(5) { border-top: 2px solid #fbbf24; background: rgba(251, 191, 36, 0.08); }
+.pillar-cell .pn { font-size: 9px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 3px; }
+.pillar-cell .pname { font-size: 12.5px; font-weight: 800; color: #e6edf3; }
+.pillar-cell:nth-child(5) .pname { color: #fde68a; }
+.conclusion-box { width: 100%; max-width: 1120px; padding: 18px 30px; background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(249, 115, 22, 0.08)); border: 1px solid rgba(251, 191, 36, 0.32); border-radius: 16px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.6s; }
+.conclusion-box .next-tag { font-size: 10px; color: #fde68a; letter-spacing: 3px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+.conclusion-box .headline { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #fbbf24, #f97316, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; line-height: 1.3; }
+.conclusion-box .sub { font-size: 12.5px; color: #c9d1d9; line-height: 1.55; }
+.conclusion-box .sub strong { color: #fef3c7; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="outro-tag">Clip 06 · Recap</div>
+  <h1 class="title">Pillar V — 5개 핵심 정리</h1>
+  <div class="subtitle">Compound Engineering — <strong>polynomial productivity</strong>를 만드는 마지막 기둥</div>
+  <div class="section-label">Pillar V · 5 Takeaways</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="clip">TAKEAWAY 1</div>
+      <div class="point">Compound Engineering</div>
+      <div class="detail">Skills · MCPs · Code Standards → Working Library → polynomial productivity</div>
+    </div>
+    <div class="summary-card">
+      <div class="clip">TAKEAWAY 2</div>
+      <div class="point">Pillar IV × V Synergy</div>
+      <div class="detail">Foundation × Library — 곱셈 효과. 한쪽이 0이면 결과도 0</div>
+    </div>
+    <div class="summary-card">
+      <div class="clip">TAKEAWAY 3</div>
+      <div class="point">High-Performing 패턴</div>
+      <div class="detail">individual·fragmented → integrated·team-wide (OpenAI 사례)</div>
+    </div>
+    <div class="summary-card">
+      <div class="clip">TAKEAWAY 4</div>
+      <div class="point">Working Library 4자산</div>
+      <div class="detail">Shared Skills · MCPs · CLAUDE.md · Golden Rules</div>
+    </div>
+    <div class="summary-card">
+      <div class="clip">TAKEAWAY 5</div>
+      <div class="point">⭐ Code Builds Itself</div>
+      <div class="detail">임계점: collective · automated intelligence — within guardrails</div>
+    </div>
+  </div>
+  <div class="pillars-section">
+    <div class="ph">5 Pillars는 layer cake가 아니라 <strong style="color:#e6edf3">격자(lattice)</strong> — 동시에 작동하며 서로를 강화한다</div>
+    <div class="pillars-row">
+      <div class="pillar-cell">
+        <div class="pn">Pillar I</div>
+        <div class="pname">Context</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pn">Pillar II</div>
+        <div class="pname">Validation</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pn">Pillar III</div>
+        <div class="pname">Tooling</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pn">Pillar IV</div>
+        <div class="pname">Codebases</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pn">Pillar V ←</div>
+        <div class="pname">Compound</div>
+      </div>
+    </div>
+  </div>
+  <div class="conclusion-box">
+    <div class="next-tag">Next · Clip 07</div>
+    <div class="headline">통합 사례 — 격자가 하루 안에서 합쳐지는 법</div>
+    <div class="sub">5 Pillars가 한 팀의 하루 안에서 <strong>실제로 어떻게 합쳐지는지</strong> — 통합 사례, Principal Architect 진화, 그리고 <em>unbridgeable chasm</em>까지</div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="61-code-builds-itself.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">62 / 75</a></div>
+    <div class="nav-right"><a href="63-integration-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('61-code-builds-itself.html');
+  if (e.key === 'ArrowRight') navigateTo('63-integration-intro.html');
+});
+</script>
+</body>
+</html>

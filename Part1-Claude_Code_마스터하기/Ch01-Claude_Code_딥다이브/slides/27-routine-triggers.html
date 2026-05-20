@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>/routine 트리거</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 48px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 36px; }
+
+.triggers { width: 100%; max-width: 1080px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.trigger-card { padding: 28px 24px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 18px; min-height: 220px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; transition: transform 0.3s; }
+.trigger-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #ec4899; }
+.trigger-card:nth-child(2) { animation-delay: 0.25s; border-top: 3px solid #f9a8d4; }
+.trigger-card:nth-child(3) { animation-delay: 0.4s; border-top: 3px solid #be185d; }
+.trigger-card:hover { transform: translateY(-4px); }
+.trigger-icon { font-size: 36px; margin-bottom: 12px; }
+.trigger-name { font-size: 20px; font-weight: 900; color: #f9a8d4; margin-bottom: 8px; }
+.trigger-meta { font-size: 11px; color: #b1bac4; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+.trigger-desc { font-size: 13px; color: #c9d1d9; line-height: 1.55; margin-bottom: 14px; flex: 1; }
+.trigger-example { padding: 10px 12px; background: rgba(10,15,26,0.5); border-radius: 8px; font-size: 11px; color: #8b949e; line-height: 1.6; font-family: 'Courier New', monospace; }
+.trigger-example .ok { color: #6ee7b7; }
+
+.callout { margin-top: 28px; padding: 18px 28px; background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(124,58,237,0.08)); border: 1px solid rgba(236,72,153,0.3); border-radius: 14px; max-width: 1080px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.6s ease forwards; }
+.callout-text { font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+.callout-text strong { background: linear-gradient(135deg, #f9a8d4, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">/routine — 클라우드 영구 자동화</h1>
+  <div class="subtitle">머신 꺼져 있어도 Anthropic 클라우드에서 실행 (research preview)</div>
+  <div class="triggers">
+    <div class="trigger-card">
+      <div class="trigger-icon">⏰</div>
+      <div class="trigger-name">예약 (Cron)</div>
+      <div class="trigger-meta">시간별 / 일일 / 주간</div>
+      <div class="trigger-desc">반복 주기로 실행. 야간 백로그 정리, 주간 문서 드리프트 검토.</div>
+      <div class="trigger-example">매일 오전 9시<br>새 이슈 분류·할당<br>Slack 요약</div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-icon">🔌</div>
+      <div class="trigger-name">API</div>
+      <div class="trigger-meta">HTTP POST 트리거</div>
+      <div class="trigger-desc">루틴별 엔드포인트에 베어러 토큰 POST → 즉시 실행. Sentry/CI 연동.</div>
+      <div class="trigger-example">curl -X POST .../fire<br>-H "Authorization:..."<br>-d '{"text":"alert"}'</div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-icon">🐙</div>
+      <div class="trigger-name">GitHub 이벤트</div>
+      <div class="trigger-meta">PR · Release</div>
+      <div class="trigger-desc">pull_request.opened 등 이벤트에 자동 반응. 보안·성능·테스트 다각도 자동 리뷰.</div>
+      <div class="trigger-example">on: pull_request<br>filter: base=main<br>action: review</div>
+    </div>
+  </div>
+  <div class="callout">
+    <div class="callout-text">한 routine이 <strong>셋 다 결합 가능</strong>. PR 리뷰 routine: 야간 정기 + 새 PR 트리거 + 배포 스크립트 호출.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="26-loop-modes.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">27 / 44</a></div>
+  <div class="nav-right"><a href="28-validation-first.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('26-loop-modes.html');
+  if (e.key === 'ArrowRight') navigateTo('28-validation-first.html');
+});
+</script></body></html>

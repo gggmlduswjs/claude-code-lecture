@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>.claude/rules/ 세분화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.section-tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 36px; text-align: center; max-width: 960px; line-height: 1.5; }
+.analogy-bar { width: 100%; max-width: 960px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; margin-bottom: 28px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.1s; }
+.analogy-cell { padding: 14px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 10px; text-align: center; font-size: 14px; color: #c9d1d9; }
+.analogy-cell .label { font-size: 11px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+.analogy-cell .what { font-family: 'Courier New', monospace; color: #a78bfa; font-weight: 700; }
+.analogy-cell .role { font-size: 13px; color: #e6edf3; margin-top: 4px; }
+.analogy-arrow { display: flex; align-items: center; justify-content: center; font-size: 22px; color: #484f58; }
+.examples { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rule-card { padding: 22px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.rule-card:nth-child(1) { animation-delay: 0.2s; border-top: 2px solid #7dd3fc; }
+.rule-card:nth-child(2) { animation-delay: 0.35s; border-top: 2px solid #6ee7b7; }
+.rule-card .file { font-family: 'Courier New', monospace; font-size: 13px; color: #a78bfa; margin-bottom: 8px; font-weight: 700; }
+.rule-card .frontmatter { font-family: 'Courier New', monospace; font-size: 12px; color: #b1bac4; background: rgba(10, 15, 26, 0.5); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; line-height: 1.5; }
+.rule-card .frontmatter .path-val { color: #fde68a; }
+.rule-card .rule-title { font-size: 15px; font-weight: 800; color: #e6edf3; margin-bottom: 8px; }
+.rule-card .rule-item { font-size: 13px; color: #c9d1d9; line-height: 1.5; padding: 4px 0 4px 14px; position: relative; }
+.rule-card .rule-item::before { content: '•'; position: absolute; left: 0; color: #484f58; }
+.rule-card .rule-item strong { color: #e6edf3; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="section-tag">Team Harness · 3 of 5</div>
+  <h1 class="title">.claude/rules/ — 세분화된 규칙</h1>
+  <div class="subtitle">CLAUDE.md가 "헌법"이라면, Rules는 특정 상황에 적용되는 <strong>"세부 법률"</strong></div>
+  <div class="analogy-bar">
+    <div class="analogy-cell">
+      <div class="label">전체 적용</div>
+      <div class="what">CLAUDE.md</div>
+      <div class="role">헌법 Constitution</div>
+    </div>
+    <div class="analogy-arrow">↔</div>
+    <div class="analogy-cell">
+      <div class="label">경로별 적용</div>
+      <div class="what">.claude/rules/</div>
+      <div class="role">세부 법률 By-laws</div>
+    </div>
+  </div>
+  <div class="examples">
+    <div class="rule-card">
+      <div class="file">📄 .claude/rules/api-routes.md</div>
+      <div class="frontmatter">---<br/>paths: [<span class="path-val">"src/api/**/*.ts"</span>]<br/>---</div>
+      <div class="rule-title">API 라우트를 작성할 때</div>
+      <div class="rule-item"><strong>zod 스키마</strong>로 모든 입력 검증</div>
+      <div class="rule-item">응답 형식 <strong>{ data, error, meta }</strong></div>
+      <div class="rule-item">에러 시 적절한 HTTP 상태 코드</div>
+    </div>
+    <div class="rule-card">
+      <div class="file">📄 .claude/rules/tests.md</div>
+      <div class="frontmatter">---<br/>paths: [<span class="path-val">"**/*.test.ts"</span>]<br/>---</div>
+      <div class="rule-title">테스트 파일을 작성할 때</div>
+      <div class="rule-item"><strong>vitest 사용</strong> (jest 금지)</div>
+      <div class="rule-item">describe/it 패턴, 한글 테스트명</div>
+      <div class="rule-item">각 테스트는 <strong>독립 실행 가능</strong></div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="36-claude-md-team-share.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">37 / 43</a></div>
+    <div class="nav-right"><a href="38-team-hooks.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('36-claude-md-team-share.html');
+  if (e.key === 'ArrowRight') navigateTo('38-team-hooks.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Probabilistic Confusion이란 무엇인가</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.overline { font-size: 13px; color: #7dd3fc; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 30px; text-align: center; max-width: 940px; line-height: 1.5; }
+.subtitle strong { color: #7dd3fc; font-weight: 700; }
+.diagram { width: 100%; max-width: 1120px; padding: 28px 28px; background: rgba(56, 189, 248, 0.05); border: 2px solid rgba(56, 189, 248, 0.25); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.1s; }
+.diagram .label { font-size: 11px; color: #7dd3fc; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+.attn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.attn-col { padding: 18px 18px; background: rgba(10, 15, 26, 0.55); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; }
+.attn-col.clean { border-top: 3px solid #34d399; }
+.attn-col.noisy { border-top: 3px solid #f87171; }
+.attn-col .head { font-size: 14px; font-weight: 900; margin-bottom: 4px; }
+.attn-col.clean .head { color: #6ee7b7; }
+.attn-col.noisy .head { color: #fca5a5; }
+.attn-col .meta { font-size: 11px; color: #b1bac4; margin-bottom: 12px; font-style: italic; }
+.tokens { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+.token { font-family: 'Courier New', monospace; font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(139, 148, 158, 0.08); color: #8b949e; }
+.token.signal { background: rgba(52, 211, 153, 0.18); color: #6ee7b7; font-weight: 700; }
+.token.signal.strong { background: rgba(52, 211, 153, 0.32); color: #d1fae5; box-shadow: 0 0 6px rgba(52, 211, 153, 0.5); }
+.token.noise { background: rgba(248, 113, 113, 0.10); color: #fca5a5; }
+.attn-col .ratio { font-size: 11px; color: #c9d1d9; margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(139, 148, 158, 0.15); }
+.attn-col .ratio strong { color: #e6edf3; font-weight: 700; }
+.result-row { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.result-cell { padding: 10px 16px; border-radius: 10px; font-size: 13px; line-height: 1.5; text-align: center; }
+.result-cell.clean { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.25); color: #a7f3d0; }
+.result-cell.noisy { background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.25); color: #fecaca; }
+.result-cell strong { color: #f0f6fc; font-weight: 800; }
+.bottom-note { margin-top: 24px; padding: 14px 32px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; font-size: 13px; color: #b1bac4; text-align: center; line-height: 1.6; max-width: 1120px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; }
+.bottom-note strong { color: #7dd3fc; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Pillar I · Attention Distribution</div>
+  <h1 class="title">Probabilistic Confusion이란?</h1>
+  <div class="subtitle">모델은 다음 토큰을 고를 때 <strong>context의 어느 부분에 attention을 둘지</strong> 결정한다 — 후보가 많아지면 신호와 노이즈를 구분 못한다</div>
+  <div class="diagram">
+    <div class="label">Attention Distribution — Signal vs Noise</div>
+    <div class="attn-row">
+      <div class="attn-col clean">
+        <div class="head">✓ Clean Context</div>
+        <div class="meta">관련 정보만 큐레이션됨</div>
+        <div class="tokens">
+          <span class="token signal strong">signal</span>
+          <span class="token signal">signal</span>
+          <span class="token signal strong">signal</span>
+          <span class="token signal">signal</span>
+          <span class="token">·</span>
+          <span class="token signal strong">signal</span>
+          <span class="token signal">signal</span>
+        </div>
+        <div class="ratio"><strong>신호 비중 ~90%</strong> · attention이 강한 신호로 집중</div>
+      </div>
+      <div class="attn-col noisy">
+        <div class="head">✕ Noisy Context</div>
+        <div class="meta">무관한 정보가 70% 차 있음</div>
+        <div class="tokens">
+          <span class="token noise">noise</span>
+          <span class="token noise">noise</span>
+          <span class="token signal">signal</span>
+          <span class="token noise">noise</span>
+          <span class="token noise">noise</span>
+          <span class="token signal">signal</span>
+          <span class="token noise">noise</span>
+          <span class="token noise">noise</span>
+          <span class="token noise">noise</span>
+          <span class="token signal">signal</span>
+        </div>
+        <div class="ratio"><strong>신호 비중 ~30%</strong> · attention 후보가 너무 많음</div>
+      </div>
+    </div>
+    <div class="result-row">
+      <div class="result-cell clean">→ 같은 진입점에서 <strong>같은 결정</strong>으로 수렴</div>
+      <div class="result-cell noisy">→ 같은 질문에 <strong>매번 다른 답</strong> (어제는 A 디렉토리, 오늘은 B)</div>
+    </div>
+  </div>
+  <div class="bottom-note">"AI는 비결정적이다"의 진짜 원인 — 모델이 변덕스러운 게 아니라, <strong>context가 노이즈로 가득 차서</strong> 확률적 혼란이 일어난 것</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="11-dump-vs-curate.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">12 / 75</a></div>
+    <div class="nav-right"><a href="13-context-window-budget.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('11-dump-vs-curate.html');
+  if (e.key === 'ArrowRight') navigateTo('13-context-window-budget.html');
+});
+</script>
+</body>
+</html>

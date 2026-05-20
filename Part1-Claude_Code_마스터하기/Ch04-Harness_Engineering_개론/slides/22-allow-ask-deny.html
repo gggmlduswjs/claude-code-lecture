@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>allow / ask / deny — 3단 분류</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #c9d1d9; text-align: center; margin-bottom: 38px; max-width: 920px; line-height: 1.55; }
+.subtitle strong { color: #fde68a; }
+.three-flow { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+.policy-card { padding: 28px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.55s ease forwards; }
+.policy-card.allow { animation-delay: 0.1s; border-top: 3px solid #34d399; }
+.policy-card.ask { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.policy-card.deny { animation-delay: 0.5s; border-top: 3px solid #ec4899; }
+.policy-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.policy-icon { font-size: 30px; }
+.policy-tag { padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+.policy-card.allow .policy-tag { background: rgba(52, 211, 153, 0.15); color: #6ee7b7; }
+.policy-card.ask .policy-tag { background: rgba(251, 191, 36, 0.15); color: #fde68a; }
+.policy-card.deny .policy-tag { background: rgba(236, 72, 153, 0.15); color: #f9a8d4; }
+.policy-name { font-size: 18px; font-weight: 800; color: #e6edf3; }
+.policy-risk { font-size: 11px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(139, 148, 158, 0.1); }
+.tools-section { margin-bottom: 14px; }
+.tools-label { font-size: 11px; color: #b1bac4; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.tools-list { display: flex; flex-direction: column; gap: 6px; }
+.tool-item { font-size: 13px; padding: 7px 10px; background: rgba(10, 15, 26, 0.4); border-radius: 6px; font-family: 'JetBrains Mono', monospace; color: #c9d1d9; }
+.policy-card.allow .tool-item { color: #6ee7b7; }
+.policy-card.ask .tool-item { color: #fde68a; }
+.policy-card.deny .tool-item { color: #f9a8d4; }
+.behaviors-list { display: flex; flex-direction: column; gap: 5px; }
+.behavior-item { font-size: 12.5px; color: #b1bac4; padding-left: 12px; position: relative; line-height: 1.5; }
+.behavior-item::before { content: '·'; position: absolute; left: 4px; font-weight: 900; }
+.policy-card.allow .behavior-item::before { color: #34d399; }
+.policy-card.ask .behavior-item::before { color: #fbbf24; }
+.policy-card.deny .behavior-item::before { color: #ec4899; }
+.bottom-principle { margin-top: 32px; padding: 22px 38px; background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 14px; max-width: 1000px; text-align: center; font-size: 16px; color: #c9d1d9; line-height: 1.65; opacity: 0; animation: cardAppear 0.6s ease 0.7s forwards; }
+.bottom-principle strong { background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">allow / ask / deny · 3단 분류</h1>
+  <div class="subtitle">도구별로 위험도를 명시. <strong>Allowlist &gt; Denylist</strong> — 디폴트가 안전해야 한다.</div>
+  <div class="three-flow">
+    <div class="policy-card allow">
+      <div class="policy-head"><div class="policy-icon">🟢</div><div><div class="policy-tag">allow</div></div></div>
+      <div class="policy-name">자동 허용</div>
+      <div class="policy-risk">▸ 위험도: 낮음</div>
+      <div class="tools-section">
+        <div class="tools-label">Claude Code 도구</div>
+        <div class="tools-list">
+          <div class="tool-item">Read</div>
+          <div class="tool-item">Grep</div>
+          <div class="tool-item">Glob</div>
+        </div>
+      </div>
+      <div class="tools-label">▸ 외부 행동</div>
+      <div class="behaviors-list">
+        <div class="behavior-item">문서 검색</div>
+        <div class="behavior-item">로그 조회</div>
+        <div class="behavior-item">읽기 전용 쿼리</div>
+      </div>
+    </div>
+    <div class="policy-card ask">
+      <div class="policy-head"><div class="policy-icon">🟡</div><div><div class="policy-tag">ask</div></div></div>
+      <div class="policy-name">사용자 확인</div>
+      <div class="policy-risk">▸ 위험도: 중간</div>
+      <div class="tools-section">
+        <div class="tools-label">Claude Code 도구</div>
+        <div class="tools-list">
+          <div class="tool-item">Edit</div>
+          <div class="tool-item">Write</div>
+          <div class="tool-item">Bash</div>
+        </div>
+      </div>
+      <div class="tools-label">▸ 외부 행동</div>
+      <div class="behaviors-list">
+        <div class="behavior-item">파일 수정</div>
+        <div class="behavior-item">셸 명령 실행</div>
+        <div class="behavior-item">패키지 설치</div>
+      </div>
+    </div>
+    <div class="policy-card deny">
+      <div class="policy-head"><div class="policy-icon">🔴</div><div><div class="policy-tag">deny</div></div></div>
+      <div class="policy-name">시스템 차단</div>
+      <div class="policy-risk">▸ 위험도: 높음</div>
+      <div class="tools-section">
+        <div class="tools-label">Claude Code 도구</div>
+        <div class="tools-list">
+          <div class="tool-item">Edit **/.env*</div>
+          <div class="tool-item">*DROP TABLE*</div>
+          <div class="tool-item">rm -rf*</div>
+        </div>
+      </div>
+      <div class="tools-label">▸ 외부 행동</div>
+      <div class="behaviors-list">
+        <div class="behavior-item">배포</div>
+        <div class="behavior-item">결제 · 송금</div>
+        <div class="behavior-item">외부 메시지 발송</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-principle">+ <strong>HITL (Human-in-the-Loop)</strong>: 금전·외부 메시지·삭제·법적 판단은 반드시 사람 승인.<br/>+ <strong>Prompt Injection 방어</strong>: 외부 텍스트는 신뢰하지 않는 입력으로 취급. + <strong>Audit Log</strong>: 누가·언제·무엇을 추적.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="21-gen-eval.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">22 / 24</a></div>
+    <div class="nav-right"><a href="23-adoption-roadmap.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('21-gen-eval.html');
+  if (e.key === 'ArrowRight') navigateTo('23-adoption-roadmap.html');
+});
+</script>
+</body>
+</html>

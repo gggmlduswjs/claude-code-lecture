@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code 강의 · 학습 자료 허브</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  padding: 0 0 80px;
+  position: relative;
+  overflow-x: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+body::before {
+  content: '';
+  position: fixed; top: -25%; left: 50%;
+  transform: translateX(-50%);
+  width: 1300px; height: 1300px;
+  background: radial-gradient(circle, rgba(124,58,237,0.14), rgba(56,189,248,0.06) 40%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.wrapper { max-width: 1180px; margin: 0 auto; padding: 72px 40px 0; position: relative; z-index: 1; }
+
+.header { text-align: center; margin-bottom: 56px; }
+.header .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 3px;
+  color: #a78bfa; font-weight: 800; text-transform: uppercase;
+  margin-bottom: 14px; display: inline-block;
+}
+.header h1 {
+  font-size: 48px; font-weight: 900; color: #f0f6fc;
+  line-height: 1.22; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.header h1 .accent {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle { font-size: 16px; color: #b1bac4; line-height: 1.7; max-width: 720px; margin: 0 auto; }
+.header .meta {
+  margin-top: 22px;
+  display: inline-flex; gap: 22px;
+  padding: 10px 22px;
+  background: rgba(139,148,158,0.06);
+  border: 1px solid rgba(139,148,158,0.16);
+  border-radius: 999px;
+  font-size: 12px; color: #b1bac4; font-weight: 600;
+  flex-wrap: wrap;
+}
+.header .meta strong { color: #c4b5fd; font-family: 'JetBrains Mono', monospace; }
+
+.part-block { margin-bottom: 48px; }
+.part-head {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 22px; padding-bottom: 14px;
+  border-bottom: 1px solid rgba(139,148,158,0.16);
+}
+.part-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 800;
+  padding: 5px 11px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+.part-tag.p0 { background: rgba(167,139,250,0.16); color: #ddd6fe; border: 1px solid rgba(167,139,250,0.32); }
+.part-tag.p1 { background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.32); }
+.part-title { font-size: 22px; font-weight: 800; color: #f0f6fc; }
+.part-subtitle { margin-left: auto; font-size: 12px; color: #8b949e; font-weight: 600; }
+
+.chapter-row {
+  margin-bottom: 18px;
+  padding: 22px 24px 20px;
+  background: rgba(139,148,158,0.04);
+  border: 1px solid rgba(139,148,158,0.18);
+  border-radius: 14px;
+  transition: border-color 0.16s ease;
+}
+.chapter-row:hover { border-color: rgba(139,148,158,0.30); }
+.chapter-row .row-head {
+  display: flex; align-items: baseline; gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed rgba(139,148,158,0.18);
+}
+.chapter-row .ch-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #a78bfa; font-weight: 800;
+  letter-spacing: 1.2px;
+  padding: 4px 9px;
+  background: rgba(167,139,250,0.13);
+  border: 1px solid rgba(167,139,250,0.28);
+  border-radius: 6px;
+}
+.chapter-row .ch-title {
+  font-size: 19px; font-weight: 800; color: #f0f6fc;
+  line-height: 1.32;
+}
+.chapter-row.placeholder {
+  background: rgba(252,211,77,0.04);
+  border-color: rgba(252,211,77,0.22);
+  border-style: dashed;
+}
+.chapter-row.placeholder:hover { border-color: rgba(252,211,77,0.40); }
+.chapter-row .ch-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  background: rgba(252,211,77,0.13);
+  border: 1px solid rgba(252,211,77,0.38);
+  color: #fcd34d;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+.chapter-row .ch-subtitle {
+  font-size: 13px; color: #b1bac4; line-height: 1.6;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.action-card {
+  display: flex; flex-direction: column;
+  padding: 16px 18px;
+  background: rgba(139,148,158,0.05);
+  border: 1px solid rgba(139,148,158,0.22);
+  border-radius: 11px;
+  color: inherit; text-decoration: none;
+  transition: all 0.16s ease;
+  position: relative;
+}
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+}
+.action-card.slides:hover {
+  border-color: rgba(167,139,250,0.55);
+  background: rgba(167,139,250,0.08);
+}
+.action-card.exercises:hover {
+  border-color: rgba(56,189,248,0.55);
+  background: rgba(56,189,248,0.08);
+}
+.action-card.notion:hover {
+  border-color: rgba(52,211,153,0.55);
+  background: rgba(52,211,153,0.07);
+}
+.action-card .action-icon { font-size: 20px; margin-bottom: 10px; line-height: 1; }
+.action-card .action-label {
+  font-size: 14.5px; font-weight: 700; color: #f0f6fc;
+  margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.action-card.notion .action-label::after {
+  content: '↗'; font-size: 11px; color: #6ee7b7; opacity: 0.7;
+}
+.action-card .action-meta {
+  font-size: 11.5px; color: #8b949e; line-height: 1.5;
+}
+.action-card.slides .action-icon { color: #a78bfa; }
+.action-card.exercises .action-icon { color: #7dd3fc; }
+.action-card.notion .action-icon { color: #6ee7b7; }
+
+.footer-note {
+  margin-top: 60px;
+  padding: 24px 28px;
+  background: rgba(167,139,250,0.06);
+  border: 1px solid rgba(167,139,250,0.22);
+  border-radius: 12px;
+  font-size: 13px; color: #c9d1d9; line-height: 1.7;
+}
+.footer-note strong { color: #ddd6fe; }
+
+@media (max-width: 860px) {
+  .wrapper { padding: 36px 22px 0; }
+  .header h1 { font-size: 32px; }
+  .part-head { flex-wrap: wrap; }
+  .part-subtitle { margin-left: 0; }
+  .action-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header class="header">
+    <span class="eyebrow">Online Lecture · Learning Resources</span>
+    <h1>실리콘밸리 엔지니어의 <span class="accent">Claude Code</span></h1>
+    <p class="subtitle">바이브 코딩 → Agentic Engineering → Harness Engineering, 실전 로드맵.<br>각 챕터의 슬라이드와 실습이 한 페이지에 정리되어 있습니다.</p>
+    <div class="meta">
+      <span>총 <strong>7</strong>개 챕터</span>
+      <span>슬라이드 <strong>206</strong>개</span>
+      <span>실습 <strong>16</strong>개</span>
+    </div>
+  </header>
+
+  <div class="part-block"><div class="part-head"><span class="part-tag p0">PART 0</span><span class="part-title">Intro for Dev</span><span class="part-subtitle">실리콘밸리 엔지니어의 하루</span></div><div class="chapter-row"><div class="row-head"><span class="ch-tag">Part 0 · Ch01</span><span class="ch-title">강사소개 · 강의개요</span><p class="ch-subtitle">왜 Claude Code인가 — 강의의 시작 · 약 35분</p></div><div class="action-grid"><a class="action-card slides" href="Part0-실리콘밸리_엔지니어의_하루/Ch01-강사소개_강의개요/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">17장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part0-실리콘밸리_엔지니어의_하루/Ch01-강사소개_강의개요/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">0개 — 본인 repo에 적용</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/365f7725c9d98147b2f2f529321e3dfc" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div><div class="chapter-row"><div class="row-head"><span class="ch-tag">Part 0 · Ch02</span><span class="ch-title">AI-Native 엔지니어로 일하기</span><p class="ch-subtitle">수집·판단·실행 루프와 5가지 습관 · 약 30분 + 1주일 백그라운드 트래커</p></div><div class="action-grid"><a class="action-card slides" href="Part0-실리콘밸리_엔지니어의_하루/Ch02-AI_Native_엔지니어로_일하기/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">26장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part0-실리콘밸리_엔지니어의_하루/Ch02-AI_Native_엔지니어로_일하기/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">2개 — 본인 repo에 적용</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/365f7725c9d981f7b313f8927db3390b" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div></div><div class="part-block"><div class="part-head"><span class="part-tag p1">PART 1</span><span class="part-title">Claude Code 마스터하기</span><span class="part-subtitle">Vibe · Agentic · Harness 3단 진화</span></div><div class="chapter-row"><div class="row-head"><span class="ch-tag">Part 1 · Ch01</span><span class="ch-title">Claude Code 딥다이브</span><p class="ch-subtitle">에이전트 루프부터 자동화 · 워크플로우까지 · 약 3시간</p></div><div class="action-grid"><a class="action-card slides" href="Part1-Claude_Code_마스터하기/Ch01-Claude_Code_딥다이브/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">44장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part1-Claude_Code_마스터하기/Ch01-Claude_Code_딥다이브/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">3개 — 본인 repo에 적용</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/365f7725c9d9818cb41dd84964fbc0f0" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div><div class="chapter-row"><div class="row-head"><span class="ch-tag">Part 1 · Ch02</span><span class="ch-title">Vibe Coding의 본질과 한계</span><p class="ch-subtitle">Vibe → Agentic → Harness 3단 진화의 출발점 · 약 2시간</p></div><div class="action-grid"><a class="action-card slides" href="Part1-Claude_Code_마스터하기/Ch02-Vibe_Coding의_본질과_한계/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">20장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part1-Claude_Code_마스터하기/Ch02-Vibe_Coding의_본질과_한계/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">1개 — 본인 repo에 적용</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/365f7725c9d981219ceecb6bcb912858" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div><div class="chapter-row"><div class="row-head"><span class="ch-tag">Part 1 · Ch03</span><span class="ch-title">Agentic Engineering 개론</span><p class="ch-subtitle">5 Pillars로 본 차세대 엔지니어링 · 약 3시간 15분</p></div><div class="action-grid"><a class="action-card slides" href="Part1-Claude_Code_마스터하기/Ch03-Agentic_Engineering_개론/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">75장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part1-Claude_Code_마스터하기/Ch03-Agentic_Engineering_개론/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">3개 — 본인 repo에 적용</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/365f7725c9d981d780c1eecc84eb15e4" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div><div class="chapter-row placeholder"><div class="row-head"><span class="ch-tag">Part 1 · Ch04</span><span class="ch-title">Harness Engineering 개론</span><span class="ch-badge">집필 중</span><p class="ch-subtitle">Agent = Model + Harness · 4축 12요소 · Claude Code 5계층 · 집필 중 — 슬라이드 24장, 실습 3개 공개 예정</p></div><div class="action-grid"><a class="action-card slides" href="Part1-Claude_Code_마스터하기/Ch04-Harness_Engineering_개론/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">24장 — 강의 핵심 정리</span></a><a class="action-card exercises" href="Part1-Claude_Code_마스터하기/Ch04-Harness_Engineering_개론/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">구성 미리보기 — 정식 실습 준비 중</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/366f7725c9d9813f9d20edcd8d55fd2d" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div><div class="chapter-row placeholder"><div class="row-head"><span class="ch-tag">Part 1 · Ch05</span><span class="ch-title">실전 바이브코딩 테크닉</span><span class="ch-badge">집필 중</span><p class="ch-subtitle">CLAUDE.md 프로덕션화 · AI-Ready · TDD/SDD · AI 리뷰 · Legacy 마이그레이션 · 집필 중 — 슬라이드·실습 모두 공개 예정</p></div><div class="action-grid"><a class="action-card slides" href="Part1-Claude_Code_마스터하기/Ch05-실전_바이브코딩_테크닉/learn.html#slides"><span class="action-icon">📊</span><span class="action-label">슬라이드</span><span class="action-meta">준비 중 — 곧 공개</span></a><a class="action-card exercises" href="Part1-Claude_Code_마스터하기/Ch05-실전_바이브코딩_테크닉/learn.html#exercises"><span class="action-icon">💻</span><span class="action-label">실습</span><span class="action-meta">구성 미리보기 — 정식 실습 준비 중</span></a><a class="action-card notion" href="https://raspy-roll-970.notion.site/366f7725c9d981d59a25e612932228bd" target="_blank" rel="noopener"><span class="action-icon">📝</span><span class="action-label">노션 노트</span><span class="action-meta">치트시트형 정리</span></a></div></div></div>
+
+  <div class="footer-note">
+    <strong>학습 흐름</strong> — 강의 영상을 본 뒤 슬라이드로 핵심을 빠르게 복습하고, 실습 섹션의 "본인 repo에 적용" 단계를 손으로 따라가 보세요. 챕터 마지막의 🔴 통합 실습은 약 60~90분이 걸리는 본격 과제입니다.
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>High-Performing 팀의 패턴</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 16px; color: #c9d1d9; margin-bottom: 32px; text-align: center; max-width: 1000px; line-height: 1.55; }
+.subtitle strong { color: #fde68a; font-weight: 700; }
+.step-flow { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 26px; }
+.step-item { padding: 26px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 16px; display: flex; flex-direction: column; }
+.step-item.from { border-top: 3px solid #8b949e; }
+.step-item.to { border-top: 3px solid #fbbf24; background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.25); }
+.step-arr { display: flex; align-items: center; justify-content: center; font-size: 36px; color: #fbbf24; font-weight: 900; }
+.step-state { font-size: 11px; color: #b1bac4; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.step-item.to .step-state { color: #fde68a; }
+.step-name { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 14px; line-height: 1.3; }
+.step-item.to .step-name { color: #fef3c7; }
+.step-desc { font-size: 13px; color: #c9d1d9; line-height: 1.6; margin-bottom: 14px; }
+.step-desc strong { color: #e6edf3; font-weight: 700; }
+.step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.tagchip { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: rgba(139, 148, 158, 0.1); color: #b1bac4; font-weight: 700; }
+.step-item.to .tagchip { background: rgba(251, 191, 36, 0.12); color: #fde68a; }
+.quote-band { width: 100%; max-width: 1140px; padding: 18px 32px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 14px; text-align: center; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.45s; }
+.quote-band .src { font-size: 11px; color: #fde68a; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.quote-band .q { font-size: 15px; color: #fef3c7; line-height: 1.6; font-style: italic; }
+.quote-band .q strong { color: #fbbf24; font-style: normal; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(251, 191, 36, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #fbbf24; transition: color 0.2s; }
+.slide-nav a:hover { color: #fde68a; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">High-Performing Teams · OpenAI Pattern</div>
+  <h1 class="title">개인의 파편화 → 팀의 통합</h1>
+  <div class="subtitle">High-performing 팀들이 보여주는 격차의 원천 — 두 요소(코드 일관성 · 라이브러리)에 <strong>동시에</strong> 투자한다</div>
+  <div class="step-flow">
+    <div class="step-item from">
+      <div class="step-state">Before · 격차의 시작</div>
+      <div class="step-name">Individual<br/>Fragmented Workflows</div>
+      <div class="step-desc">각자가 자기 도구를 만든다. 옆자리 사람은 같은 문제를 또 푼다. <strong>1시간 투자 = 1명의 도구.</strong> 누적이 일어나지 않는다 — 매번 0에서 시작.</div>
+      <div class="step-tags">
+        <span class="tagchip">개인 노트북</span>
+        <span class="tagchip">개인 .zshrc</span>
+        <span class="tagchip">개인 productivity hack</span>
+      </div>
+    </div>
+    <div class="step-arr">→</div>
+    <div class="step-item to">
+      <div class="step-state">After · 복리의 시작</div>
+      <div class="step-name">Integrated<br/>Team-Wide Architecture</div>
+      <div class="step-desc">자산이 팀 repo에 commit된다. 한 명이 만들면 — 17명이 즉시 쓴다. <strong>1시간 투자 = 18명의 도구.</strong> 라이브러리가 시간 따라 자라며 <strong>polynomial하게 compound</strong>.</div>
+      <div class="step-tags">
+        <span class="tagchip">.claude/commands/</span>
+        <span class="tagchip">shared MCPs</span>
+        <span class="tagchip">team Working Library</span>
+      </div>
+    </div>
+  </div>
+  <div class="quote-band">
+    <div class="src">⭐ Report · 보고서 원문</div>
+    <div class="q">"When a team moves from <strong>individual, fragmented workflows</strong> to an <strong>integrated, team-wide agentic architecture</strong>—similar to the high-performing teams at OpenAI—the library of capabilities <strong>compounds</strong>."</div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="58-pillar4x5-synergy.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">59 / 75</a></div>
+    <div class="nav-right"><a href="60-working-library.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('58-pillar4x5-synergy.html');
+  if (e.key === 'ArrowRight') navigateTo('60-working-library.html');
+});
+</script>
+</body>
+</html>

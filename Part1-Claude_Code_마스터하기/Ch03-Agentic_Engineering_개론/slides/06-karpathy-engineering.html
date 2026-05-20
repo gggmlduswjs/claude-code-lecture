@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Karpathy의 "Engineering" — 의도된 단어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 13px; color: #c4b5fd; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.25; }
+.subtitle { font-size: 16px; color: #c9d1d9; text-align: center; margin-bottom: 32px; line-height: 1.55; max-width: 940px; }
+.subtitle strong { color: #c4b5fd; font-weight: 700; }
+.two-col { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
+.col { padding: 28px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; display: flex; flex-direction: column; min-height: 320px; }
+.col.left { animation-delay: 0.1s; border-top: 3px solid #94a3b8; }
+.col.right { animation-delay: 0.3s; border-top: 3px solid #a78bfa; }
+.col .head { font-size: 12px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.col.left .head { color: #cbd5e1; }
+.col.right .head { color: #c4b5fd; }
+.col .col-title { font-size: 26px; font-weight: 900; color: #e6edf3; margin-bottom: 4px; line-height: 1.2; }
+.col .col-meta { font-size: 13px; color: #b1bac4; font-style: italic; margin-bottom: 14px; }
+.col .col-body { font-size: 13.5px; color: #c9d1d9; line-height: 1.7; margin-bottom: 14px; }
+.col .col-body strong { color: #e6edf3; font-weight: 700; }
+.result-box { margin-top: auto; padding: 14px 16px; background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(139, 148, 158, 0.18); border-radius: 10px; }
+.col.right .result-box { background: rgba(124, 58, 237, 0.08); border-color: rgba(167, 139, 250, 0.3); }
+.result-box .res-label { font-size: 10px; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; color: #b1bac4; }
+.col.right .result-box .res-label { color: #c4b5fd; }
+.result-box .res-text { font-size: 13.5px; color: #e6edf3; font-weight: 600; line-height: 1.5; }
+.divider { display: flex; align-items: center; justify-content: center; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.4s; }
+.divider .arrow-text { font-size: 26px; color: #a78bfa; font-weight: 900; }
+.bottom-claim { margin-top: 24px; padding: 18px 32px; background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 14px; font-size: 14px; color: #e6edf3; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; max-width: 1120px; }
+.bottom-claim strong { color: #c4b5fd; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Karpathy's Intentional Word Choice</div>
+  <h1 class="title">왜 "Agentic Coding"이 아니라 "Engineering"인가</h1>
+  <div class="subtitle">Vibe Coding을 만든 <strong>Andrej Karpathy</strong>가 — 그 다음 단어로 "engineering"을 골랐다. <strong>우연이 아니다.</strong></div>
+  <div class="two-col">
+    <div class="col left">
+      <div class="head">Option Rejected</div>
+      <div class="col-title">Coding</div>
+      <div class="col-meta">"글을 쓰는 행위"</div>
+      <div class="col-body">결과물은 <strong>텍스트</strong>(코드). copy-paste된 코드 조각들 — Vibe Coding 시대의 산출물.</div>
+      <div class="result-box">
+        <div class="res-label">Output</div>
+        <div class="res-text">📄 Text — 코드 스니펫</div>
+      </div>
+    </div>
+    <div class="divider"><div class="arrow-text">→</div></div>
+    <div class="col right">
+      <div class="head">Word Chosen</div>
+      <div class="col-title">Engineering</div>
+      <div class="col-meta">"시스템을 설계하는 행위"</div>
+      <div class="col-body">결과물은 <strong>동작하는 구조물</strong>. <em>sophisticated abstraction layer</em> 위에 작동하는 <strong>stateful · autonomous environments</strong>. agent가 도구를 골라 쓰고, 결과를 보고, 다시 판단하고 검증하는 — <strong>루프 전체</strong>가 산출물.</div>
+      <div class="result-box">
+        <div class="res-label">Output</div>
+        <div class="res-text">⚙️ Working Structure — agentic loop · autonomous env</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">단어 폭 자체가 다르다 — Karpathy의 선택은 <strong>"더 이상 글쓰기 영역이 아니다, 시스템 설계 영역이다"</strong>라는 신호</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="05-10x-engineer-obsolete.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">06 / 75</a></div>
+    <div class="nav-right"><a href="07-three-new-tasks.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('05-10x-engineer-obsolete.html');
+  if (e.key === 'ArrowRight') navigateTo('07-three-new-tasks.html');
+});
+</script>
+</body>
+</html>

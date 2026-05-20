@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Context Localization · 3 Layer 구조</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.overline { font-size: 13px; color: #7dd3fc; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 30px; text-align: center; max-width: 980px; line-height: 1.55; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.grid-3col { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.layer-card { padding: 24px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; min-height: 320px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.layer-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #38bdf8; }
+.layer-card:nth-child(2) { animation-delay: 0.22s; border-top: 3px solid #a78bfa; }
+.layer-card:nth-child(3) { animation-delay: 0.34s; border-top: 3px solid #fbbf24; }
+.layer-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.layer-card:nth-child(1) .layer-num { color: #7dd3fc; }
+.layer-card:nth-child(2) .layer-num { color: #c4b5fd; }
+.layer-card:nth-child(3) .layer-num { color: #fde68a; }
+.layer-name { font-size: 18px; font-weight: 900; color: #e6edf3; margin-bottom: 10px; line-height: 1.3; }
+.layer-tag { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 6px; margin-bottom: 14px; font-weight: 700; letter-spacing: 1px; }
+.layer-card:nth-child(1) .layer-tag { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; }
+.layer-card:nth-child(2) .layer-tag { background: rgba(167, 139, 250, 0.15); color: #c4b5fd; }
+.layer-card:nth-child(3) .layer-tag { background: rgba(251, 191, 36, 0.15); color: #fde68a; }
+.layer-files { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11px; color: #c9d1d9; background: rgba(10, 15, 26, 0.65); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 8px; padding: 10px 12px; line-height: 1.7; margin-bottom: 14px; }
+.layer-card:nth-child(1) .layer-files .hl { color: #7dd3fc; font-weight: 700; }
+.layer-card:nth-child(2) .layer-files .hl { color: #c4b5fd; font-weight: 700; }
+.layer-card:nth-child(3) .layer-files .hl { color: #fde68a; font-weight: 700; }
+.layer-content { font-size: 12.5px; color: #c9d1d9; line-height: 1.65; flex: 1; }
+.layer-content strong { color: #e6edf3; font-weight: 700; }
+.layer-content ul { list-style: none; padding: 0; margin: 0; }
+.layer-content li { padding: 4px 0 4px 16px; position: relative; }
+.layer-content li::before { content: '•'; position: absolute; left: 2px; color: #6e7681; }
+.bottom-note { margin-top: 26px; padding: 16px 32px; background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; font-size: 13px; color: #c9d1d9; text-align: center; line-height: 1.6; max-width: 1140px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.55s; }
+.bottom-note strong { color: #7dd3fc; font-weight: 700; }
+.bottom-note em { color: #a78bfa; font-style: italic; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Pillar I · 카테고리 2 · Context Localization</div>
+  <h1 class="title">3 Layer 구조 — 어떤 지식이 어디에?</h1>
+  <div class="subtitle">"Deciding what knowledge belongs in the primary codebase versus local configuration files for specific developer workflows" — <strong>모든 지식이 같은 layer에 살면 안 된다</strong></div>
+  <div class="grid-3col">
+    <div class="layer-card">
+      <div class="layer-num">Layer 1</div>
+      <div class="layer-name">Team-wide</div>
+      <div class="layer-tag">COMMIT 됨</div>
+      <div class="layer-files">
+        <span class="hl">CLAUDE.md</span><br/>
+        <span class="hl">@docs/</span>
+      </div>
+      <div class="layer-content">
+        <strong>모두에게 공통되는 지식</strong>
+        <ul>
+          <li>디렉토리 정책</li>
+          <li>Golden Rules</li>
+          <li>결제 정책 · 도메인 룰</li>
+          <li>아키텍처 결정 (ADR)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-num">Layer 2</div>
+      <div class="layer-name">Project-local</div>
+      <div class="layer-tag">프로젝트별</div>
+      <div class="layer-files">
+        <span class="hl">.claude/</span><br/>
+        <span class="hl">.cursorrules</span><br/>
+        <span class="hl">.cloud</span>
+      </div>
+      <div class="layer-content">
+        <strong>프로젝트 환경에 종속</strong>
+        <ul>
+          <li>빌드 명령어</li>
+          <li>환경별 변수</li>
+          <li>도구 제약사항</li>
+          <li>워크플로우 설정</li>
+        </ul>
+      </div>
+    </div>
+    <div class="layer-card">
+      <div class="layer-num">Layer 3</div>
+      <div class="layer-name">Developer-local</div>
+      <div class="layer-tag">GITIGNORE</div>
+      <div class="layer-files">
+        <span class="hl">.local/</span><br/>
+        <span class="hl">.env</span>
+      </div>
+      <div class="layer-content">
+        <strong>개인에게만 해당</strong>
+        <ul>
+          <li>API key · 시크릿</li>
+          <li>개인 IDE 설정</li>
+          <li>로컬 머신 경로</li>
+          <li>개인 단축 명령</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-note"><strong>Localization</strong>된 layer 구조가 — agent의 context를 <em>현재 작업 범위에 맞게</em> 좁혀준다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="16-indexing-systems.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">17 / 75</a></div>
+    <div class="nav-right"><a href="18-openai-principle.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('16-indexing-systems.html');
+  if (e.key === 'ArrowRight') navigateTo('18-openai-principle.html');
+});
+</script>
+</body>
+</html>

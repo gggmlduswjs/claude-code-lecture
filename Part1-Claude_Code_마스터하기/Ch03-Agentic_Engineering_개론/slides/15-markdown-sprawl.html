@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Markdown Sprawl · Second Brain의 성장통</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.overline { font-size: 13px; color: #7dd3fc; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 30px; text-align: center; max-width: 940px; line-height: 1.55; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.subtitle em { color: #fda4af; font-style: italic; }
+.comparison { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
+.comparison-col { padding: 24px 24px; border-radius: 18px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.comparison-col.left { animation-delay: 0.1s; border-top: 3px solid #34d399; }
+.comparison-col.right { animation-delay: 0.3s; border-top: 3px solid #f87171; }
+.col-tag { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; text-align: center; }
+.comparison-col.left .col-tag { color: #6ee7b7; }
+.comparison-col.right .col-tag { color: #fca5a5; }
+.comparison-header { font-size: 19px; font-weight: 900; margin-bottom: 4px; text-align: center; line-height: 1.3; }
+.comparison-col.left .comparison-header { color: #d1fae5; }
+.comparison-col.right .comparison-header { color: #fecaca; }
+.comparison-meta { text-align: center; font-size: 11px; color: #b1bac4; margin-bottom: 14px; font-style: italic; letter-spacing: 0.5px; }
+.file-list { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 11.5px; line-height: 1.75; background: rgba(10, 15, 26, 0.65); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; min-height: 200px; }
+.file-list .ok { color: #6ee7b7; }
+.file-list .dim { color: #6e7681; }
+.file-list .warn { color: #fda4af; }
+.file-list .stale { color: #fdba74; }
+.file-list .root { color: #f0f6fc; font-weight: 700; }
+.stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px dashed rgba(139, 148, 158, 0.15); }
+.stat-row .key { font-size: 11px; color: #b1bac4; letter-spacing: 1px; text-transform: uppercase; }
+.stat-row .val { font-size: 13px; font-weight: 800; }
+.comparison-col.left .stat-row .val { color: #6ee7b7; }
+.comparison-col.right .stat-row .val { color: #fca5a5; }
+.comparison-vs { display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #484f58; padding: 0 4px; }
+.callout { margin-top: 24px; padding: 18px 28px; background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 14px; max-width: 1120px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.55s ease forwards; }
+.callout-text { font-size: 14px; color: #fecaca; line-height: 1.6; }
+.callout-text strong { color: #fef2f2; font-weight: 900; }
+.callout-text em { color: #fcd34d; font-style: normal; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Pillar I · Growing Pains</div>
+  <h1 class="title">Markdown Sprawl — Second Brain의 성장통</h1>
+  <div class="subtitle">Second Brain을 채우다 보면 곧 <em>새 문제</em>가 나타난다 — <strong>"managing a sprawl of markdown files"</strong></div>
+  <div class="comparison">
+    <div class="comparison-col left">
+      <div class="col-tag">✓ 6개월 전</div>
+      <div class="comparison-header">관리 가능한 시작</div>
+      <div class="comparison-meta">CLAUDE.md 한 개로 출발</div>
+      <div class="file-list">
+<pre style="margin:0; font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; white-space: pre;"><span class="root">project/</span>
+<span class="ok">└─ CLAUDE.md</span>
+<span class="ok">└─ docs/</span>
+   <span class="ok">├─ architecture.md</span>
+   <span class="ok">├─ payments.md</span>
+   <span class="ok">└─ decisions/</span>
+      <span class="ok">├─ 001-mysql.md</span>
+      <span class="ok">└─ 002-monorepo.md</span></pre>
+      </div>
+      <div class="stat-row"><span class="key">files</span><span class="val">7</span></div>
+      <div class="stat-row"><span class="key">진입점</span><span class="val">단일</span></div>
+      <div class="stat-row"><span class="key">탐색 비용</span><span class="val">낮음</span></div>
+    </div>
+    <div class="comparison-vs">⌛</div>
+    <div class="comparison-col right">
+      <div class="col-tag">✕ 현재</div>
+      <div class="comparison-header">Sprawl된 현재</div>
+      <div class="comparison-meta">docs/ 에 마크다운 50개 — active? outdated?</div>
+      <div class="file-list">
+<pre style="margin:0; font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; white-space: pre;"><span class="root">project/</span>
+<span class="warn">├─ CLAUDE.md  (4 versions)</span>
+<span class="warn">├─ README-OLD.md</span>
+<span class="warn">├─ docs/ (50 files)</span>
+<span class="stale">│  ├─ payments-v1.md (stale?)</span>
+<span class="stale">│  ├─ payments-v2.md</span>
+<span class="stale">│  ├─ payments-FINAL.md</span>
+<span class="dim">│  ├─ decisions/ (23)</span>
+<span class="dim">│  ├─ specs/ (18)</span>
+<span class="dim">│  ├─ playbooks/ (9)</span>
+<span class="warn">└─ notes/ (24 files)</span></pre>
+      </div>
+      <div class="stat-row"><span class="key">files</span><span class="val">~80</span></div>
+      <div class="stat-row"><span class="key">진입점</span><span class="val">불명</span></div>
+      <div class="stat-row"><span class="key">탐색 비용</span><span class="val">폭발</span></div>
+    </div>
+  </div>
+  <div class="callout">
+    <div class="callout-text">Sprawl 자체가 <strong>새 종류의 context 노이즈</strong> — <em>dump everything의 거시 버전</em></div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="14-second-brain-tree.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">15 / 75</a></div>
+    <div class="nav-right"><a href="16-indexing-systems.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('14-second-brain-tree.html');
+  if (e.key === 'ArrowRight') navigateTo('16-indexing-systems.html');
+});
+</script>
+</body>
+</html>

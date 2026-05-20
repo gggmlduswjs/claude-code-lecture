@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Step 1 — AI 브리핑 시연</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.step-label { font-size: 13px; color: #fbbf24; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 38px; text-align: center; }
+.step-flow { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 14px; }
+.step-item { display: flex; align-items: flex-start; gap: 20px; padding: 20px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 14px; opacity: 0; transform: translateX(-20px); animation: stepIn 0.5s ease forwards; }
+.step-item:nth-child(1) { animation-delay: 0.1s; }
+.step-item:nth-child(2) { animation-delay: 0.2s; }
+.step-item:nth-child(3) { animation-delay: 0.3s; }
+.step-item:nth-child(4) { animation-delay: 0.4s; }
+.step-item:nth-child(5) { animation-delay: 0.5s; }
+.step-num { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 11px; background: linear-gradient(135deg, #f97316, #fbbf24); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: #fff; }
+.step-body { flex: 1; }
+.step-title { font-size: 17px; font-weight: 800; color: #e6edf3; margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: #b1bac4; line-height: 1.55; }
+.step-desc strong { color: #c9d1d9; font-weight: 700; }
+.step-desc code { font-family: 'Courier New', monospace; background: rgba(139, 148, 158, 0.1); padding: 2px 6px; border-radius: 4px; color: #a78bfa; font-size: 12px; }
+.screen-note { margin-top: 28px; padding: 16px 24px; background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 12px; font-size: 13px; color: #c9d1d9; text-align: center; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.65s; max-width: 1000px; }
+.screen-note strong { color: #fde68a; font-weight: 700; }
+@keyframes stepIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="step-label">Step 01 of 03</div>
+  <h1 class="title">AI 브리핑 — 화면으로 보기</h1>
+  <div class="subtitle">실제 터미널에서 브리핑이 돌아가는 과정</div>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">터미널에서 Claude Code 실행</div>
+        <div class="step-desc"><code>claude</code> 명령어 한 줄로 세션 시작.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Skill로 저장해둔 브리핑 호출</div>
+        <div class="step-desc">매일 긴 지시를 반복하는 대신 <code>/briefing</code> 한 줄로 실행. <strong>Skill 시스템</strong>이 반복 프롬프트를 재사용 가능한 자산으로.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">MCP 도구들이 외부 서비스 호출</div>
+        <div class="step-desc">화면에 <code>github_list_pull_requests</code> 같은 <strong>tool use</strong>가 보입니다. Google Calendar MCP · GitHub MCP · Linear MCP 순차 호출.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">CI 로그 자동 분석</div>
+        <div class="step-desc">실패한 빌드가 있다면 Claude가 로그를 읽고 <strong>"이 테스트가 타임아웃, 원인은 어제 머지된 PR #245의 DB 쿼리 변경"</strong>처럼 분석해줍니다.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">5분 만에 완료</div>
+        <div class="step-desc">GitHub 웹을 열 필요조차 없이, <strong>터미널 안에서 모든 정보가 들어옵니다</strong>. 매일 반복하면 프로젝트의 맥박을 놓치지 않습니다.</div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-note">📹 <strong>화면 녹화 큐</strong>: 터미널 시연 · MCP tool use 표시 · CI 분석 결과 출력</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="24-daily-principle.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">25 / 43</a></div>
+    <div class="nav-right"><a href="26-step2-status-priority.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('24-daily-principle.html');
+  if (e.key === 'ArrowRight') navigateTo('26-step2-status-priority.html');
+});
+</script>
+</body>
+</html>

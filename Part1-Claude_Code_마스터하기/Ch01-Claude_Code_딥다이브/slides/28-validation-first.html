@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>검증 미리 알리기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 50px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 18px; color: #fde68a; margin-bottom: 36px; font-weight: 600; }
+
+.comparison { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: stretch; }
+.comparison-col { padding: 32px 28px; border-radius: 18px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.comparison-col.left { animation-delay: 0.1s; border-left: 3px solid #b1bac4; }
+.comparison-col.right { animation-delay: 0.3s; border-left: 3px solid #fbbf24; box-shadow: 0 0 28px rgba(251,191,36,0.1); }
+.comparison-header { font-size: 22px; font-weight: 800; margin-bottom: 6px; text-align: center; }
+.comparison-col.left .comparison-header { color: #b1bac4; }
+.comparison-col.right .comparison-header { color: #fde68a; }
+.comparison-meta { text-align: center; font-size: 11px; color: #b1bac4; margin-bottom: 18px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+.prompt-box { padding: 18px 22px; background: rgba(10,15,26,0.6); border-radius: 10px; font-size: 14px; color: #c9d1d9; line-height: 1.7; margin-bottom: 16px; min-height: 160px; }
+.prompt-box .ok { color: #6ee7b7; }
+.prompt-box .key { color: #fde68a; font-weight: 700; }
+.comparison-result { font-size: 13px; color: #c9d1d9; line-height: 1.6; padding-top: 14px; border-top: 1px solid rgba(139,148,158,0.1); }
+.comparison-vs { display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; color: #b1bac4; padding: 0 8px; }
+
+.power-box { margin-top: 28px; padding: 20px 32px; background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(249,115,22,0.08)); border: 1px solid rgba(251,191,36,0.3); border-radius: 14px; max-width: 1140px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.6s ease forwards; }
+.power-text { font-size: 16px; font-weight: 900; background: linear-gradient(135deg, #fde68a, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.5; }
+.power-sub { font-size: 13px; color: #c9d1d9; margin-top: 6px; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">검증 미리 알리기 ⭐</h1>
+  <div class="subtitle">가장 영향력 큰 단일 작업</div>
+  <div class="comparison">
+    <div class="comparison-col left">
+      <div class="comparison-header">평범한 사용자</div>
+      <div class="comparison-meta">검증 기준 없음</div>
+      <div class="prompt-box">
+        &gt; validateEmail<br>
+        &nbsp;&nbsp;함수 만들어줘.
+      </div>
+      <div class="comparison-result">"동작하는 것 같은" 코드<br>엣지 케이스 미처리<br>환각 위험</div>
+    </div>
+    <div class="comparison-vs">vs</div>
+    <div class="comparison-col right">
+      <div class="comparison-header">잘하는 사용자</div>
+      <div class="comparison-meta">검증 기준 명시</div>
+      <div class="prompt-box">
+        &gt; validateEmail 함수 작성.<br>
+        <span class="key">테스트 케이스:</span><br>
+        &nbsp;&nbsp;<span class="ok">user@example.com</span> → true<br>
+        &nbsp;&nbsp;<span class="ok">invalid</span> → false<br>
+        &nbsp;&nbsp;<span class="ok">user@.com</span> → false<br>
+        구현 후 npm test로 통과 확인.
+      </div>
+      <div class="comparison-result">의도된 시나리오에서<br>실제로 동작하는 코드<br>환각·놓친 엣지 압도적으로 ↓</div>
+    </div>
+  </div>
+  <div class="power-box">
+    <div class="power-text">"검증을 모르는 코드는 동작 여부를 모르는 코드"</div>
+    <div class="power-sub">Plan Mode에서 검증 단계까지 함께 계획 → 구현·검증 한 사이클</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="27-routine-triggers.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">28 / 44</a></div>
+  <div class="nav-right"><a href="29-explore-plan-code.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('27-routine-triggers.html');
+  if (e.key === 'ArrowRight') navigateTo('29-explore-plan-code.html');
+});
+</script></body></html>

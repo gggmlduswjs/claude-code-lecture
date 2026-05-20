@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Ch02 마무리 — 6 클립 총정리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.18), rgba(56, 189, 248, 0.08) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.title {
+  font-size: 50px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle {
+  font-size: 16px;
+  color: #b1bac4;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.summary-grid {
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.summary-card {
+  padding: 20px 22px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.12);
+  border-radius: 14px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  opacity: 0;
+  animation: cardAppear 0.5s ease forwards;
+}
+.summary-card:nth-child(1) { animation-delay: 0.1s; border-left: 3px solid #7c3aed; }
+.summary-card:nth-child(2) { animation-delay: 0.2s; border-left: 3px solid #38bdf8; }
+.summary-card:nth-child(3) { animation-delay: 0.3s; border-left: 3px solid #34d399; }
+.summary-card:nth-child(4) { animation-delay: 0.4s; border-left: 3px solid #f97316; }
+.summary-card:nth-child(5) { animation-delay: 0.5s; border-left: 3px solid #ec4899; }
+.summary-card:nth-child(6) { animation-delay: 0.6s; border-left: 3px solid #fbbf24; }
+.summary-card .num {
+  font-size: 12px;
+  font-weight: 800;
+  color: #b1bac4;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+.summary-card .point {
+  font-size: 16px;
+  font-weight: 800;
+  color: #e6edf3;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.summary-card .detail {
+  font-size: 13px;
+  color: #b1bac4;
+  line-height: 1.55;
+}
+
+.conclusion-box {
+  width: 100%;
+  max-width: 1080px;
+  padding: 32px 40px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(236, 72, 153, 0.08));
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 20px;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.6s ease forwards;
+  animation-delay: 0.75s;
+}
+.conclusion-box .headline {
+  font-size: 26px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa, #f9a8d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.conclusion-box .sub {
+  font-size: 15px;
+  color: #c9d1d9;
+  line-height: 1.6;
+}
+.conclusion-box .next {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #b1bac4;
+  letter-spacing: 0.5px;
+}
+.conclusion-box .next strong {
+  color: #a78bfa;
+  font-weight: 800;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.slide-nav-inner {
+  width: 1280px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 60px;
+}
+.slide-nav a {
+  text-decoration: none; font-size: 14px; font-weight: 700;
+  color: #7c3aed; transition: color 0.2s;
+}
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+body { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title summary-title">Ch02 — 오늘 배운 것</h1>
+  <div class="subtitle">Vibe Coding의 본질과 한계, 그리고 다음 단계로 가는 다리</div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="num">CLIP 01</div>
+      <div class="point">Karpathy의 정의</div>
+      <div class="detail">"코드를 안 읽고 AI에 맡기는 것" — 본인이 throwaway 프로젝트용이라 명시</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">CLIP 02</div>
+      <div class="point">전략적 vs 단순 복붙</div>
+      <div class="detail">스펙·단계 분리·검토 — 5분 더 쓰면 총 시간이 단축</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">CLIP 03</div>
+      <div class="point">잘 먹히는 4 시나리오</div>
+      <div class="detail">프로토타이핑 · MVP · 내부 도구 · 학습/탐색에서는 효과적</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">CLIP 04</div>
+      <div class="point">위험한 경우</div>
+      <div class="detail">프로덕션의 65%에 보안 이슈 · CVE 두 달 만에 6배 증가</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">CLIP 05</div>
+      <div class="point">근본 한계 = 시스템 부재</div>
+      <div class="detail">개인 프롬프트 스킬로 해결 안 됨 — 마구·CI/CD처럼 시스템적 제어 필요</div>
+    </div>
+    <div class="summary-card">
+      <div class="num">CLIP 06</div>
+      <div class="point">다음 단계 프리뷰</div>
+      <div class="detail">Agentic + Harness Engineering — Plan·Verify 루프와 영구 규칙 시스템</div>
+    </div>
+  </div>
+
+  <div class="conclusion-box">
+    <div class="headline">Vibe Coding은 도착점이 아니라 출발점이다</div>
+    <div class="sub">한계를 정확히 알아야 다음 단계로 의미 있게 넘어갈 수 있다</div>
+    <div class="next">NEXT &nbsp;&rarr;&nbsp; <strong>Ch03 Agentic Engineering</strong> — AI 에이전트를 진짜 "엔지니어링"하는 방법</div>
+  </div>
+</div>
+
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="19-three-levels.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">20 / 20</a></div>
+    <div class="nav-right"><span class="nav-disabled">다음 &rarr;</span></div>
+  </div>
+</nav>
+
+<script>
+function navigateTo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() { window.location.href = url; }, 300);
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('19-three-levels.html');
+});
+</script>
+</body>
+</html>

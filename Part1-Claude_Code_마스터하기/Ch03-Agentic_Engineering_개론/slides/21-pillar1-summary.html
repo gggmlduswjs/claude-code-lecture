@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Clip 02 요약 · Context는 시작, 검증은 다음</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(circle, rgba(56, 189, 248, 0.18), rgba(124, 58, 237, 0.10) 35%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 38px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.outro-tag { font-size: 13px; color: #7dd3fc; letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 46px; font-weight: 900; background: linear-gradient(135deg, #38bdf8 0%, #7c3aed 60%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 12px; line-height: 1.2; }
+.subtitle { font-size: 16px; color: #c9d1d9; margin-bottom: 28px; text-align: center; line-height: 1.55; max-width: 940px; }
+.subtitle strong { color: #f0f6fc; font-weight: 700; }
+.summary-grid { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 22px; }
+.summary-card { padding: 16px 14px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 12px; min-height: 130px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; border-left: 3px solid #38bdf8; }
+.summary-card:nth-child(1) { animation-delay: 0.05s; }
+.summary-card:nth-child(2) { animation-delay: 0.12s; }
+.summary-card:nth-child(3) { animation-delay: 0.19s; }
+.summary-card:nth-child(4) { animation-delay: 0.26s; }
+.summary-card:nth-child(5) { animation-delay: 0.33s; }
+.summary-card .tag { font-size: 9.5px; font-weight: 700; color: #7dd3fc; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase; }
+.summary-card .point { font-size: 13px; font-weight: 800; color: #e6edf3; margin-bottom: 6px; line-height: 1.35; }
+.summary-card .detail { font-size: 11px; color: #b1bac4; line-height: 1.5; flex: 1; }
+.summary-card .detail strong { color: #c9d1d9; font-weight: 700; }
+.conclusion-box { width: 100%; max-width: 1140px; padding: 26px 36px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(124, 58, 237, 0.10), rgba(236, 72, 153, 0.06)); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 18px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.5s; }
+.conclusion-box .next-tag { font-size: 11px; color: #f0abfc; letter-spacing: 3px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+.conclusion-box .headline { font-size: 24px; font-weight: 900; background: linear-gradient(135deg, #a78bfa, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; line-height: 1.3; }
+.conclusion-box .sub { font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+.conclusion-box .sub strong { color: #f0f6fc; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="outro-tag">Clip 02 · Pillar I · Wrap-up</div>
+  <h1 class="title">Context는 시작 — 검증은 다음 단계</h1>
+  <div class="subtitle">정밀하게 큐레이션했다고 끝이 아니다 — agent가 "done"이라고 말할 때 <strong>그게 진짜 done인지 누가 확인하는가?</strong></div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="tag">Take 1</div>
+      <div class="point">Context is King</div>
+      <div class="detail">단, "다 던지기"는 함정 — <strong>Fresh + Condensed</strong> 큐레이션이 답</div>
+    </div>
+    <div class="summary-card">
+      <div class="tag">Take 2</div>
+      <div class="point">Probabilistic Confusion</div>
+      <div class="detail">LLM의 확률 엔진 특성에 노이즈가 더해질 때 <strong>variance가 폭발</strong></div>
+    </div>
+    <div class="summary-card">
+      <div class="tag">Take 3</div>
+      <div class="point">Second Brain</div>
+      <div class="detail">specs · decisions · rationales의 <strong>hierarchical markdown tree</strong>, CLAUDE.md 진입점</div>
+    </div>
+    <div class="summary-card">
+      <div class="tag">Take 4</div>
+      <div class="point">OpenAI Harness 원칙</div>
+      <div class="detail">"코드베이스에 없으면 agent에겐 존재하지 않는다" → <strong>tacit를 codify</strong></div>
+    </div>
+    <div class="summary-card">
+      <div class="tag">Take 5</div>
+      <div class="point">Toolset 3종</div>
+      <div class="detail">Slash Commands · Sub-agents/Skills · MCP — <strong>통합 시스템</strong>으로</div>
+    </div>
+  </div>
+  <div class="conclusion-box">
+    <div class="next-tag">Next · Clip 03 · Pillar II</div>
+    <div class="headline">Agentic Validation — agent의 "done"을 누가 검증하는가</div>
+    <div class="sub">Context를 정밀하게 큐레이션해도, agent의 결과는 <strong>독립적으로 검증되어야</strong> 한다 — 그 검증 시스템을 다음 클립에서</div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="20-demo-before-after.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">21 / 75</a></div>
+    <div class="nav-right"><a href="22-pillar2-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('20-demo-before-after.html');
+  if (e.key === 'ArrowRight') navigateTo('22-pillar2-intro.html');
+});
+</script>
+</body>
+</html>

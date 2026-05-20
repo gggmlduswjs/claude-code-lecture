@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Harness Engineering 프리뷰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+}
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle {
+  font-size: 16px;
+  color: #b1bac4;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.harness-diagram {
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 28px;
+}
+.harness-pillar {
+  padding: 28px 24px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.5s ease forwards;
+  position: relative;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.harness-pillar:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #a78bfa; }
+.harness-pillar:nth-child(2) { animation-delay: 0.25s; border-top: 3px solid #38bdf8; }
+.harness-pillar:nth-child(3) { animation-delay: 0.4s; border-top: 3px solid #34d399; }
+.harness-pillar:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124, 58, 237, 0.4);
+}
+.harness-icon {
+  font-size: 44px;
+  margin-bottom: 14px;
+}
+.harness-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #b1bac4;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.harness-pillar:nth-child(1) .harness-tag { color: #a78bfa; }
+.harness-pillar:nth-child(2) .harness-tag { color: #7dd3fc; }
+.harness-pillar:nth-child(3) .harness-tag { color: #6ee7b7; }
+.harness-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: #e6edf3;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.harness-desc {
+  font-size: 13px;
+  color: #b1bac4;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.harness-example {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #c9d1d9;
+  padding: 10px 14px;
+  background: rgba(10, 15, 26, 0.55);
+  border-radius: 8px;
+  border-left: 2px solid rgba(139, 148, 158, 0.3);
+  width: 100%;
+  text-align: left;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+.harness-pillar:nth-child(1) .harness-example { border-left-color: #a78bfa; }
+.harness-pillar:nth-child(2) .harness-example { border-left-color: #38bdf8; }
+.harness-pillar:nth-child(3) .harness-example { border-left-color: #34d399; }
+
+.contrast-box {
+  width: 100%;
+  max-width: 1080px;
+  padding: 22px 32px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(52, 211, 153, 0.08));
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 16px;
+  text-align: center;
+  opacity: 0;
+  animation: cardAppear 0.6s ease forwards;
+  animation-delay: 0.6s;
+}
+.contrast-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #c9d1d9;
+  line-height: 1.6;
+}
+.contrast-text .crossed {
+  color: #f9a8d4;
+  text-decoration: line-through;
+  text-decoration-color: rgba(236, 72, 153, 0.5);
+  font-weight: 600;
+}
+.contrast-text strong {
+  background: linear-gradient(135deg, #a78bfa, #6ee7b7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.slide-nav-inner {
+  width: 1280px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 60px;
+}
+.slide-nav a {
+  text-decoration: none; font-size: 14px; font-weight: 700;
+  color: #7c3aed; transition: color 0.2s;
+}
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+body { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">Harness Engineering 프리뷰</h1>
+  <div class="subtitle">에이전트에게 영구적인 규칙과 구조를 씌우는 것 — 한 번 설정, 모든 세션에 자동 적용</div>
+
+  <div class="harness-diagram">
+    <div class="harness-pillar">
+      <div class="harness-icon">📜</div>
+      <div class="harness-tag">Pillar 1</div>
+      <div class="harness-name">CLAUDE.md</div>
+      <div class="harness-desc">프로젝트 컨텍스트 파일. 매 세션 시작 시 자동 로드된다.</div>
+      <div class="harness-example">## 코딩 규칙
+- TypeScript strict 모드
+- any 타입 금지
+- Result 패턴 사용</div>
+    </div>
+
+    <div class="harness-pillar">
+      <div class="harness-icon">📐</div>
+      <div class="harness-tag">Pillar 2</div>
+      <div class="harness-name">Rules</div>
+      <div class="harness-desc">조건별로 자동 적용되는 세부 규칙. 파일 패턴별 컨벤션.</div>
+      <div class="harness-example">테스트:
+- vitest 사용 (jest 금지)
+- 모든 API에 테스트 필수</div>
+    </div>
+
+    <div class="harness-pillar">
+      <div class="harness-icon">🪝</div>
+      <div class="harness-tag">Pillar 3</div>
+      <div class="harness-name">Hooks</div>
+      <div class="harness-desc">이벤트 발생 시 자동 실행. 자동 린트·포맷·검증·차단.</div>
+      <div class="harness-example">PostToolUse:
+  Edit|Write →
+    eslint --fix</div>
+    </div>
+  </div>
+
+  <div class="contrast-box">
+    <div class="contrast-text">
+      <span class="crossed">매번 프롬프트로 "camelCase로 써줘", "테스트 작성해줘" 반복</span>
+      &nbsp;→&nbsp;
+      <strong>한 번 설정하면 모든 세션 · 모든 팀원에게 자동 적용</strong>
+    </div>
+  </div>
+</div>
+
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="17-agentic-engineering.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">18 / 20</a></div>
+    <div class="nav-right"><a href="19-three-levels.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+
+<script>
+function navigateTo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() { window.location.href = url; }, 300);
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('17-agentic-engineering.html');
+  if (e.key === 'ArrowRight') navigateTo('19-three-levels.html');
+});
+</script>
+</body>
+</html>

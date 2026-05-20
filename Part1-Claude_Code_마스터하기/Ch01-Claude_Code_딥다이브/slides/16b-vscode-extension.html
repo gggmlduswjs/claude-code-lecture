@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>Terminal vs VS Code Extension</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 15px; color: #b1bac4; margin-bottom: 32px; }
+
+.compare-row { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 22px; }
+.compare-col { padding: 26px 28px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 18px; opacity: 0; animation: cardAppear 0.5s ease forwards; transition: transform 0.3s, border-color 0.3s; }
+.compare-col.left { animation-delay: 0.1s; border-top: 3px solid #38bdf8; }
+.compare-col.right { animation-delay: 0.2s; border-top: 3px solid #a78bfa; }
+.compare-col:hover { transform: translateY(-3px); }
+.compare-col .col-icon { font-size: 32px; margin-bottom: 10px; }
+.compare-col .col-name { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 14px; }
+.compare-col.left .col-name { color: #7dd3fc; }
+.compare-col.right .col-name { color: #c4b5fd; }
+.compare-col .feat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; font-size: 13px; line-height: 1.5; border-bottom: 1px solid rgba(139,148,158,0.08); }
+.compare-col .feat-row:last-child { border-bottom: 0; }
+.compare-col .feat-key { color: #8b949e; font-weight: 600; min-width: 100px; }
+.compare-col .feat-val { color: #c9d1d9; text-align: right; flex: 1; }
+
+.install-strip { width: 100%; max-width: 1100px; padding: 14px 24px; background: rgba(124,58,237,0.06); border: 1px solid rgba(124,58,237,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 24px; opacity: 0; animation: cardAppear 0.5s 0.32s ease forwards; }
+.install-strip .ins-label { font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; min-width: 60px; }
+.install-strip .ins-text { font-size: 13px; color: #c9d1d9; line-height: 1.5; flex: 1; }
+.install-strip .ins-text code { font-family: 'Courier New', monospace; background: rgba(10,15,26,0.6); padding: 2px 8px; border-radius: 4px; color: #e6edf3; font-size: 12px; }
+
+.callout { margin-top: 16px; padding: 12px 28px; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); border-radius: 14px; max-width: 1100px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.42s ease forwards; }
+.callout strong { color: #6ee7b7; font-weight: 900; }
+.callout-text { font-size: 14px; color: #c9d1d9; line-height: 1.6; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">Terminal vs VS Code Extension</h1>
+  <div class="subtitle">같은 모델 · 같은 세션 · 같은 명령어 — UI만 다르다</div>
+
+  <div class="compare-row">
+    <div class="compare-col left">
+      <div class="col-icon">⌨️</div>
+      <div class="col-name">Terminal</div>
+      <div class="feat-row"><div class="feat-key">무게</div><div class="feat-val">가벼움</div></div>
+      <div class="feat-row"><div class="feat-key">diff 보기</div><div class="feat-val">텍스트 형식</div></div>
+      <div class="feat-row"><div class="feat-key">SSH · 원격</div><div class="feat-val">바로 가능 ✓</div></div>
+      <div class="feat-row"><div class="feat-key">큰 변경 검토</div><div class="feat-val">빠르게 훑기</div></div>
+      <div class="feat-row"><div class="feat-key">강점</div><div class="feat-val">속도 · 어디서나</div></div>
+    </div>
+    <div class="compare-col right">
+      <div class="col-icon">📝</div>
+      <div class="col-name">VS Code Extension</div>
+      <div class="feat-row"><div class="feat-key">무게</div><div class="feat-val">IDE 전체</div></div>
+      <div class="feat-row"><div class="feat-key">diff 보기</div><div class="feat-val">GUI 좌우 비교</div></div>
+      <div class="feat-row"><div class="feat-key">SSH · 원격</div><div class="feat-val">Remote SSH 필요</div></div>
+      <div class="feat-row"><div class="feat-key">큰 변경 검토</div><div class="feat-val">압도적</div></div>
+      <div class="feat-row"><div class="feat-key">강점</div><div class="feat-val">시각적 검토</div></div>
+    </div>
+  </div>
+
+  <div class="install-strip">
+    <div class="ins-label">설치</div>
+    <div class="ins-text">VS Code Extensions 탭 → <code>Claude Code</code> 검색 → 설치. <strong>같은 세션 저장소를 공유</strong> — Terminal에서 만든 세션을 VS Code에서 잇기 가능.</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-text"><strong>둘 중 하나가 아니다</strong> — 상황에 맞춰 골라 쓰는 도구. 평소엔 Terminal, 큰 PR 리뷰는 VS Code.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="16-shortcuts.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">16b / 44</a></div>
+  <div class="nav-right"><a href="17-permission-cycle.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('16-shortcuts.html');
+  if (e.key === 'ArrowRight') navigateTo('17-permission-cycle.html');
+});
+</script></body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>원칙 2 — Consistent File Structures</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #f9a8d4; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 22px; text-align: center; max-width: 980px; line-height: 1.6; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.quote-block { width: 100%; max-width: 1080px; padding: 16px 28px; background: rgba(236, 72, 153, 0.08); border-left: 4px solid #ec4899; border-radius: 8px; margin-bottom: 24px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.1s; }
+.quote-block .en { font-size: 14px; color: #f9a8d4; font-weight: 700; line-height: 1.55; margin-bottom: 4px; font-style: italic; }
+.quote-block .ko { font-size: 13px; color: #c9d1d9; line-height: 1.55; }
+.diagram-row { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.3s; }
+.tree-box { padding: 22px 24px; background: rgba(10, 15, 26, 0.65); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 14px; }
+.tree-label { font-size: 11px; color: #f9a8d4; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+.tree { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.75; color: #c9d1d9; }
+.tree .dir { color: #f9a8d4; font-weight: 700; }
+.tree .cmt { color: #6e7681; }
+.tree .file { color: #a5d6ff; }
+.bottom-claim { margin-top: 24px; padding: 14px 28px; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 12px; font-size: 13px; color: #c9d1d9; text-align: center; line-height: 1.65; max-width: 1120px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; }
+.bottom-claim strong { color: #f9a8d4; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(236, 72, 153, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #ec4899; transition: color 0.2s; }
+.slide-nav a:hover { color: #f9a8d4; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Principle 2 · Structural Consistency</div>
+  <h1 class="title">Consistent File Structures — <span style="color:#f9a8d4">Predictively Locate</span></h1>
+  <div class="subtitle">디렉토리 hierarchy를 표준화 — agent가 "어디에 두지?"를 묻지 않고 <strong>예측적으로 정확한 자리</strong>에 둔다</div>
+  <div class="quote-block">
+    <div class="en">"Standardizing directory hierarchies so the agent can predictively locate and generate files."</div>
+    <div class="ko">디렉토리 hierarchy를 표준화 — agent가 파일을 예측적으로 찾고 생성할 수 있도록.</div>
+  </div>
+  <div class="diagram-row">
+    <div class="tree-box">
+      <div class="tree-label">Top-Level · Domain Modules</div>
+      <div class="tree">
+src/<br/>
+├── <span class="dir">payment/</span>    <span class="cmt">← 결제는 항상 여기</span><br/>
+├── <span class="dir">auth/</span>       <span class="cmt">← 인증은 항상 여기</span><br/>
+├── <span class="dir">user/</span>       <span class="cmt">← 사용자는 항상 여기</span><br/>
+├── <span class="dir">billing/</span>    <span class="cmt">← 청구 도메인</span><br/>
+└── <span class="dir">notification/</span> <span class="cmt">← 알림 도메인</span>
+      </div>
+    </div>
+    <div class="tree-box">
+      <div class="tree-label">Per-Module · Identical Layout</div>
+      <div class="tree">
+src/<span class="dir">payment/</span><br/>
+├── <span class="file">index.ts</span>        <span class="cmt">← public API</span><br/>
+├── <span class="dir">handlers/</span>       <span class="cmt">← request handler</span><br/>
+├── <span class="dir">services/</span>       <span class="cmt">← business logic</span><br/>
+├── <span class="dir">repositories/</span>   <span class="cmt">← data access</span><br/>
+└── <span class="dir">__tests__/</span>      <span class="cmt">← test</span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">새 기능 추가 시 agent가 이 표준 구조를 <strong>predict</strong>해서 정확한 자리에 둔다 — 일관성이 50%에서 100%로 수렴</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="50-agent-optimized-four.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">51 / 75</a></div>
+    <div class="nav-right"><a href="52-agent-logging.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('50-agent-optimized-four.html');
+  if (e.key === 'ArrowRight') navigateTo('52-agent-logging.html');
+});
+</script>
+</body>
+</html>

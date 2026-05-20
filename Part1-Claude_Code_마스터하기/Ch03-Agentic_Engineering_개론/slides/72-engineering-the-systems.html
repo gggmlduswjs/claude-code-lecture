@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>최종 메시지 · Engineering the Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 1200px; height: 1200px; background: radial-gradient(circle, rgba(124, 58, 237, 0.14), rgba(56, 189, 248, 0.10) 28%, rgba(52, 211, 153, 0.08) 48%, rgba(249, 115, 22, 0.06) 65%, transparent 80%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 13px; letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; background: linear-gradient(90deg, #a78bfa, #38bdf8, #34d399, #fdba74, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.attribution { font-size: 13px; color: #b1bac4; letter-spacing: 1px; margin-bottom: 28px; }
+.attribution strong { color: #e6edf3; font-weight: 700; }
+.quote-box { width: 100%; max-width: 1120px; padding: 56px 64px 64px 64px; background: rgba(124, 58, 237, 0.04); border: 2px solid rgba(124, 58, 237, 0.35); border-radius: 24px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 26px; position: relative; }
+.quote-box::before { content: '"'; position: absolute; top: 4px; left: 28px; font-size: 110px; color: rgba(167, 139, 250, 0.35); font-family: Georgia, serif; line-height: 1; }
+.quote-box::after { content: '"'; position: absolute; bottom: -36px; right: 32px; font-size: 110px; color: rgba(167, 139, 250, 0.35); font-family: Georgia, serif; line-height: 1; }
+.quote { font-size: 28px; font-weight: 800; color: #f0f6fc; line-height: 1.5; }
+.quote .stop { color: #fca5a5; font-weight: 900; }
+.quote .start { background: linear-gradient(135deg, #a78bfa, #38bdf8, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.quote .ko { display: block; margin-top: 18px; font-size: 16px; color: #c9d1d9; font-weight: 500; font-style: italic; line-height: 1.6; }
+.signature { width: 100%; max-width: 1100px; padding: 16px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; font-size: 13.5px; color: #c9d1d9; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.5s; }
+.signature .label { font-size: 10px; letter-spacing: 2.5px; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; }
+.signature strong { color: #f0f6fc; font-weight: 700; }
+.signature em { font-style: normal; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Ch03 최종 메시지 · The Report's Final Line</div>
+  <div class="attribution">5 Pillars의 끝점 · <strong>다음 챕터의 출발점</strong></div>
+  <div class="quote-box">
+    <div class="quote">"To remain relevant in the agentic era,<br/>teams must <span class="stop">stop simply writing code</span><br/>and start <span class="start">engineering the systems</span><br/><span class="start">that allow code to build itself</span>."
+      <span class="ko">agentic 시대에 관련성을 유지하려면 — 팀은 단순히 코드를 쓰는 것을 멈추고,<br/>코드가 스스로를 만들 수 있게 하는 시스템을 engineering하기 시작해야 한다.</span>
+    </div>
+  </div>
+  <div class="signature">
+    <div class="label">Ch03 한 줄 요약</div>
+    더 이상 <strong>write code</strong> 하지 않는다 — <em>engineer the systems that allow code to build itself</em>. 이 한 문장에 챕터 전체가 압축되어 있다.
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="71-leadership-mandate.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">72 / 75</a></div>
+    <div class="nav-right"><a href="73-lab-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('71-leadership-mandate.html');
+  if (e.key === 'ArrowRight') navigateTo('73-lab-intro.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Part 1 · Ch03 — Agentic Engineering 개론 · 학습 자료</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  padding: 0 0 80px;
+  position: relative;
+  overflow-x: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+body::before {
+  content: '';
+  position: fixed; top: -25%; left: 50%;
+  transform: translateX(-50%);
+  width: 1200px; height: 1200px;
+  background: radial-gradient(circle, rgba(124,58,237,0.13), rgba(56,189,248,0.05) 40%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.wrapper { max-width: 1180px; margin: 0 auto; padding: 64px 40px 0; position: relative; z-index: 1; }
+
+.crumbs {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: #8b949e;
+  margin-bottom: 24px; font-weight: 600; letter-spacing: 0.3px;
+}
+.crumbs a { color: #a78bfa; text-decoration: none; transition: color 0.15s; }
+.crumbs a:hover { color: #c4b5fd; }
+.crumbs span.sep { color: #484f58; }
+
+.header { margin-bottom: 50px; }
+.eyebrow {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 2px;
+  color: #c4b5fd; font-weight: 800; text-transform: uppercase;
+  padding: 5px 11px;
+  background: rgba(167,139,250,0.13);
+  border: 1px solid rgba(167,139,250,0.30);
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-size: 44px; font-weight: 900; color: #f0f6fc;
+  line-height: 1.25; margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.header h1 .accent {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header .subtitle { font-size: 17px; color: #b1bac4; line-height: 1.6; max-width: 760px; }
+.header .meta {
+  margin-top: 22px;
+  display: inline-flex; gap: 22px; flex-wrap: wrap;
+  padding: 10px 22px;
+  background: rgba(139,148,158,0.06);
+  border: 1px solid rgba(139,148,158,0.16);
+  border-radius: 999px;
+  font-size: 12px; color: #b1bac4; font-weight: 600;
+}
+.header .meta strong { color: #c4b5fd; font-family: 'JetBrains Mono', monospace; }
+
+.section { margin-bottom: 64px; }
+.section-head {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 22px; padding-bottom: 14px;
+  border-bottom: 1px solid rgba(139,148,158,0.18);
+}
+.section-head .icon { font-size: 22px; }
+.section-head h2 { font-size: 22px; font-weight: 800; color: #f0f6fc; }
+.section-head .count {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: #8b949e; font-weight: 600;
+}
+
+.slide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.slide-card {
+  display: flex; flex-direction: column;
+  padding: 16px 16px 14px;
+  background: rgba(139,148,158,0.05);
+  border: 1px solid rgba(139,148,158,0.18);
+  border-radius: 11px;
+  color: inherit; text-decoration: none;
+  transition: all 0.16s ease;
+  min-height: 96px;
+}
+.slide-card:hover {
+  border-color: rgba(167,139,250,0.50);
+  background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(56,189,248,0.06));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.30);
+}
+.slide-card .slide-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 800;
+  color: #a78bfa; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.slide-card .slide-title {
+  font-size: 14px; color: #e6edf3; font-weight: 600;
+  line-height: 1.5;
+}
+.slide-empty {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 14px;
+  padding: 28px 24px;
+  background: rgba(167,139,250,0.05);
+  border: 1px dashed rgba(167,139,250,0.34);
+  border-radius: 12px;
+  color: #c4b5fd;
+}
+.slide-empty .slide-empty-icon { font-size: 26px; }
+.slide-empty .slide-empty-text { font-size: 14px; color: #ddd6fe; font-weight: 600; }
+
+article {
+  font-size: 15px; line-height: 1.82; color: #cdd6e0;
+  max-width: 860px;
+}
+article h1 { font-size: 26px; color: #f0f6fc; font-weight: 900; margin: 6px 0 18px; line-height: 1.3; }
+article h2 { font-size: 21px; color: #e6edf3; font-weight: 800; margin: 38px 0 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(139,148,158,0.15); }
+article h3 { font-size: 17px; color: #c4b5fd; font-weight: 700; margin: 28px 0 10px; }
+article h4 { font-size: 14.5px; color: #7dd3fc; font-weight: 700; margin: 22px 0 8px; }
+article p { margin-bottom: 13px; }
+article ul, article ol { padding-left: 22px; margin-bottom: 14px; }
+article li { margin-bottom: 6px; }
+article strong { color: #f0f6fc; font-weight: 700; }
+article em { color: #ddd6fe; font-style: italic; }
+article a { color: #7dd3fc; text-decoration: underline; text-underline-offset: 3px; }
+article code {
+  background: rgba(167,139,250,0.13); color: #ddd6fe;
+  padding: 2px 6px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+article pre {
+  background: #060911; border: 1px solid rgba(139,148,158,0.18);
+  padding: 16px 18px; border-radius: 10px;
+  overflow-x: auto; margin: 14px 0 20px;
+}
+article pre code {
+  background: transparent; color: #cbd5e1; padding: 0;
+  font-size: 12.5px; line-height: 1.65;
+}
+article blockquote {
+  border-left: 3px solid #a78bfa;
+  background: rgba(167,139,250,0.06);
+  padding: 12px 16px; margin: 14px 0;
+  border-radius: 0 8px 8px 0;
+  color: #c9d1d9;
+}
+article blockquote p { margin: 0; }
+article table {
+  width: 100%; border-collapse: collapse; margin: 18px 0;
+  font-size: 13.5px;
+}
+article th, article td {
+  border: 1px solid rgba(139,148,158,0.22);
+  padding: 8px 12px; text-align: left;
+}
+article th { background: rgba(167,139,250,0.10); font-weight: 700; color: #ddd6fe; }
+article hr { border: none; border-top: 1px solid rgba(139,148,158,0.20); margin: 36px 0; }
+article input[type=checkbox] { accent-color: #a78bfa; transform: translateY(2px); margin-right: 6px; }
+
+.chapter-nav {
+  display: flex; justify-content: space-between; gap: 14px;
+  margin-top: 60px; padding-top: 30px;
+  border-top: 1px solid rgba(139,148,158,0.18);
+}
+.nav-link {
+  display: flex; flex-direction: column;
+  padding: 14px 20px;
+  background: rgba(139,148,158,0.05);
+  border: 1px solid rgba(139,148,158,0.20);
+  border-radius: 10px;
+  color: inherit; text-decoration: none;
+  min-width: 280px;
+  transition: all 0.16s ease;
+}
+.nav-link:hover {
+  border-color: rgba(167,139,250,0.40);
+  background: rgba(167,139,250,0.08);
+}
+.nav-link .nav-dir {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #a78bfa; font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.nav-link .nav-target { font-size: 14px; color: #e6edf3; font-weight: 600; margin-top: 4px; }
+.nav-link.placeholder { visibility: hidden; }
+
+.floating-hub {
+  position: fixed; top: 22px; right: 24px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px 10px 14px;
+  background: rgba(10,15,26,0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(167,139,250,0.34);
+  border-radius: 999px;
+  color: #ddd6fe;
+  font-size: 13px; font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: all 0.16s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  opacity: 0;
+  animation: fadeIn 0.6s ease 0.15s forwards;
+}
+.floating-hub:hover {
+  background: rgba(167,139,250,0.18);
+  border-color: rgba(167,139,250,0.60);
+  color: #f0e9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.40);
+}
+.floating-hub .icon { font-size: 15px; line-height: 1; }
+
+@media (max-width: 760px) {
+  .wrapper { padding: 36px 22px 0; }
+  .header h1 { font-size: 32px; }
+  .slide-grid { grid-template-columns: 1fr 1fr; }
+  .chapter-nav { flex-direction: column; }
+  .nav-link { min-width: 0; }
+  .nav-link.placeholder { display: none; }
+  .floating-hub { top: 14px; right: 14px; padding: 8px 14px 8px 12px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<a class="floating-hub" href="../../index.html" title="학습 자료 허브로 돌아가기">
+  <span class="icon">←</span>
+  <span>학습 허브</span>
+</a>
+
+<div class="wrapper">
+
+  <div class="crumbs">
+    <a href="../../index.html">학습 자료 허브</a>
+    <span class="sep">›</span>
+    <span>Part 1 · Ch03</span>
+  </div>
+
+  <header class="header">
+    <span class="eyebrow">Part 1 · Ch03</span>
+    <h1>Agentic Engineering 개론</h1>
+    <p class="subtitle">5 Pillars로 본 차세대 엔지니어링</p>
+    <div class="meta">
+      <span>슬라이드 <strong>75</strong>개</span><span>실습 <strong>3</strong>개</span><span>소요 <strong>약 3시간 15분 (실습 1: 45분 · 실습 2: 60분 · 통합 실습: 90분)</strong></span>
+    </div>
+  </header>
+
+  <section class="section" id="slides">
+    <div class="section-head">
+      <span class="icon">📊</span>
+      <h2>강의 슬라이드</h2>
+      <span class="count">75장 · 클릭하면 새 탭으로 열림</span>
+    </div>
+    <div class="slide-grid">
+      <a class="slide-card" href="slides/01-paradigm-intro.html" target="_blank" rel="noopener"><span class="slide-num">01</span><span class="slide-title">Ch03 시작 · Agentic Engineering 분과</span></a>
+      <a class="slide-card" href="slides/02-vibe-coding-slur.html" target="_blank" rel="noopener"><span class="slide-num">02</span><span class="slide-title">Peter Steinberger</span></a>
+      <a class="slide-card" href="slides/03-stateless-limit.html" target="_blank" rel="noopener"><span class="slide-num">03</span><span class="slide-title">Stateless의 구조적 한계</span></a>
+      <a class="slide-card" href="slides/04-floor-ceiling.html" target="_blank" rel="noopener"><span class="slide-num">04</span><span class="slide-title">Vibe vs Agentic</span></a>
+      <a class="slide-card" href="slides/05-10x-engineer-obsolete.html" target="_blank" rel="noopener"><span class="slide-num">05</span><span class="slide-title">&quot;10x Engineer is Obsolete Metric&quot;</span></a>
+      <a class="slide-card" href="slides/06-karpathy-engineering.html" target="_blank" rel="noopener"><span class="slide-num">06</span><span class="slide-title">의도된 단어</span></a>
+      <a class="slide-card" href="slides/07-three-new-tasks.html" target="_blank" rel="noopener"><span class="slide-num">07</span><span class="slide-title">System Design · Intentional Thought · Robust Env</span></a>
+      <a class="slide-card" href="slides/08-agentic-eng-definition.html" target="_blank" rel="noopener"><span class="slide-num">08</span><span class="slide-title">3구성</span></a>
+      <a class="slide-card" href="slides/09-four-drivers.html" target="_blank" rel="noopener"><span class="slide-num">09</span><span class="slide-title">패러다임 전환 4가지 동인</span></a>
+      <a class="slide-card" href="slides/10-pillar1-intro.html" target="_blank" rel="noopener"><span class="slide-num">10</span><span class="slide-title">Pillar I 인트로 · Context Engineering</span></a>
+      <a class="slide-card" href="slides/11-dump-vs-curate.html" target="_blank" rel="noopener"><span class="slide-num">11</span><span class="slide-title">Dump Everything의 실패</span></a>
+      <a class="slide-card" href="slides/12-probabilistic-confusion.html" target="_blank" rel="noopener"><span class="slide-num">12</span><span class="slide-title">Probabilistic Confusion이란 무엇인가</span></a>
+      <a class="slide-card" href="slides/13-context-window-budget.html" target="_blank" rel="noopener"><span class="slide-num">13</span><span class="slide-title">Context Window는 한계가 아니라 Budget</span></a>
+      <a class="slide-card" href="slides/14-second-brain-tree.html" target="_blank" rel="noopener"><span class="slide-num">14</span><span class="slide-title">Second Brain · Hierarchical Markdown Tree</span></a>
+      <a class="slide-card" href="slides/15-markdown-sprawl.html" target="_blank" rel="noopener"><span class="slide-num">15</span><span class="slide-title">Markdown Sprawl · Second Brain의 성장통</span></a>
+      <a class="slide-card" href="slides/16-indexing-systems.html" target="_blank" rel="noopener"><span class="slide-num">16</span><span class="slide-title">Indexing Systems · Hierarchical Knowledge Graph</span></a>
+      <a class="slide-card" href="slides/17-context-localization.html" target="_blank" rel="noopener"><span class="slide-num">17</span><span class="slide-title">Context Localization · 3 Layer 구조</span></a>
+      <a class="slide-card" href="slides/18-openai-principle.html" target="_blank" rel="noopener"><span class="slide-num">18</span><span class="slide-title">OpenAI 원칙 · 코드에 없으면 존재하지 않는다</span></a>
+      <a class="slide-card" href="slides/19-context-toolset.html" target="_blank" rel="noopener"><span class="slide-num">19</span><span class="slide-title">Context Engineering Toolset 3종</span></a>
+      <a class="slide-card" href="slides/20-demo-before-after.html" target="_blank" rel="noopener"><span class="slide-num">20</span><span class="slide-title">라이브 시연 Before/After</span></a>
+      <a class="slide-card" href="slides/21-pillar1-summary.html" target="_blank" rel="noopener"><span class="slide-num">21</span><span class="slide-title">Clip 02 요약 · Context는 시작, 검증은 다음</span></a>
+      <a class="slide-card" href="slides/22-pillar2-intro.html" target="_blank" rel="noopener"><span class="slide-num">22</span><span class="slide-title">Pillar II 인트로 · Agentic Validation</span></a>
+      <a class="slide-card" href="slides/23-closed-loop-validation.html" target="_blank" rel="noopener"><span class="slide-num">23</span><span class="slide-title">Closed-Loop Validation · Boris Cherny</span></a>
+      <a class="slide-card" href="slides/24-crappy-vs-validated.html" target="_blank" rel="noopener"><span class="slide-num">24</span><span class="slide-title">Crappy Output vs Validated Work</span></a>
+      <a class="slide-card" href="slides/25-external-deterministic.html" target="_blank" rel="noopener"><span class="slide-num">25</span><span class="slide-title">외부 결정론 시스템의 역할</span></a>
+      <a class="slide-card" href="slides/26-stack-validation-matrix.html" target="_blank" rel="noopener"><span class="slide-num">26</span><span class="slide-title">스택별 Validation 전략 매트릭스</span></a>
+      <a class="slide-card" href="slides/27-log-based-validation.html" target="_blank" rel="noopener"><span class="slide-num">27</span><span class="slide-title">Log-Based Validation · 2-Layer 구조</span></a>
+      <a class="slide-card" href="slides/28-logql-self-correction.html" target="_blank" rel="noopener"><span class="slide-num">28</span><span class="slide-title">LogQL 쿼리 &amp; Self-Correction Loop</span></a>
+      <a class="slide-card" href="slides/29-validation-failure-scenarios.html" target="_blank" rel="noopener"><span class="slide-num">29</span><span class="slide-title">시나리오 A vs B</span></a>
+      <a class="slide-card" href="slides/30-pillar2-summary.html" target="_blank" rel="noopener"><span class="slide-num">30</span><span class="slide-title">Clip 03 요약 · Validation은 Loop의 안전벨트</span></a>
+      <a class="slide-card" href="slides/31-pillar3-intro.html" target="_blank" rel="noopener"><span class="slide-num">31</span><span class="slide-title">Pillar III 인트로 · Agentic Tooling</span></a>
+      <a class="slide-card" href="slides/32-strategic-friction.html" target="_blank" rel="noopener"><span class="slide-num">32</span><span class="slide-title">Strategic Elimination of Friction</span></a>
+      <a class="slide-card" href="slides/33-build-a-tool.html" target="_blank" rel="noopener"><span class="slide-num">33</span><span class="slide-title">Build a Tool, Don&#x27;t Do the Task · Steinberger</span></a>
+      <a class="slide-card" href="slides/34-friction-definition.html" target="_blank" rel="noopener"><span class="slide-num">34</span><span class="slide-title">Friction의 정의 · Stall이 보이는 순간</span></a>
+      <a class="slide-card" href="slides/35-architect-redefined.html" target="_blank" rel="noopener"><span class="slide-num">35</span><span class="slide-title">Architect 역할의 재정의</span></a>
+      <a class="slide-card" href="slides/36-tooling-4-categories.html" target="_blank" rel="noopener"><span class="slide-num">36</span><span class="slide-title">4-Category Diagnostic Framework 인트로</span></a>
+      <a class="slide-card" href="slides/37-category1-audit.html" target="_blank" rel="noopener"><span class="slide-num">37</span><span class="slide-title">카테고리 1 · Audit Manual Interventions</span></a>
+      <a class="slide-card" href="slides/38-category2-api-gaps.html" target="_blank" rel="noopener"><span class="slide-num">38</span><span class="slide-title">카테고리 2 · Identify API Gaps</span></a>
+      <a class="slide-card" href="slides/39-category3-wait-states.html" target="_blank" rel="noopener"><span class="slide-num">39</span><span class="slide-title">카테고리 3 · Monitor Agent Wait States</span></a>
+      <a class="slide-card" href="slides/40-cli-first.html" target="_blank" rel="noopener"><span class="slide-num">40</span><span class="slide-title">카테고리 4 · CLI-First Integration</span></a>
+      <a class="slide-card" href="slides/41-skill-automation-patterns.html" target="_blank" rel="noopener"><span class="slide-num">41</span><span class="slide-title">Skill Automation · 4가지 패턴</span></a>
+      <a class="slide-card" href="slides/42-decoupling-bottleneck.html" target="_blank" rel="noopener"><span class="slide-num">42</span><span class="slide-title">Decoupling the Human Bottleneck</span></a>
+      <a class="slide-card" href="slides/43-pillar3-summary.html" target="_blank" rel="noopener"><span class="slide-num">43</span><span class="slide-title">Clip 04 요약 · Architect는 Bridge Builder</span></a>
+      <a class="slide-card" href="slides/44-pillar4-intro.html" target="_blank" rel="noopener"><span class="slide-num">44</span><span class="slide-title">Pillar IV 인트로 · Agentic Codebases</span></a>
+      <a class="slide-card" href="slides/45-brownfield-poison.html" target="_blank" rel="noopener"><span class="slide-num">45</span><span class="slide-title">Brownfield는 Loop를 Poison한다</span></a>
+      <a class="slide-card" href="slides/46-50-percent-rule.html" target="_blank" rel="noopener"><span class="slide-num">46</span><span class="slide-title">Agent의 잘못 고를 확률</span></a>
+      <a class="slide-card" href="slides/47-pattern-contamination.html" target="_blank" rel="noopener"><span class="slide-num">47</span><span class="slide-title">4단계 독성 작용</span></a>
+      <a class="slide-card" href="slides/48-consistency-over-dry.html" target="_blank" rel="noopener"><span class="slide-num">48</span><span class="slide-title">Consistency over DRY · 챕터 핵심</span></a>
+      <a class="slide-card" href="slides/49-dry-solid-evolving.html" target="_blank" rel="noopener"><span class="slide-num">49</span><span class="slide-title">Evolving Application</span></a>
+      <a class="slide-card" href="slides/50-agent-optimized-four.html" target="_blank" rel="noopener"><span class="slide-num">50</span><span class="slide-title">4요소</span></a>
+      <a class="slide-card" href="slides/51-consistent-file-structures.html" target="_blank" rel="noopener"><span class="slide-num">51</span><span class="slide-title">Consistent File Structures</span></a>
+      <a class="slide-card" href="slides/52-agent-logging.html" target="_blank" rel="noopener"><span class="slide-num">52</span><span class="slide-title">Agent-Specific Logging (JSON line)</span></a>
+      <a class="slide-card" href="slides/53-machine-readable-docs.html" target="_blank" rel="noopener"><span class="slide-num">53</span><span class="slide-title">Machine-Readable Docs + Golden Rules</span></a>
+      <a class="slide-card" href="slides/54-philosophy-shift.html" target="_blank" rel="noopener"><span class="slide-num">54</span><span class="slide-title">&quot;다음 Agent를 위해&quot;</span></a>
+      <a class="slide-card" href="slides/55-pillar5-intro.html" target="_blank" rel="noopener"><span class="slide-num">55</span><span class="slide-title">Pillar V 인트로 · Compound Engineering</span></a>
+      <a class="slide-card" href="slides/56-dan-schipper-origin.html" target="_blank" rel="noopener"><span class="slide-num">56</span><span class="slide-title">Dan Schipper (Every)</span></a>
+      <a class="slide-card" href="slides/57-compound-definition.html" target="_blank" rel="noopener"><span class="slide-num">57</span><span class="slide-title">3 키워드</span></a>
+      <a class="slide-card" href="slides/58-pillar4x5-synergy.html" target="_blank" rel="noopener"><span class="slide-num">58</span><span class="slide-title">곱셈 효과</span></a>
+      <a class="slide-card" href="slides/59-high-performing-teams.html" target="_blank" rel="noopener"><span class="slide-num">59</span><span class="slide-title">High-Performing 팀의 패턴</span></a>
+      <a class="slide-card" href="slides/60-working-library.html" target="_blank" rel="noopener"><span class="slide-num">60</span><span class="slide-title">Working Library의 4가지 자산</span></a>
+      <a class="slide-card" href="slides/61-code-builds-itself.html" target="_blank" rel="noopener"><span class="slide-num">61</span><span class="slide-title">임계점</span></a>
+      <a class="slide-card" href="slides/62-pillar5-summary.html" target="_blank" rel="noopener"><span class="slide-num">62</span><span class="slide-title">Clip 06 요약 · 5 Pillars의 위상</span></a>
+      <a class="slide-card" href="slides/63-integration-intro.html" target="_blank" rel="noopener"><span class="slide-num">63</span><span class="slide-title">Clip 07 인트로 · 5 Pillars 통합</span></a>
+      <a class="slide-card" href="slides/64-scenario-day1.html" target="_blank" rel="noopener"><span class="slide-num">64</span><span class="slide-title">Pillar I · III 작동</span></a>
+      <a class="slide-card" href="slides/65-scenario-day2-3.html" target="_blank" rel="noopener"><span class="slide-num">65</span><span class="slide-title">Pillar IV (Codebase) 작동</span></a>
+      <a class="slide-card" href="slides/66-scenario-day4-5.html" target="_blank" rel="noopener"><span class="slide-num">66</span><span class="slide-title">Validation + Compound 작동</span></a>
+      <a class="slide-card" href="slides/67-high-performing-team-matrix.html" target="_blank" rel="noopener"><span class="slide-num">67</span><span class="slide-title">High-Performing 팀 패턴 매트릭스</span></a>
+      <a class="slide-card" href="slides/68-architect-evolution.html" target="_blank" rel="noopener"><span class="slide-num">68</span><span class="slide-title">Architect 진화 · 옛 vs 새</span></a>
+      <a class="slide-card" href="slides/69-architect-three-tasks.html" target="_blank" rel="noopener"><span class="slide-num">69</span><span class="slide-title">새 Architect의 3가지 일</span></a>
+      <a class="slide-card" href="slides/70-adoption-speed.html" target="_blank" rel="noopener"><span class="slide-num">70</span><span class="slide-title">Adoption 속도 · Competitive Obsolescence</span></a>
+      <a class="slide-card" href="slides/71-leadership-mandate.html" target="_blank" rel="noopener"><span class="slide-num">71</span><span class="slide-title">Engineering Leadership Mandate</span></a>
+      <a class="slide-card" href="slides/72-engineering-the-systems.html" target="_blank" rel="noopener"><span class="slide-num">72</span><span class="slide-title">최종 메시지 · Engineering the Systems</span></a>
+      <a class="slide-card" href="slides/73-lab-intro.html" target="_blank" rel="noopener"><span class="slide-num">73</span><span class="slide-title">Brownfield → Agent-Ready</span></a>
+      <a class="slide-card" href="slides/74-lab-flow.html" target="_blank" rel="noopener"><span class="slide-num">74</span><span class="slide-title">5단계</span></a>
+      <a class="slide-card" href="slides/75-ch03-summary.html" target="_blank" rel="noopener"><span class="slide-num">75</span><span class="slide-title">5 Pillars + 회고 + Ch04 예고</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="exercises">
+    <div class="section-head">
+      <span class="icon">💻</span>
+      <h2>실습</h2>
+      <span class="count">학습자 본인 repo에 적용</span>
+    </div>
+    <article id="article"></article>
+  </section>
+
+  <nav class="chapter-nav">
+    <a class="nav-link" href="../Ch02-Vibe_Coding의_본질과_한계/learn.html"><span class="nav-dir">← 이전 챕터</span><span class="nav-target">Part 1 · Ch02 · Vibe Coding의 본질과 한계</span></a>
+    <a class="nav-link" href="../Ch04-Harness_Engineering_개론/learn.html"><span class="nav-dir">다음 챕터 →</span><span class="nav-target">Part 1 · Ch04 · Harness Engineering 개론</span></a>
+  </nav>
+
+</div>
+
+<script>
+(async () => {
+  const article = document.getElementById('article');
+  marked.use({ tokenizer: { del() { return false; } } });
+  try {
+    const res = await fetch('./exercises/exercises.md', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const md = await res.text();
+    article.innerHTML = DOMPurify.sanitize(marked.parse(md));
+  } catch (err) {
+    article.innerHTML =
+      '<div class="slide-empty">' +
+      '<span class="slide-empty-icon">⚠️</span>' +
+      '<span class="slide-empty-text">실습 본문을 불러오지 못했습니다 (' +
+      String(err.message || err) +
+      '). file://로 직접 열면 fetch가 차단됩니다 — 로컬에서 보려면 챕터 디렉토리에서 ' +
+      '<code>python3 -m http.server</code> 같은 dev server를 띄우거나 배포 사이트로 접속하세요.' +
+      '</span></div>';
+  }
+})();
+</script>
+
+</body>
+</html>

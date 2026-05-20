@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>탐색 → 계획 → 코드 → 커밋</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 48px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 36px; }
+
+.step-flow { width: 100%; max-width: 980px; display: flex; flex-direction: column; gap: 16px; }
+.step-item { display: flex; align-items: flex-start; gap: 22px; padding: 22px 26px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 16px; opacity: 0; transform: translateX(-20px); animation: stepIn 0.5s ease forwards; }
+.step-item:nth-child(1) { animation-delay: 0.1s; }
+.step-item:nth-child(2) { animation-delay: 0.25s; }
+.step-item:nth-child(3) { animation-delay: 0.4s; }
+.step-item:nth-child(4) { animation-delay: 0.55s; }
+.step-num { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #fbbf24, #f97316); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: #fff; }
+.step-body { flex: 1; }
+.step-mode { font-size: 11px; color: #fde68a; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.step-title { font-size: 18px; font-weight: 700; color: #e6edf3; margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: #b1bac4; line-height: 1.55; margin-bottom: 8px; }
+.step-prompt { padding: 10px 14px; background: rgba(10,15,26,0.6); border: 1px solid rgba(251,191,36,0.15); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12px; color: #fde68a; line-height: 1.5; }
+
+.tip { margin-top: 22px; padding: 14px 28px; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.25); border-radius: 12px; max-width: 980px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.7s ease forwards; }
+.tip-text { font-size: 13px; color: #c9d1d9; line-height: 1.5; }
+.tip-text strong { color: #fde68a; font-weight: 700; }
+
+@keyframes stepIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">탐색 → 계획 → 코드 → 커밋</h1>
+  <div class="subtitle">잘못된 문제를 풀지 않는 4단계 워크플로우</div>
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-mode">⏸ Plan Mode</div>
+        <div class="step-title">탐색</div>
+        <div class="step-desc">파일 읽기, 구조 이해 — 변경 X</div>
+        <div class="step-prompt">&gt; /src/auth를 읽고 세션·로그인 처리 방식 이해</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-mode">⏸ Plan Mode</div>
+        <div class="step-title">계획</div>
+        <div class="step-desc">상세 구현 계획 작성. Ctrl+G로 직접 편집 가능</div>
+        <div class="step-prompt">&gt; OAuth 추가하려고 한다. 어떤 파일 수정? 세션 흐름은?</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-mode">⚡ Auto Mode</div>
+        <div class="step-title">구현</div>
+        <div class="step-desc">계획대로 실행. 검증 단계 포함하면 한 사이클에 끝</div>
+        <div class="step-prompt">&gt; 계획대로 OAuth 구현. 콜백 핸들러 테스트 작성, 통과 확인</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-mode">🟢 Default</div>
+        <div class="step-title">커밋</div>
+        <div class="step-desc">설명적 메시지로 커밋, PR 열기</div>
+        <div class="step-prompt">&gt; 설명적 메시지로 커밋, PR 열기</div>
+      </div>
+    </div>
+  </div>
+  <div class="tip">
+    <div class="tip-text">📝 작업이 작거나(오타·한 줄 수정) diff를 한 문장으로 설명할 수 있으면 — <strong>Plan 건너뛰기 OK</strong>.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="28-validation-first.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">29 / 44</a></div>
+  <div class="nav-right"><a href="29b-specific-context-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('28-validation-first.html');
+  if (e.key === 'ArrowRight') navigateTo('29b-specific-context-patterns.html');
+});
+</script></body></html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>AI는 맥락 모르는 시니어</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(232, 121, 249, 0.1), rgba(124, 58, 237, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.outro-tag { font-size: 13px; color: #f0abfc; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 54px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 18px; line-height: 1.25; }
+.subtitle { font-size: 18px; color: #c9d1d9; text-align: center; margin-bottom: 48px; line-height: 1.6; max-width: 900px; }
+.subtitle strong { color: #e6edf3; font-weight: 700; }
+.hero-cards { display: flex; gap: 26px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 1100px; }
+.hero-card { flex: 1 1 240px; max-width: 260px; padding: 26px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.hero-card:nth-child(1) { animation-delay: 0.1s; }
+.hero-card:nth-child(2) { animation-delay: 0.22s; }
+.hero-card:nth-child(3) { animation-delay: 0.34s; }
+.hero-card:nth-child(4) { animation-delay: 0.46s; }
+.hero-card .emoji { font-size: 38px; margin-bottom: 12px; }
+.hero-card .title-text { font-size: 15px; font-weight: 800; color: #e6edf3; margin-bottom: 8px; line-height: 1.3; }
+.hero-card .desc { font-size: 13px; color: #b1bac4; line-height: 1.55; }
+.diff-bar { margin-top: 36px; padding: 22px 40px; background: rgba(232, 121, 249, 0.06); border: 1px solid rgba(232, 121, 249, 0.25); border-radius: 14px; font-size: 15px; color: #c9d1d9; text-align: center; line-height: 1.7; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.6s; max-width: 1080px; }
+.diff-bar strong { background: linear-gradient(135deg, #f0abfc, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+/* ===== Brand Logo (fixed top-right) ===== */
+.brand-logo {
+  position: fixed;
+  top: 20px;
+  right: 28px;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  animation: logoFadeIn 0.6s ease 0.2s forwards;
+}
+.brand-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="outro-tag">The Metaphor</div>
+  <h1 class="title">AI는 맥락을 모르는<br/>시니어 엔지니어다</h1>
+  <div class="subtitle">코딩 능력은 시니어급이지만, <strong>여러분의 프로젝트 맥락과 비즈니스 도메인을 모르는</strong> 새로 합류한 팀원</div>
+  <div class="hero-cards">
+    <div class="hero-card">
+      <div class="emoji">📖</div>
+      <div class="title-text">맥락을 설명해야 한다</div>
+      <div class="desc">프로젝트 배경을 전달해야 제대로 움직입니다</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">👀</div>
+      <div class="title-text">결과물을 리뷰해야 한다</div>
+      <div class="desc">실력 있어도 맥락을 잘못 이해할 수 있습니다</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">↩️</div>
+      <div class="title-text">방향이 틀리면 잡아준다</div>
+      <div class="desc">잘못된 방향으로 가면 빨리 잡아줘야 합니다</div>
+    </div>
+    <div class="hero-card">
+      <div class="emoji">🚀</div>
+      <div class="title-text">맥락 주면 놀라운 속도</div>
+      <div class="desc">맥락을 잘 전달하면 높은 품질의 결과물</div>
+    </div>
+  </div>
+  <div class="diff-bar">차이점: 이 팀원은 <strong>하루에 수백 개 파일을 읽고, 절대 지치지 않고, 병렬로 처리</strong>하며, 터미널 안에서 파일 시스템에 직접 접근합니다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="39-team-rollout-tips.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">40 / 43</a></div>
+    <div class="nav-right"><a href="41-role-shift.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('39-team-rollout-tips.html');
+  if (e.key === 'ArrowRight') navigateTo('41-role-shift.html');
+});
+</script>
+</body>
+</html>

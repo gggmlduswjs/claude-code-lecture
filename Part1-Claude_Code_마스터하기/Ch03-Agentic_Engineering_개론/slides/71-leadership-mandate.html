@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Engineering Leadership Mandate</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(251, 191, 36, 0.10), rgba(124, 58, 237, 0.06) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 38px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 13px; color: #fde68a; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+.attribution { font-size: 14px; color: #b1bac4; letter-spacing: 1px; margin-bottom: 22px; }
+.attribution strong { color: #fde68a; font-weight: 700; }
+.quote-box { width: 100%; max-width: 1100px; padding: 44px 60px 50px 60px; background: rgba(251, 191, 36, 0.04); border: 2px solid rgba(251, 191, 36, 0.3); border-radius: 24px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 22px; position: relative; }
+.quote-box::before { content: '"'; position: absolute; top: 4px; left: 28px; font-size: 100px; color: rgba(251, 191, 36, 0.3); font-family: Georgia, serif; line-height: 1; }
+.quote-box::after { content: '"'; position: absolute; bottom: -32px; right: 32px; font-size: 100px; color: rgba(251, 191, 36, 0.3); font-family: Georgia, serif; line-height: 1; }
+.quote { font-size: 28px; font-weight: 800; color: #fef3c7; line-height: 1.45; }
+.quote .em { background: linear-gradient(135deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.quote .ko { display: block; margin-top: 14px; font-size: 16px; color: #c9d1d9; font-weight: 500; font-style: italic; }
+.failure-grid { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.fitem { padding: 10px 16px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 10px; font-size: 12.5px; color: #c9d1d9; line-height: 1.55; display: flex; align-items: center; gap: 12px; opacity: 0; animation: cardAppear 0.4s ease forwards; }
+.fitem:nth-child(1) { animation-delay: 0.40s; border-left: 3px solid #a78bfa; }
+.fitem:nth-child(2) { animation-delay: 0.46s; border-left: 3px solid #38bdf8; }
+.fitem:nth-child(3) { animation-delay: 0.52s; border-left: 3px solid #fdba74; }
+.fitem:nth-child(4) { animation-delay: 0.58s; border-left: 3px solid #34d399; }
+.fitem:nth-child(5) { animation-delay: 0.64s; border-left: 3px solid #f472b6; grid-column: 1 / -1; }
+.fitem .ptag { font-size: 10px; font-weight: 800; letter-spacing: 1px; padding: 2px 8px; border-radius: 5px; flex-shrink: 0; }
+.fitem:nth-child(1) .ptag { background: rgba(167, 139, 250, 0.15); color: #c4b5fd; }
+.fitem:nth-child(2) .ptag { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; }
+.fitem:nth-child(3) .ptag { background: rgba(253, 186, 116, 0.15); color: #fdba74; }
+.fitem:nth-child(4) .ptag { background: rgba(52, 211, 153, 0.15); color: #6ee7b7; }
+.fitem:nth-child(5) .ptag { background: rgba(244, 114, 182, 0.15); color: #f9a8d4; }
+.fitem .ftext strong { color: #f0f6fc; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Engineering Leadership Mandate</div>
+  <div class="attribution">실패를 다루는 새 원칙 — <strong>모든 실패는 5 Pillars 중 하나의 개선 신호</strong></div>
+  <div class="quote-box">
+    <div class="quote">"Avoid the innate reaction to <span class="em">revert to manual coding</span><br/>when agentic loops fail."
+      <span class="ko">agentic loop가 실패할 때 — 손코딩으로 돌아가려는 본능적 반응을 피하라.</span>
+    </div>
+  </div>
+  <div class="failure-grid">
+    <div class="fitem">
+      <span class="ptag">PILLAR I</span>
+      <span class="ftext">agent가 컨벤션을 모름 → <strong>CLAUDE.md에 추가</strong></span>
+    </div>
+    <div class="fitem">
+      <span class="ptag">PILLAR II</span>
+      <span class="ftext">잘못된 결과 도출 → <strong>validation loop 보강</strong></span>
+    </div>
+    <div class="fitem">
+      <span class="ptag">PILLAR III</span>
+      <span class="ftext">agent stall · 사람 호출 → <strong>bridge 추가</strong></span>
+    </div>
+    <div class="fitem">
+      <span class="ptag">PILLAR IV</span>
+      <span class="ftext">variance · deprecated 패턴 → <strong>Pattern Contamination 제거</strong></span>
+    </div>
+    <div class="fitem">
+      <span class="ptag">PILLAR V</span>
+      <span class="ftext">한 명만 잘함 · 팀에 안 퍼짐 → <strong>Working Library에 commit</strong> — 실패를 인프라 자본화로 전환</span>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="70-adoption-speed.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">71 / 75</a></div>
+    <div class="nav-right"><a href="72-engineering-the-systems.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('70-adoption-speed.html');
+  if (e.key === 'ArrowRight') navigateTo('72-engineering-the-systems.html');
+});
+</script>
+</body>
+</html>

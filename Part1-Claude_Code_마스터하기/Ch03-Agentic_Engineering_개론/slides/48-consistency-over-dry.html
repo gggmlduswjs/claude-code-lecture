@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Consistency over DRY · 챕터 핵심</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(236, 72, 153, 0.16), rgba(236, 72, 153, 0.04) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.label-tag { font-size: 13px; color: #f9a8d4; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.label-tag .star { color: #fbbf24; margin-right: 6px; }
+.title { font-size: 52px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.title em { font-style: italic; color: #f9a8d4; font-weight: 900; }
+.subtitle { font-size: 17px; color: #c9d1d9; margin-bottom: 28px; text-align: center; max-width: 980px; line-height: 1.6; }
+.subtitle strong { color: #f9a8d4; font-weight: 700; }
+.compare-2col { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.col { padding: 24px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.col.left { animation-delay: 0.15s; border-top: 3px solid #8b949e; }
+.col.right { animation-delay: 0.35s; border-top: 3px solid #ec4899; }
+.col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.col-tag { font-size: 10px; letter-spacing: 2px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+.col.left .col-tag { background: rgba(139, 148, 158, 0.18); color: #b1bac4; }
+.col.right .col-tag { background: rgba(236, 72, 153, 0.18); color: #f9a8d4; }
+.col-title { font-size: 18px; font-weight: 800; color: #e6edf3; }
+.col-sub { font-size: 12px; color: #b1bac4; margin-bottom: 12px; line-height: 1.55; }
+.code-block { background: rgba(10, 15, 26, 0.75); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 10px; padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.65; color: #c9d1d9; margin-bottom: 12px; }
+.code-block .cmt { color: #6e7681; }
+.code-block .kw { color: #ff7b72; }
+.code-block .str { color: #a5d6ff; }
+.code-block .fn { color: #f9a8d4; }
+.col-pros { font-size: 12px; color: #c9d1d9; line-height: 1.65; padding-left: 14px; }
+.col-pros li { margin-bottom: 3px; }
+.col-pros li::marker { color: #ec4899; }
+.col.left .col-pros li::marker { color: #6e7681; }
+.bottom-claim { margin-top: 26px; padding: 16px 32px; background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.4); border-radius: 12px; font-size: 14px; color: #f5d0e3; text-align: center; line-height: 1.65; max-width: 1120px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; }
+.bottom-claim strong { color: #f9a8d4; font-weight: 800; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(236, 72, 153, 0.3); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #ec4899; transition: color 0.2s; }
+.slide-nav a:hover { color: #f9a8d4; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag"><span class="star">★</span> Golden Principle #1 · 챕터 핵심</div>
+  <h1 class="title">Consistency <em>over</em> DRY</h1>
+  <div class="subtitle">"agent에게는 <strong>반복의 대가를 치르더라도 consistency</strong>가 — 복잡한 human-centric 추상화보다 훨씬 가치 있다" — DRY뿐 아니라 <strong>SOLID도</strong> 함께 도전받는다</div>
+  <div class="compare-2col">
+    <div class="col left">
+      <div class="col-head">
+        <div class="col-tag">Human-Centric</div>
+        <div class="col-title">DRY 추상화</div>
+      </div>
+      <div class="col-sub">한 곳에 정의 — 50군데에서 호출. 함수 이름만으로는 내부 로직이 안 보인다.</div>
+      <div class="code-block"><span class="cmt">// payment-service.ts</span><br/><span class="kw">const</span> display = <span class="fn">formatPrice</span>(amount, currency);<br/><br/><span class="cmt">// refund-service.ts</span><br/><span class="kw">const</span> display = <span class="fn">formatPrice</span>(amount, currency);<br/><br/><span class="cmt">// invoice-service.ts</span><br/><span class="kw">const</span> display = <span class="fn">formatPrice</span>(amount, currency);</div>
+      <ul class="col-pros">
+        <li>호출자는 내부 구현을 모름</li>
+        <li>agent가 분석하려면 정의 찾아가야</li>
+        <li>50군데 호출 → context 비용 polynomial 증가</li>
+        <li>추상화가 또 하나의 언어를 만든다</li>
+      </ul>
+    </div>
+    <div class="col right">
+      <div class="col-head">
+        <div class="col-tag">Agent-Optimized</div>
+        <div class="col-title">일관 반복 (Consistency)</div>
+      </div>
+      <div class="col-sub"><strong>패턴이 정확히 동일한</strong> 반복. agent는 어디서 보든 즉시 이해한다.</div>
+      <div class="code-block"><span class="cmt">// payment-service.ts</span><br/><span class="kw">const</span> display = <span class="str">`${currency} ${(amount / 100).toFixed(2)}`</span>;<br/><br/><span class="cmt">// refund-service.ts</span><br/><span class="kw">const</span> display = <span class="str">`${currency} ${(amount / 100).toFixed(2)}`</span>;<br/><br/><span class="cmt">// invoice-service.ts</span><br/><span class="kw">const</span> display = <span class="str">`${currency} ${(amount / 100).toFixed(2)}`</span>;</div>
+      <ul class="col-pros">
+        <li>추상화 layer를 따라 들어갈 필요 없음</li>
+        <li>새 모듈도 <strong>이 줄을 그대로 복사</strong></li>
+        <li>variance = 0</li>
+        <li>agent의 출력이 매번 같은 패턴으로 수렴</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-claim">인간을 위한 추상화의 일부를 — <strong>agent를 위한 일관 반복</strong>으로 의도적으로 되돌린다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="47-pattern-contamination.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">48 / 75</a></div>
+    <div class="nav-right"><a href="49-dry-solid-evolving.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('47-pattern-contamination.html');
+  if (e.key === 'ArrowRight') navigateTo('49-dry-solid-evolving.html');
+});
+</script>
+</body>
+</html>

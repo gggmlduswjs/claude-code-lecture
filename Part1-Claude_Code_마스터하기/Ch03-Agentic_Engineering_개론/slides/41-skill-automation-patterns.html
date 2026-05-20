@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Skill Automation · 4가지 패턴</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #b1bac4; margin-bottom: 30px; text-align: center; max-width: 980px; line-height: 1.55; }
+.subtitle strong { color: #fdba74; font-weight: 700; }
+.grid-2x2 { width: 100%; max-width: 1080px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.grid-card { padding: 22px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; min-height: 170px; display: flex; flex-direction: column; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.grid-card:nth-child(1) { animation-delay: 0.1s; border-top: 3px solid #f97316; }
+.grid-card:nth-child(2) { animation-delay: 0.22s; border-top: 3px solid #fb923c; }
+.grid-card:nth-child(3) { animation-delay: 0.34s; border-top: 3px solid #fdba74; }
+.grid-card:nth-child(4) { animation-delay: 0.46s; border-top: 3px solid #fed7aa; }
+.grid-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.grid-card .num { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #fb923c; text-transform: uppercase; }
+.grid-card .icon { font-size: 26px; }
+.grid-card .title-text { font-size: 16px; font-weight: 800; color: #e6edf3; line-height: 1.3; flex: 1; }
+.grid-card .flow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+.grid-card .flow .from { padding: 5px 10px; background: rgba(107, 114, 128, 0.15); color: #c9d1d9; border-radius: 6px; font-weight: 700; }
+.grid-card .flow .arr { color: #fb923c; font-weight: 900; }
+.grid-card .flow .to { padding: 5px 10px; background: rgba(249, 115, 22, 0.15); color: #fdba74; border-radius: 6px; font-weight: 700; }
+.grid-card .example { font-size: 12px; color: #b1bac4; line-height: 1.55; }
+.grid-card .example code { font-family: 'JetBrains Mono', monospace; background: rgba(249, 115, 22, 0.1); color: #fdba74; padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+.grid-card .example strong { color: #c9d1d9; font-weight: 700; }
+.bottom-note { margin-top: 26px; padding: 14px 32px; background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.65; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.58s; max-width: 1080px; }
+.bottom-note strong { color: #fdba74; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Skill Automation</div>
+  <h1 class="title">Skill Automation — 4가지 패턴</h1>
+  <div class="subtitle">수동 워크플로우(예: 포털 클릭)를 <strong>agent가 접근 가능한 Skill / API endpoint</strong>로 변환</div>
+  <div class="grid-2x2">
+    <div class="grid-card">
+      <div class="head"><div class="icon">🖱️</div><div><div class="num">Pattern 01</div><div class="title-text">포털 → CLI</div></div></div>
+      <div class="flow"><span class="from">AWS 콘솔 클릭</span><span class="arr">→</span><span class="to">aws iam CLI</span></div>
+      <div class="example"><strong>IAM 권한 조정</strong> — <code>aws iam</code> CLI를 묶은 <code>/grant-readonly</code> Skill.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">🚀</div><div><div class="num">Pattern 02</div><div class="title-text">Deploy → Script</div></div></div>
+      <div class="flow"><span class="from">Stripe dashboard</span><span class="arr">→</span><span class="to">stripe CLI</span></div>
+      <div class="example"><strong>환불 처리</strong> — <code>stripe refunds create</code>를 묶은 <code>/issue-refund</code> Skill.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">🔍</div><div><div class="num">Pattern 03</div><div class="title-text">Lookup → MCP</div></div></div>
+      <div class="flow"><span class="from">Notion 페이지</span><span class="arr">→</span><span class="to">Notion API MCP</span></div>
+      <div class="example"><strong>회의록 작성</strong> — Notion API를 묶은 <code>/post-meeting-notes</code> Skill.</div>
+    </div>
+    <div class="grid-card">
+      <div class="head"><div class="icon">⚖️</div><div><div class="num">Pattern 04</div><div class="title-text">승인 → Policy</div></div></div>
+      <div class="flow"><span class="from">"안전한가요?"</span><span class="arr">→</span><span class="to">policy.md</span></div>
+      <div class="example"><strong>사람 결정 대기</strong>를 명시적 policy로 codify — agent가 자체 판단.</div>
+    </div>
+  </div>
+  <div class="bottom-note">CLI는 단발 도구. <strong>Skill로 codify하면</strong> — 다른 사람도 즉시 쓸 수 있는 팀 자산. 그리고 <strong>agent에게 직접 노출</strong>되어야 함.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="40-cli-first.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">41 / 75</a></div>
+    <div class="nav-right"><a href="42-decoupling-bottleneck.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('40-cli-first.html');
+  if (e.key === 'ArrowRight') navigateTo('42-decoupling-bottleneck.html');
+});
+</script>
+</body>
+</html>

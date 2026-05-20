@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>컨텍스트 로트와 환각</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 48px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 36px; font-style: italic; }
+
+.comparison { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: stretch; }
+.comparison-col { padding: 32px 28px; border-radius: 18px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.comparison-col.left { animation-delay: 0.1s; border-left: 3px solid #34d399; }
+.comparison-col.right { animation-delay: 0.3s; border-left: 3px solid #ec4899; }
+.comparison-header { font-size: 22px; font-weight: 800; margin-bottom: 18px; text-align: center; }
+.comparison-col.left .comparison-header { color: #6ee7b7; }
+.comparison-col.right .comparison-header { color: #f9a8d4; }
+.comparison-meta { text-align: center; font-size: 12px; color: #b1bac4; margin-bottom: 18px; letter-spacing: 1px; text-transform: uppercase; }
+.comparison-item { font-size: 14px; color: #c9d1d9; line-height: 1.6; padding: 9px 0; border-bottom: 1px solid rgba(139,148,158,0.08); }
+.comparison-item:last-child { border-bottom: none; }
+.comparison-item::before { content: '•'; margin-right: 10px; }
+.comparison-col.left .comparison-item::before { color: #6ee7b7; }
+.comparison-col.right .comparison-item::before { color: #f9a8d4; }
+.comparison-vs { display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; color: #b1bac4; padding: 0 8px; }
+
+.signals-box { width: 100%; max-width: 1120px; margin-top: 28px; padding: 22px 32px; background: rgba(249,115,22,0.06); border: 1px solid rgba(249,115,22,0.25); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s 0.5s ease forwards; }
+.signals-title { font-size: 13px; font-weight: 700; color: #fdba74; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.signals-list { display: flex; gap: 24px; flex-wrap: wrap; }
+.signal-item { font-size: 13px; color: #c9d1d9; }
+.signal-item strong { color: #e6edf3; font-weight: 700; }
+
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">컨텍스트 로트와 환각</h1>
+  <div class="subtitle">"긴 세션일수록 Claude가 멍청해진다"</div>
+  <div class="comparison">
+    <div class="comparison-col left">
+      <div class="comparison-header">신선한 컨텍스트</div>
+      <div class="comparison-meta">새 세션 / /clear 직후</div>
+      <div class="comparison-item">정확한 응답</div>
+      <div class="comparison-item">간결한 출력</div>
+      <div class="comparison-item">기억 일관성</div>
+      <div class="comparison-item">환각 거의 없음</div>
+    </div>
+    <div class="comparison-vs">vs</div>
+    <div class="comparison-col right">
+      <div class="comparison-header">부풀어진 컨텍스트</div>
+      <div class="comparison-meta">긴 세션 / 사이드 트랙 누적</div>
+      <div class="comparison-item">잘못된 가정 잔존</div>
+      <div class="comparison-item">중복 정보 누적</div>
+      <div class="comparison-item">환각 가속</div>
+      <div class="comparison-item">응답 장황</div>
+    </div>
+  </div>
+  <div class="signals-box">
+    <div class="signals-title">⚠️ 로트의 신호 3가지 — 하나라도 보이면 정리 시점</div>
+    <div class="signals-list">
+      <div class="signal-item"><strong>•</strong> 같은 실수 반복</div>
+      <div class="signal-item"><strong>•</strong> 이미 만든 함수를 다시 만듦</div>
+      <div class="signal-item"><strong>•</strong> 응답이 갑자기 장황해짐</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="06-context-visualization.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">07 / 44</a></div>
+  <div class="nav-right"><a href="08-one-session-one-feature.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('06-context-visualization.html');
+  if (e.key === 'ArrowRight') navigateTo('08-one-session-one-feature.html');
+});
+</script></body></html>

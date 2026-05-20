@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>OpenAI 원칙 · 코드에 없으면 존재하지 않는다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(56, 189, 248, 0.13), rgba(124, 58, 237, 0.07) 40%, transparent 70%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.tag { font-size: 13px; color: #7dd3fc; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.attribution { font-size: 14px; color: #b1bac4; letter-spacing: 1px; margin-bottom: 30px; }
+.attribution strong { color: #7dd3fc; font-weight: 700; }
+.quote-box { width: 100%; max-width: 1100px; padding: 52px 60px 56px; background: rgba(56, 189, 248, 0.05); border: 2px solid rgba(56, 189, 248, 0.3); border-radius: 24px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; margin-bottom: 24px; position: relative; }
+.quote-box::before { content: '"'; position: absolute; top: 8px; left: 32px; font-size: 110px; color: rgba(56, 189, 248, 0.28); font-family: Georgia, serif; line-height: 1; }
+.quote-box::after { content: '"'; position: absolute; bottom: -36px; right: 36px; font-size: 110px; color: rgba(56, 189, 248, 0.28); font-family: Georgia, serif; line-height: 1; }
+.quote-en { font-size: 26px; font-weight: 800; color: #e0f2fe; line-height: 1.45; margin-bottom: 18px; }
+.quote-en .em { background: linear-gradient(135deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+.quote-divider { width: 60px; height: 1px; background: rgba(56, 189, 248, 0.4); margin: 0 auto 16px; }
+.quote-ko { font-size: 18px; font-weight: 700; color: #c9d1d9; line-height: 1.55; }
+.quote-ko .em { color: #7dd3fc; font-weight: 900; }
+.takeaways { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.takeaway { padding: 20px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 12px; opacity: 0; animation: cardAppear 0.5s ease forwards; border-top: 2px solid #38bdf8; }
+.takeaway:nth-child(1) { animation-delay: 0.45s; }
+.takeaway:nth-child(2) { animation-delay: 0.55s; }
+.takeaway .word { font-size: 14px; font-weight: 900; color: #7dd3fc; margin-bottom: 6px; }
+.takeaway .desc { font-size: 13px; color: #c9d1d9; line-height: 1.6; }
+.takeaway .desc strong { color: #e6edf3; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">⭐ Harness Engineering Principle</div>
+  <div class="attribution">— <strong>OpenAI</strong> · Internal Harness Engineering 실험</div>
+  <div class="quote-box">
+    <div class="quote-en">If the domain knowledge doesn't exist in <span class="em">the code base</span>,<br/>it doesn't exist <span class="em">for the agents.</span></div>
+    <div class="quote-divider"></div>
+    <div class="quote-ko">"도메인 지식이 <span class="em">코드베이스에 없다면</span>, agent에게 그건 <span class="em">존재하지 않는 것</span>이다."</div>
+  </div>
+  <div class="takeaways">
+    <div class="takeaway">
+      <div class="word">🧠 Tacit Knowledge</div>
+      <div class="desc">이전에 엔지니어의 <strong>머릿속에만 있던 암묵지</strong> — 회의, 슬랙 스레드, 개인 메모</div>
+    </div>
+    <div class="takeaway">
+      <div class="word">📝 Codify into Repo</div>
+      <div class="desc">반드시 repository에 <strong>codify(코드화)</strong> → CLAUDE.md · ADR · @docs/ 마크다운으로 박아둔다</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="17-context-localization.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">18 / 75</a></div>
+    <div class="nav-right"><a href="19-context-toolset.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('17-context-localization.html');
+  if (e.key === 'ArrowRight') navigateTo('19-context-toolset.html');
+});
+</script>
+</body>
+</html>

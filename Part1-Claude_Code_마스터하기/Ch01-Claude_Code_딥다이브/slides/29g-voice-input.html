@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>음성 입력 — 긴 자연어 효율</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #fde68a; margin-bottom: 22px; font-weight: 600; }
+
+.timesaver { width: 100%; max-width: 1140px; display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 22px; opacity: 0; animation: cardAppear 0.5s 0.1s ease forwards; }
+.time-block { padding: 14px 28px; border-radius: 14px; text-align: center; flex: 1; max-width: 360px; }
+.time-block.slow { background: rgba(139,148,158,0.06); border: 1px solid rgba(139,148,158,0.15); }
+.time-block.fast { background: linear-gradient(135deg, rgba(251,191,36,0.10), rgba(249,115,22,0.06)); border: 1px solid rgba(251,191,36,0.35); box-shadow: 0 0 28px rgba(251,191,36,0.08); }
+.time-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.time-block.slow .time-label { color: #b1bac4; }
+.time-block.fast .time-label { color: #fde68a; }
+.time-value { font-size: 30px; font-weight: 900; }
+.time-block.slow .time-value { color: #b1bac4; }
+.time-block.fast .time-value { color: #fde68a; }
+.time-desc { font-size: 12px; color: #8b949e; margin-top: 2px; }
+.time-arrow { font-size: 32px; color: #fbbf24; font-weight: 900; }
+
+.tools { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.tool-card { padding: 20px 24px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 16px; opacity: 0; transform: translateY(20px); animation: cardIn 0.5s ease forwards; }
+.tool-card.whispr { border-top: 3px solid #ec4899; animation-delay: 0.2s; }
+.tool-card.voice { border-top: 3px solid #7c3aed; animation-delay: 0.32s; }
+.tool-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.tool-name { font-size: 19px; font-weight: 800; }
+.tool-card.whispr .tool-name { color: #f9a8d4; }
+.tool-card.voice .tool-name { color: #c4b5fd; }
+.tool-tag { font-size: 10.5px; padding: 3px 9px; border-radius: 999px; font-weight: 800; letter-spacing: 1px; }
+.tool-card.whispr .tool-tag { background: rgba(236,72,153,0.15); color: #f9a8d4; }
+.tool-card.voice .tool-tag { background: rgba(124,58,237,0.18); color: #c4b5fd; }
+.tool-meta { font-size: 11.5px; color: #8b949e; margin-bottom: 10px; letter-spacing: 0.5px; }
+.tool-desc { font-size: 13px; color: #c9d1d9; line-height: 1.6; }
+.tool-desc strong { color: #fde68a; font-weight: 700; }
+
+.combo-box { width: 100%; max-width: 1140px; padding: 18px 28px; background: linear-gradient(135deg, rgba(124,58,237,0.10), rgba(236,72,153,0.06)); border: 1px solid rgba(124,58,237,0.3); border-radius: 14px; display: flex; align-items: center; gap: 18px; opacity: 0; animation: cardAppear 0.5s 0.55s ease forwards; }
+.combo-icon { flex: 0 0 auto; font-size: 28px; }
+.combo-text { flex: 1; font-size: 15px; color: #c9d1d9; line-height: 1.55; }
+.combo-text strong { background: linear-gradient(135deg, #c4b5fd, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+
+@keyframes cardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">음성 입력 — 긴 자연어 효율</h1>
+  <div class="subtitle">짧은 명령엔 의미 X. 긴 자연어 프롬프트에서 빛난다.</div>
+  <div class="timesaver">
+    <div class="time-block slow">
+      <div class="time-label">키보드</div>
+      <div class="time-value">5분</div>
+      <div class="time-desc">긴 컨텍스트 타이핑</div>
+    </div>
+    <div class="time-arrow">→</div>
+    <div class="time-block fast">
+      <div class="time-label">음성</div>
+      <div class="time-value">30초</div>
+      <div class="time-desc">말하면서 정리</div>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="tool-card whispr">
+      <div class="tool-head">
+        <div class="tool-name">Whispr Flow</div>
+        <div class="tool-tag">SYSTEM-WIDE</div>
+      </div>
+      <div class="tool-meta">유료 · Fn 더블탭 트리거</div>
+      <div class="tool-desc">시스템 어디서나. 어떤 입력창에든 음성을 텍스트로 자동 삽입.<br>"P1 4개, P2 3개, P3 3개. <strong>P1부터 plan 먼저.</strong>"</div>
+    </div>
+    <div class="tool-card voice">
+      <div class="tool-head">
+        <div class="tool-name">/voice</div>
+        <div class="tool-tag">CLAUDE-NATIVE</div>
+      </div>
+      <div class="tool-meta">무료 · Claude Code 내부 · push-to-talk</div>
+      <div class="tool-desc">Claude Code 안에서 바로. 별도 도구 없이 음성 입력만 빠르게 쓸 때.<br><strong>키를 누르고 말하면 됨</strong> — 가벼움이 장점.</div>
+    </div>
+  </div>
+  <div class="combo-box">
+    <div class="combo-icon">🎙️ + 🔔</div>
+    <div class="combo-text"><strong>음성 + Hook 알림</strong> = 진짜 멀티태스킹.<br>말로 작업 던지고 → 끝나면 알림 → 다음 작업으로 이동.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="29f-writer-reviewer.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">29g / 44</a></div>
+  <div class="nav-right"><a href="30-failure-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('29f-writer-reviewer.html');
+  if (e.key === 'ArrowRight') navigateTo('30-failure-patterns.html');
+});
+</script></body></html>

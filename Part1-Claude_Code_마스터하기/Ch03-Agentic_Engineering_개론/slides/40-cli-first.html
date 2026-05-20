@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>카테고리 4 · CLI-First Integration</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 26px; text-align: center; max-width: 1020px; line-height: 1.55; font-style: italic; }
+.subtitle strong { color: #fdba74; font-weight: 700; font-style: normal; }
+.diagram { width: 100%; max-width: 1080px; padding: 26px 28px; background: rgba(249, 115, 22, 0.05); border: 2px solid rgba(249, 115, 22, 0.3); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; }
+.diagram .head-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px dashed rgba(249, 115, 22, 0.3); margin-bottom: 18px; }
+.diagram .cat-num { font-size: 11px; color: #fdba74; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+.diagram .cat-name { font-size: 18px; font-weight: 900; color: #e6edf3; }
+.diagram .tool-badge { font-size: 11px; padding: 6px 14px; background: rgba(249, 115, 22, 0.15); color: #fdba74; border-radius: 999px; font-weight: 800; letter-spacing: 1px; }
+.bridge-equation { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 12px; align-items: center; margin-bottom: 18px; }
+.eq-box { padding: 18px 16px; background: rgba(10, 15, 26, 0.6); border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 12px; text-align: center; }
+.eq-box .icon { font-size: 26px; margin-bottom: 6px; }
+.eq-box .name { font-size: 14px; font-weight: 900; color: #e6edf3; margin-bottom: 2px; }
+.eq-box .label { font-size: 10px; color: #fdba74; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase; }
+.eq-box.primary { background: rgba(249, 115, 22, 0.12); border: 2px solid rgba(249, 115, 22, 0.5); }
+.eq-op { display: flex; align-items: center; justify-content: center; font-size: 28px; color: #f97316; font-weight: 900; }
+.reasons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.reason-card { padding: 12px 16px; background: rgba(10, 15, 26, 0.4); border-left: 3px solid #fb923c; border-radius: 8px; }
+.reason-card .key { font-size: 11px; color: #fb923c; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.reason-card .val { font-size: 12px; color: #c9d1d9; line-height: 1.55; }
+.reason-card .val strong { color: #e6edf3; font-weight: 700; }
+.reason-card .val code { font-family: 'JetBrains Mono', monospace; background: rgba(249, 115, 22, 0.12); color: #fdba74; padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+.bottom-quote { margin-top: 18px; padding: 12px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; font-size: 13px; color: #b1bac4; text-align: center; line-height: 1.6; max-width: 1080px; }
+.bottom-quote strong { color: #fdba74; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Category 4 of 4</div>
+  <h1 class="title">CLI-First Integration</h1>
+  <div class="subtitle">"The Command Line Interface is the <strong>primary bridge</strong> between agents and complex orchestrations."</div>
+  <div class="diagram">
+    <div class="head-row">
+      <div><div class="cat-num">Category 4</div><div class="cat-name">⌨️ CLI 우선 통합</div></div>
+      <div class="tool-badge">대응: CLI 도구 layer 우선 설계</div>
+    </div>
+    <div class="bridge-equation">
+      <div class="eq-box"><div class="icon">🤖</div><div class="name">Agent</div><div class="label">텍스트 in/out</div></div>
+      <div class="eq-op">+</div>
+      <div class="eq-box primary"><div class="icon">⌨️</div><div class="name">CLI</div><div class="label">Primary Bridge</div></div>
+      <div class="eq-op">=</div>
+      <div class="eq-box"><div class="icon">🌉</div><div class="name">자율 실행</div><div class="label">no GUI scraping</div></div>
+    </div>
+    <div class="reasons-grid">
+      <div class="reason-card">
+        <div class="key">Reason 1 · 자연스러운 인터페이스</div>
+        <div class="val">agent가 이미 <strong>텍스트로 작동</strong>. CLI도 텍스트 in/out — 가장 자연스러운 매칭.</div>
+      </div>
+      <div class="reason-card">
+        <div class="key">Reason 2 · 보편적 접근</div>
+        <div class="val">모든 시스템이 CLI를 제공. GUI는 그 위의 layer일 뿐. <strong>핵심 기능 = CLI</strong>.</div>
+      </div>
+      <div class="reason-card">
+        <div class="key">Reason 3 · Composable</div>
+        <div class="val"><code>gh pr list | jq</code> 식 파이프 조합. <strong>agent가 가장 잘하는 영역</strong>.</div>
+      </div>
+      <div class="reason-card">
+        <div class="key">Reason 4 · Codify 용이</div>
+        <div class="val">명령 한 줄을 <strong>Skill로 바로 codify</strong>. GUI는 Selenium / Playwright 필요.</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-quote">새 시스템 도입 시 가장 먼저 묻는 질문: <strong>"CLI가 있는가?"</strong> — Pillar III의 첫 실천 습관.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="39-category3-wait-states.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">40 / 75</a></div>
+    <div class="nav-right"><a href="41-skill-automation-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('39-category3-wait-states.html');
+  if (e.key === 'ArrowRight') navigateTo('41-skill-automation-patterns.html');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Day 4-5 — Validation + Compound 작동</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 70px; display: flex; flex-direction: column; align-items: center; }
+.tag { font-size: 12px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; background: linear-gradient(90deg, #7dd3fc, #f9a8d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 10px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #b1bac4; text-align: center; margin-bottom: 30px; line-height: 1.55; max-width: 1000px; }
+.subtitle strong { color: #e6edf3; font-weight: 700; }
+.two-col { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.col { padding: 26px 26px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.col.left { animation-delay: 0.10s; border-top: 3px solid #38bdf8; }
+.col.right { animation-delay: 0.25s; border-top: 3px solid #f472b6; }
+.col .day { font-size: 11px; letter-spacing: 1.8px; font-weight: 700; color: #8b949e; text-transform: uppercase; margin-bottom: 4px; }
+.col .pillar { font-size: 13px; font-weight: 900; margin-bottom: 14px; letter-spacing: 0.5px; }
+.col.left .pillar { color: #7dd3fc; }
+.col.right .pillar { color: #f9a8d4; }
+.col h3 { font-size: 18px; font-weight: 900; color: #f0f6fc; margin-bottom: 14px; line-height: 1.35; }
+.col ul { list-style: none; padding: 0; margin: 0 0 14px 0; }
+.col li { font-size: 13px; color: #c9d1d9; line-height: 1.65; padding-left: 18px; position: relative; margin-bottom: 7px; }
+.col.left li::before { content: '◆'; position: absolute; left: 0; color: #38bdf8; font-size: 10px; top: 4px; }
+.col.right li::before { content: '◆'; position: absolute; left: 0; color: #f472b6; font-size: 10px; top: 4px; }
+.col code { font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 1px 6px; border-radius: 4px; }
+.col.left code { background: rgba(56, 189, 248, 0.08); color: #7dd3fc; }
+.col.right code { background: rgba(244, 114, 182, 0.08); color: #f9a8d4; }
+.col .highlight { padding: 12px 14px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-size: 12.5px; color: #c9d1d9; line-height: 1.55; }
+.col .highlight strong { color: #e6edf3; font-weight: 700; }
+.col .highlight em { font-style: italic; color: #fde68a; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="tag">Day 4-5 · Pillar II + Pillar V</div>
+  <h1 class="title">Day 4-5 — Validation + Compound 작동</h1>
+  <div class="subtitle">기능 완성 후 <strong>2-layer self-correction loop</strong>, 그리고 PR 머지 후 <strong>Working Library에 자산 commit</strong> — 한 명의 일주일이 팀의 영구 자산으로</div>
+  <div class="two-col">
+    <div class="col left">
+      <div class="day">Day 4</div>
+      <div class="pillar">▶ Pillar II · Self-Correction Loop</div>
+      <h3>2-layer Validation —<br/>사람 개입 0회</h3>
+      <ul>
+        <li><code>npm test -- payment</code> · 80건 unit + integration (1차 layer)</li>
+        <li>edge case 자동 추가 · <strong>0 · 음수 · $10M</strong></li>
+        <li><code>playwright screenshot</code> · 결제 페이지 visual 검증</li>
+        <li><strong>LogQL</strong> 쿼리 · staging에서 비정상 금액 0건 (2차 layer)</li>
+        <li>실패 1건 → traceback 읽고 <strong>자기 수정</strong> → 재시도 → 통과</li>
+      </ul>
+      <div class="highlight">agent가 자기 작업을 <em>crash 없음</em> 수준이 아닌 — <strong>internal state가 의도와 일치함</strong> 수준까지 검증</div>
+    </div>
+    <div class="col right">
+      <div class="day">Day 5</div>
+      <div class="pillar">▶ Pillar V · Compound Engineering</div>
+      <h3>PR 머지 +<br/>Working Library에 commit</h3>
+      <ul>
+        <li><code>/migrate-payment-gateway</code> Skill을 <strong>다른 PG에도 재사용</strong>되게 일반화</li>
+        <li>Adyen wrapper 패턴 → <code>docs/payment-gateways.md</code></li>
+        <li>LogQL 검증 쿼리 → 팀 <strong>monitoring 라이브러리</strong>에 commit</li>
+        <li>다음 Toss 마이그레이션 — <strong>3일</strong>, KakaoPay — <strong>1일</strong></li>
+      </ul>
+      <div class="highlight">개별 작업의 산출물이 자산으로 격상 — <em>compound 효과가 polynomial하게 누적</em> · <strong>collective intelligence</strong> 실행 중</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="65-scenario-day2-3.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">66 / 75</a></div>
+    <div class="nav-right"><a href="67-high-performing-team-matrix.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('65-scenario-day2-3.html');
+  if (e.key === 'ArrowRight') navigateTo('67-high-performing-team-matrix.html');
+});
+</script>
+</body>
+</html>

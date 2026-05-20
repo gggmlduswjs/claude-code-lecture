@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Stage 1 — + CLAUDE.md</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; text-align: center; margin-bottom: 30px; max-width: 880px; line-height: 1.55; }
+.subtitle strong { color: #fdba74; }
+.two-col { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
+.md-card { padding: 22px 24px; background: rgba(10, 15, 26, 0.55); border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease 0.1s forwards; }
+.md-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(139, 148, 158, 0.1); }
+.md-tag { font-size: 10px; padding: 2px 8px; background: rgba(249, 115, 22, 0.15); color: #fdba74; border-radius: 4px; font-weight: 800; letter-spacing: 1px; }
+.md-name { font-size: 14px; font-weight: 700; color: #e6edf3; }
+.md-meta { margin-left: auto; font-size: 11px; color: #b1bac4; }
+.md-block { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; line-height: 1.75; color: #c9d1d9; white-space: pre-wrap; }
+.md-block .h { color: #fdba74; font-weight: 700; }
+.md-block .b { color: #e6edf3; font-weight: 700; }
+.md-block .cm { color: #484f58; font-style: italic; }
+.result-card { padding: 22px 26px; background: rgba(52, 211, 153, 0.05); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 14px; opacity: 0; animation: cardAppear 0.5s ease 0.3s forwards; display: flex; flex-direction: column; }
+.result-header { font-size: 13px; color: #6ee7b7; letter-spacing: 1.5px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+.result-list { display: flex; flex-direction: column; gap: 10px; }
+.result-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #c9d1d9; line-height: 1.55; }
+.result-item .check { color: #34d399; font-weight: 900; flex: 0 0 16px; }
+.result-item strong { color: #e6edf3; }
+.still-missing { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(139, 148, 158, 0.15); font-size: 12.5px; color: #b1bac4; line-height: 1.55; }
+.still-missing strong { color: #fde68a; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">Stage 1 — + CLAUDE.md</h1>
+  <div class="subtitle">30줄짜리 CLAUDE.md 하나만 추가했다. <strong>프롬프트는 그대로</strong>. 결과의 변화를 보자.</div>
+  <div class="two-col">
+    <div class="md-card">
+      <div class="md-header"><div class="md-tag">FILE</div><div class="md-name">CLAUDE.md</div><div class="md-meta">~30 lines</div></div>
+<div class="md-block"><span class="h"># 프로젝트 개요</span>
+Next.js 15 + Supabase SaaS
+
+<span class="h"># 명령어</span>
+- npm run dev / test / lint
+
+<span class="h"># 코딩 컨벤션</span>
+- TypeScript strict, <span class="b">any 금지</span>
+- import는 <span class="b">@/ 절대경로</span>
+- API 응답: NextResponse.json
+  ({ data | error })
+- 에러: 모든 핸들러에 try-catch
+- 로깅: logger 모듈 사용
+
+<span class="h"># 하지 말 것</span>
+- .env 파일 수정 금지
+- 상대경로 import 금지</div>
+    </div>
+    <div class="result-card">
+      <div class="result-header">▸ AFTER — 같은 프롬프트 결과</div>
+      <div class="result-list">
+        <div class="result-item"><div class="check">✓</div><div><strong>@/ 절대경로</strong> import 일관됨</div></div>
+        <div class="result-item"><div class="check">✓</div><div>모든 핸들러에 <strong>try-catch</strong></div></div>
+        <div class="result-item"><div class="check">✓</div><div><strong>NextResponse.json</strong>({ data | error }) 형식</div></div>
+        <div class="result-item"><div class="check">✓</div><div><strong>logger.error()</strong> 호출</div></div>
+        <div class="result-item"><div class="check">✓</div><div>한국어 에러 메시지</div></div>
+        <div class="result-item"><div class="check">✓</div><div>any 타입 사용 안 함</div></div>
+      </div>
+      <div class="still-missing"><strong>아직 부족:</strong> zod 검증, JSDoc, 포맷팅 통일. 이건 다음 단계의 일이다.</div>
+    </div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="13-stage-0-naked.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">14 / 24</a></div>
+    <div class="nav-right"><a href="15-stage-2-3-skill-hook.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('13-stage-0-naked.html');
+  if (e.key === 'ArrowRight') navigateTo('15-stage-2-3-skill-hook.html');
+});
+</script>
+</body>
+</html>

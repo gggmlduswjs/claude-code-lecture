@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>DRY/SOLID의 섬세한 위상 — Evolving Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #f9a8d4; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 24px; text-align: center; max-width: 980px; line-height: 1.6; }
+.subtitle strong { color: #c9d1d9; font-weight: 700; }
+.quote-block { width: 100%; max-width: 1120px; padding: 18px 28px; background: rgba(236, 72, 153, 0.08); border-left: 4px solid #ec4899; border-radius: 8px; margin-bottom: 28px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.1s; }
+.quote-block .en { font-size: 14px; color: #f9a8d4; font-weight: 700; line-height: 1.6; margin-bottom: 6px; font-style: italic; }
+.quote-block .ko { font-size: 13px; color: #c9d1d9; line-height: 1.6; }
+.compare-2col { width: 100%; max-width: 1120px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.col { padding: 24px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 16px; opacity: 0; animation: cardAppear 0.6s ease forwards; }
+.col.left { animation-delay: 0.2s; border-top: 3px solid #34d399; }
+.col.right { animation-delay: 0.35s; border-top: 3px solid #ec4899; }
+.col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.col-tag { font-size: 10px; letter-spacing: 2px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+.col.left .col-tag { background: rgba(52, 211, 153, 0.18); color: #6ee7b7; }
+.col.right .col-tag { background: rgba(236, 72, 153, 0.18); color: #f9a8d4; }
+.col-title { font-size: 18px; font-weight: 800; color: #e6edf3; }
+.col-sub { font-size: 13px; color: #b1bac4; margin-bottom: 14px; line-height: 1.6; }
+.col-list { font-size: 13px; color: #c9d1d9; line-height: 1.7; }
+.col-list .row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; padding: 8px 12px; background: rgba(10, 15, 26, 0.45); border-radius: 8px; }
+.col-list .icon { font-size: 16px; flex-shrink: 0; }
+.col-list .text strong { color: #e6edf3; font-weight: 700; }
+.col.left .col-list .text em { color: #6ee7b7; font-style: normal; font-weight: 700; }
+.col.right .col-list .text em { color: #f9a8d4; font-style: normal; font-weight: 700; }
+.bottom-claim { margin-top: 24px; padding: 16px 32px; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 12px; font-size: 14px; color: #c9d1d9; text-align: center; line-height: 1.65; max-width: 1120px; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.6s; }
+.bottom-claim strong { color: #f9a8d4; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(236, 72, 153, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #ec4899; transition: color 0.2s; }
+.slide-nav a:hover { color: #f9a8d4; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Nuance · Application is Evolving</div>
+  <h1 class="title">DRY/SOLID는 폐기되지 않는다 — <em style="color:#f9a8d4">맹목적 적용</em>이 폐기된다</h1>
+  <div class="subtitle">흑백 논리가 아니다. *foundational*은 그대로 — <strong>application</strong>이 진화한다</div>
+  <div class="quote-block">
+    <div class="en">"While these remain foundational for human readability, their application is evolving. In an agentic context, extreme adherence to human-centric abstractions may sometimes be less effective than structural consistency that favors agent predictability."</div>
+    <div class="ko">DRY/SOLID는 human readability의 토대로서 여전히 *foundational*하다 — 다만 그 *application*이 진화하고 있다. agentic 맥락에서는, 극단적 고수가 — agent predictability를 선호하는 structural consistency보다 — 때로 덜 효과적일 수 있다.</div>
+  </div>
+  <div class="compare-2col">
+    <div class="col left">
+      <div class="col-head">
+        <div class="col-tag">Foundational</div>
+        <div class="col-title">여전히 기초로 유효</div>
+      </div>
+      <div class="col-sub">DRY · SOLID는 <strong>human readability</strong>의 토대 — 30년의 황금률은 폐기되지 않는다</div>
+      <div class="col-list">
+        <div class="row"><div class="icon">📐</div><div class="text"><strong>인간 가독성</strong> — 코드를 읽고 이해하는 사람을 위한 추상화는 <em>여전히 필요</em></div></div>
+        <div class="row"><div class="icon">🧱</div><div class="text"><strong>적절한 적용</strong> — 진짜 공통 로직(보안 검증·트랜잭션 경계 등)은 한 곳에 모으는 게 옳다</div></div>
+        <div class="row"><div class="icon">📚</div><div class="text"><strong>기초 교육</strong> — 신규 엔지니어가 배우는 첫 원칙은 <em>여전히 DRY/SOLID</em></div></div>
+      </div>
+    </div>
+    <div class="col right">
+      <div class="col-head">
+        <div class="col-tag">Evolving</div>
+        <div class="col-title">적용 방식이 진화</div>
+      </div>
+      <div class="col-sub">"Extreme adherence"(극단적 고수)가 문제 — <strong>언제 적용할지의 판단 기준</strong>이 바뀐다</div>
+      <div class="col-list">
+        <div class="row"><div class="icon">⚠️</div><div class="text"><strong>맹목적 추상화 중단</strong> — 한 번만 쓰일 함수까지 빼내는 강박은 <em>agent에게 손해</em></div></div>
+        <div class="row"><div class="icon">🎯</div><div class="text"><strong>Structural Consistency 우선</strong> — agent predictability를 위해 의도적 반복을 허용</div></div>
+        <div class="row"><div class="icon">⚖️</div><div class="text"><strong>판단 기준의 전환</strong> — "코드는 줄어드는가?"가 아니라 "<em>agent가 예측 가능한가?</em>"</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">*"DRY/SOLID 폐기"*가 아니라 — <strong>*"맹목적 적용 중단"*</strong>. 이 nuance를 놓치면 반대편 안티 패턴(과도한 반복)에 빠진다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="48-consistency-over-dry.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">49 / 75</a></div>
+    <div class="nav-right"><a href="50-agent-optimized-four.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('48-consistency-over-dry.html');
+  if (e.key === 'ArrowRight') navigateTo('50-agent-optimized-four.html');
+});
+</script>
+</body>
+</html>

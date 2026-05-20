@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Generator-Evaluator 분리</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 44px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 14px; line-height: 1.3; }
+.subtitle { font-size: 17px; color: #c9d1d9; text-align: center; margin-bottom: 40px; max-width: 940px; line-height: 1.55; }
+.subtitle em { color: #fde68a; font-style: italic; }
+.three-flow { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0; align-items: stretch; }
+.three-flow-stage { padding: 30px 24px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.1); border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.three-flow-stage.s1 { animation-delay: 0.1s; border-top: 3px solid #34d399; }
+.three-flow-stage.s2 { animation-delay: 0.3s; border-top: 3px solid #fbbf24; }
+.three-flow-stage.s3 { animation-delay: 0.5s; border-top: 3px solid #a78bfa; }
+.three-flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 30px; color: rgba(139, 148, 158, 0.4); font-weight: 900; padding: 0 8px; }
+.role-label { font-size: 12px; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 10px; font-weight: 700; }
+.three-flow-stage.s1 .role-label { color: #6ee7b7; }
+.three-flow-stage.s2 .role-label { color: #fde68a; }
+.three-flow-stage.s3 .role-label { color: #a78bfa; }
+.role-icon { font-size: 44px; margin-bottom: 12px; }
+.role-name { font-size: 22px; font-weight: 900; color: #e6edf3; margin-bottom: 12px; }
+.role-job { font-size: 14px; color: #c9d1d9; line-height: 1.55; margin-bottom: 16px; }
+.role-do { font-size: 12.5px; padding: 10px 14px; background: rgba(10, 15, 26, 0.5); border-radius: 8px; color: #b1bac4; line-height: 1.55; }
+.role-do strong { color: #e6edf3; }
+.three-flow-stage.s2 .role-do { background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.2); color: #c9d1d9; }
+.three-flow-stage.s2 .role-do strong { color: #fde68a; }
+.bottom-quote { margin-top: 32px; padding: 22px 36px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(56, 189, 248, 0.06)); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 16px; max-width: 980px; text-align: center; opacity: 0; animation: cardAppear 0.6s ease 0.65s forwards; }
+.bottom-quote .text { font-size: 19px; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+.bottom-quote .sub { font-size: 13.5px; color: #c9d1d9; line-height: 1.55; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <h1 class="title">Generator-Evaluator 분리</h1>
+  <div class="subtitle">자기평가 편향 — <em>"같은 세션의 모델은 자기 가정에 끌린다."</em><br/>만드는 역할과 평가하는 역할을 분리하면 객관성이 회복된다.</div>
+  <div class="three-flow">
+    <div class="three-flow-stage s1">
+      <div class="role-icon">⚒️</div>
+      <div class="role-label">Role 1</div>
+      <div class="role-name">Generator</div>
+      <div class="role-job">코드·문서·디자인을 만든다. 창의성과 실행력 우선.</div>
+      <div class="role-do"><strong>Claude Code에선</strong><br/>builder subagent</div>
+    </div>
+    <div class="three-flow-arrow">→</div>
+    <div class="three-flow-stage s2">
+      <div class="role-icon">🔍</div>
+      <div class="role-label">Role 2</div>
+      <div class="role-name">Evaluator</div>
+      <div class="role-job">결함만 본다. "괜찮아 보입니다" 금지. 구체적·재현 가능한 문제만 보고.</div>
+      <div class="role-do"><strong>Claude Code에선</strong><br/>reviewer subagent (새 세션)</div>
+    </div>
+    <div class="three-flow-arrow">→</div>
+    <div class="three-flow-stage s3">
+      <div class="role-icon">📋</div>
+      <div class="role-label">Role 3</div>
+      <div class="role-name">Planner</div>
+      <div class="role-job">큰 목표를 작은 sprint로. "검증 가능한 형태"로 범위 정의.</div>
+      <div class="role-do"><strong>Claude Code에선</strong><br/>parent · orchestrator</div>
+    </div>
+  </div>
+  <div class="bottom-quote">
+    <div class="text">계산형 검사 먼저, 추론형은 의미 판단에만</div>
+    <div class="sub">typecheck·lint·test 통과 못 한 코드는 reviewer에 보내지 마라. + <strong>Holdout set</strong>으로 평가 과적합 방어. + 사용자가 발견한 실패는 <strong>회귀 평가</strong>에 축적.</div>
+  </div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="20-anti-permissive.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">21 / 24</a></div>
+    <div class="nav-right"><a href="22-allow-ask-deny.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('20-anti-permissive.html');
+  if (e.key === 'ArrowRight') navigateTo('22-allow-ask-deny.html');
+});
+</script>
+</body>
+</html>

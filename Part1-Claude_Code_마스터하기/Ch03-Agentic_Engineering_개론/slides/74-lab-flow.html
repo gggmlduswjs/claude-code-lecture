@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>실습 흐름 — 5단계</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; position: relative; overflow-x: hidden; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(circle, rgba(124, 58, 237, 0.16), rgba(236, 72, 153, 0.08) 35%, rgba(249, 115, 22, 0.05) 60%, transparent 78%); pointer-events: none; z-index: 0; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+.overline { font-size: 13px; color: #f0abfc; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.title { font-size: 44px; font-weight: 900; background: linear-gradient(135deg, #7c3aed 0%, #ec4899 35%, #f97316 65%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; margin-bottom: 12px; line-height: 1.25; }
+.subtitle { font-size: 15px; color: #c9d1d9; text-align: center; margin-bottom: 24px; line-height: 1.55; max-width: 980px; }
+.subtitle strong { color: #f0abfc; font-weight: 700; }
+.steps { width: 100%; max-width: 1120px; display: flex; flex-direction: column; gap: 10px; }
+.step { display: flex; align-items: stretch; gap: 18px; padding: 14px 22px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.12); border-radius: 12px; opacity: 0; animation: cardAppear 0.5s ease forwards; }
+.step:nth-child(1) { animation-delay: 0.05s; border-left: 4px solid #8b949e; }
+.step:nth-child(2) { animation-delay: 0.12s; border-left: 4px solid #7c3aed; }
+.step:nth-child(3) { animation-delay: 0.19s; border-left: 4px solid #ec4899; }
+.step:nth-child(4) { animation-delay: 0.26s; border-left: 4px solid #f97316; }
+.step:nth-child(5) { animation-delay: 0.33s; border-left: 4px solid #fbbf24; }
+.step:nth-child(6) { animation-delay: 0.40s; border-left: 4px solid #a78bfa; }
+.step-num { width: 56px; min-width: 56px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; align-self: stretch; padding: 4px 0; }
+.step-num .n { font-size: 18px; line-height: 1; }
+.step-num .t { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; margin-top: 3px; opacity: 0.8; }
+.step:nth-child(1) .step-num { background: rgba(139, 148, 158, 0.12); border: 1px solid rgba(139, 148, 158, 0.35); color: #c9d1d9; }
+.step:nth-child(2) .step-num { background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.4); color: #a78bfa; }
+.step:nth-child(3) .step-num { background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.4); color: #f9a8d4; }
+.step:nth-child(4) .step-num { background: rgba(249, 115, 22, 0.12); border: 1px solid rgba(249, 115, 22, 0.4); color: #fdba74; }
+.step:nth-child(5) .step-num { background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.4); color: #fde68a; }
+.step:nth-child(6) .step-num { background: rgba(167, 139, 250, 0.12); border: 1px solid rgba(167, 139, 250, 0.4); color: #c4b5fd; }
+.step-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+.step-name { font-size: 15px; font-weight: 800; color: #e6edf3; }
+.step-pillar { padding: 2px 8px; background: rgba(139, 148, 158, 0.12); border-radius: 4px; font-size: 10px; font-weight: 700; color: #c9d1d9; letter-spacing: 0.5px; }
+.step-time { padding: 2px 8px; background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(139, 148, 158, 0.2); border-radius: 4px; font-family: 'Courier New', monospace; font-size: 10px; font-weight: 700; color: #b1bac4; }
+.step-desc { font-size: 12px; color: #b1bac4; line-height: 1.55; }
+.step-desc strong { color: #e6edf3; font-weight: 700; }
+.bottom-claim { margin-top: 16px; padding: 12px 28px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(236, 72, 153, 0.07), rgba(249, 115, 22, 0.05)); border: 1px solid rgba(124, 58, 237, 0.28); border-radius: 12px; font-size: 13px; color: #c9d1d9; text-align: center; line-height: 1.6; opacity: 0; animation: cardAppear 0.5s ease forwards; animation-delay: 0.50s; max-width: 1120px; }
+.bottom-claim strong { background: linear-gradient(135deg, #a78bfa, #f9a8d4, #fdba74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(124, 58, 237, 0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="overline">Mini Lab Flow · 17분 · 6단계</div>
+  <h1 class="title">실습 흐름 — Step 0 진단부터 AFTER까지</h1>
+  <div class="subtitle">각 단계에서 적용할 <strong>Pillar</strong>와 소요 시간을 명시 — 같은 모델이 다른 답을 내도록 만드는 17분</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num"><div class="n">0</div><div class="t">DIAG</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">진단 — BEFORE 응답 캡처</div><span class="step-pillar">측정</span><span class="step-time">3분</span></div>
+        <div class="step-desc">환불 기능 추가 질문 — Claude가 <strong>probabilistic confusion</strong>을 그대로 노출 (3개 결제 디렉토리, 2개 PG client 중 어느 게 활성인지 모름). <strong>50% 룰 작동</strong> 확인.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"><div class="n">1</div><div class="t">CTX</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">Pillar I 적용 — CLAUDE.md 작성</div><span class="step-pillar">Context Engineering</span><span class="step-time">3분</span></div>
+        <div class="step-desc">디렉토리 정책 · PG client 정책 · 로깅 규칙을 <strong>codify</strong> + <code>@docs/payment-rules.md</code>로 hierarchical indexing 첫 단계.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"><div class="n">2</div><div class="t">CODE</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">Pillar IV 적용 — Consistency over DRY</div><span class="step-pillar">Agentic Codebase</span><span class="step-time">3분</span></div>
+        <div class="step-desc">DEPRECATED 디렉토리에 <strong>README 표지</strong> + <code>src/payment/.agent-rules.md</code> + 구조화 JSON 로그 헬퍼 (machine-readable docs).</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"><div class="n">3</div><div class="t">TOOL</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">Pillar III 적용 — Skill 작성</div><span class="step-pillar">Agentic Tooling</span><span class="step-time">3분</span></div>
+        <div class="step-desc"><code>.claude/commands/payment-feature.md</code> — 8단계 결제 기능 워크플로우를 <strong>한 줄 명령</strong>으로 압축. friction 자리마다 다리를 미리 깔아둠.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"><div class="n">4</div><div class="t">VAL</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">Pillar II 트리거 — Self-Correction Loop</div><span class="step-pillar">Agentic Validation</span><span class="step-time">4분</span></div>
+        <div class="step-desc"><code>/payment-feature</code> 실행 — 4개 Pillar가 동시 작동. 테스트 자동 실행 + 실패 시 <strong>traceback → 분석 → 수정 → 재테스트</strong>를 라이브로 시연.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"><div class="n">5</div><div class="t">AFTER</div></div>
+      <div class="step-body">
+        <div class="step-head"><div class="step-name">AFTER 응답 — BEFORE와 화면 분할 비교</div><span class="step-pillar">검증 + Ch04 예고</span><span class="step-time">1분</span></div>
+        <div class="step-desc">같은 질문 → 즉시 <code>src/payment/services/</code> + <code>lib/v2/</code> + <code>logger.payment</code> 명시. variance가 0에 수렴. Pillar V는 <strong>Ch04 Harness Engineering</strong>으로.</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-claim">핵심 판단 — Pillar 적용 <strong>순서가 중요</strong>: Context로 좌표를 박고 → Codebase로 신호를 박고 → Tooling으로 다리를 깔고 → Validation으로 닫는다</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="73-lab-intro.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">74 / 75</a></div>
+    <div class="nav-right"><a href="75-ch03-summary.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('73-lab-intro.html');
+  if (e.key === 'ArrowRight') navigateTo('75-ch03-summary.html');
+});
+</script>
+</body>
+</html>

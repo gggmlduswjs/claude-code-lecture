@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>직관 개발 — 작동하는 것에 주의</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #fde68a; margin-bottom: 22px; font-weight: 600; text-align: center; max-width: 900px; line-height: 1.5; }
+
+.reflect { width: 100%; max-width: 1140px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.reflect-card { padding: 22px 24px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 16px; opacity: 0; transform: translateY(20px); animation: cardIn 0.5s ease forwards; }
+.reflect-card.win { border-top: 3px solid #34d399; animation-delay: 0.10s; }
+.reflect-card.miss { border-top: 3px solid #f87171; animation-delay: 0.22s; }
+.reflect-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.reflect-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; }
+.reflect-card.win .reflect-icon { background: rgba(52,211,153,0.15); color: #6ee7b7; }
+.reflect-card.miss .reflect-icon { background: rgba(248,113,113,0.15); color: #fca5a5; }
+.reflect-name { font-size: 18px; font-weight: 800; color: #e6edf3; }
+.reflect-q { font-size: 13.5px; color: #c9d1d9; line-height: 1.7; padding: 12px 16px; background: rgba(10,15,26,0.5); border-radius: 8px; }
+.reflect-q .key { color: #fde68a; font-weight: 700; }
+
+.axes { width: 100%; max-width: 1140px; padding: 22px 28px; background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(124,58,237,0.06)); border: 1px solid rgba(251,191,36,0.25); border-radius: 16px; opacity: 0; animation: cardAppear 0.5s 0.5s ease forwards; margin-bottom: 16px; }
+.axes-label { font-size: 12px; color: #fde68a; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; text-align: center; }
+.axes-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.axis { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 14px; background: rgba(10,15,26,0.55); border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #c9d1d9; text-align: center; }
+.axis .left { color: #7dd3fc; }
+.axis .right { color: #f9a8d4; }
+.axis .vs { color: #b1bac4; font-size: 11px; letter-spacing: 1px; font-weight: 800; }
+
+.power-box { width: 100%; max-width: 1140px; padding: 16px 28px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.15); border-radius: 14px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.65s ease forwards; }
+.power-text { font-size: 15px; font-weight: 800; color: #fde68a; line-height: 1.5; }
+.power-sub { font-size: 13px; color: #b1bac4; margin-top: 6px; }
+
+@keyframes cardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">직관 개발</h1>
+  <div class="subtitle">가이드의 패턴은 시작점일 뿐. <strong style="color:#fde68a">작동하는 것에 주의</strong>를 기울이면 — 직관이 생긴다.</div>
+  <div class="reflect">
+    <div class="reflect-card win">
+      <div class="reflect-head">
+        <div class="reflect-icon">✓</div>
+        <div class="reflect-name">Claude가 훌륭한 출력</div>
+      </div>
+      <div class="reflect-q">→ <span class="key">본인이 한 것</span>을 주목.<br>&nbsp;&nbsp;프롬프트 구조? 컨텍스트? 모드?<br>&nbsp;&nbsp;어떤 입력 채널을 썼나?</div>
+    </div>
+    <div class="reflect-card miss">
+      <div class="reflect-head">
+        <div class="reflect-icon">✕</div>
+        <div class="reflect-name">Claude가 어려움</div>
+      </div>
+      <div class="reflect-q">→ <span class="key">왜?</span><br>&nbsp;&nbsp;컨텍스트가 시끄러웠나?<br>&nbsp;&nbsp;프롬프트가 모호했나? 작업이 너무 컸나?</div>
+    </div>
+  </div>
+  <div class="axes">
+    <div class="axes-label">시간이 지나며 생기는 직관 — 세 가지 축</div>
+    <div class="axes-list">
+      <div class="axis"><span class="left">구체적</span><span class="vs">vs</span><span class="right">개방적</span></div>
+      <div class="axis"><span class="left">계획</span><span class="vs">vs</span><span class="right">탐색</span></div>
+      <div class="axis"><span class="left">/clear</span><span class="vs">vs</span><span class="right">누적</span></div>
+    </div>
+  </div>
+  <div class="power-box">
+    <div class="power-text">"베스트 프랙티스는 끝점이 아니라 — 본인 직관을 키우는 발판"</div>
+    <div class="power-sub">패턴을 외우는 게 아니라, 패턴이 작동한 이유를 관찰한다</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="30-failure-patterns.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">30b / 44</a></div>
+  <div class="nav-right"><a href="31-integration-scenarios.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('30-failure-patterns.html');
+  if (e.key === 'ArrowRight') navigateTo('31-integration-scenarios.html');
+});
+</script></body></html>

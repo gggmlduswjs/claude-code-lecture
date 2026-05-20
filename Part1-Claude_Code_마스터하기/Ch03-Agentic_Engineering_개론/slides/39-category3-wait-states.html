@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>카테고리 3 · Monitor Agent Wait States</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 40px 80px; display: flex; flex-direction: column; align-items: center; }
+.label-tag { font-size: 13px; color: #fdba74; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.title { font-size: 42px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 12px; line-height: 1.3; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 28px; text-align: center; max-width: 1020px; line-height: 1.55; font-style: italic; }
+.subtitle strong { color: #fdba74; font-weight: 700; font-style: normal; }
+.diagram { width: 100%; max-width: 1080px; padding: 28px 28px; background: rgba(249, 115, 22, 0.05); border: 2px solid rgba(249, 115, 22, 0.3); border-radius: 18px; opacity: 0; animation: cardAppear 0.6s ease forwards; animation-delay: 0.15s; }
+.diagram .head-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px dashed rgba(249, 115, 22, 0.3); margin-bottom: 18px; }
+.diagram .cat-num { font-size: 11px; color: #fdba74; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
+.diagram .cat-name { font-size: 18px; font-weight: 900; color: #e6edf3; }
+.diagram .tool-badge { font-size: 11px; padding: 6px 14px; background: rgba(249, 115, 22, 0.15); color: #fdba74; border-radius: 999px; font-weight: 800; letter-spacing: 1px; }
+.cost-row { padding: 16px 20px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.cost-row .icon { font-size: 28px; }
+.cost-row .text { font-size: 14px; color: #c9d1d9; line-height: 1.55; }
+.cost-row .text strong { color: #fca5a5; font-weight: 800; }
+.wait-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.wait-card { padding: 16px 16px; background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 10px; text-align: center; }
+.wait-card .icon { font-size: 24px; margin-bottom: 6px; }
+.wait-card .name { font-size: 13px; font-weight: 800; color: #e6edf3; margin-bottom: 4px; }
+.wait-card .desc { font-size: 12px; color: #b1bac4; line-height: 1.5; }
+.target-row { padding: 14px 18px; background: rgba(10, 15, 26, 0.4); border-left: 3px solid #f97316; border-radius: 8px; display: flex; align-items: center; gap: 14px; }
+.target-row .key { font-size: 12px; color: #fb923c; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+.target-row .val { font-size: 13px; color: #c9d1d9; line-height: 1.55; }
+.target-row .val strong { color: #fdba74; font-weight: 800; }
+.bottom-quote { margin-top: 18px; padding: 12px 28px; background: rgba(139, 148, 158, 0.04); border: 1px solid rgba(139, 148, 158, 0.15); border-radius: 12px; font-size: 13px; color: #b1bac4; text-align: center; line-height: 1.6; max-width: 1080px; }
+.bottom-quote strong { color: #fdba74; font-weight: 700; }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-12px); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(249, 115, 22, 0.25); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #f97316; transition: color 0.2s; }
+.slide-nav a:hover { color: #fdba74; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255, 255, 255, 0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fast Campus"/></div>
+<div class="container">
+  <div class="label-tag">Category 3 of 4</div>
+  <h1 class="title">Monitor Agent Wait States</h1>
+  <div class="subtitle">"Identify stages where the agent <strong>'waits' for human input</strong> — build Skills or MCP implementations to bridge these gaps."</div>
+  <div class="diagram">
+    <div class="head-row">
+      <div><div class="cat-num">Category 3</div><div class="cat-name">⏱️ Agent 대기 상태 모니터링</div></div>
+      <div class="tool-badge">대응: Skill 또는 MCP</div>
+    </div>
+    <div class="cost-row">
+      <div class="icon">💸</div>
+      <div class="text"><strong>가장 비싼 friction 신호</strong> — 사람 시간뿐 아니라 <strong>agent 시간까지 함께 낭비</strong>. agent loop의 idle 시간을 측정.</div>
+    </div>
+    <div class="wait-grid">
+      <div class="wait-card">
+        <div class="icon">📖</div>
+        <div class="name">매뉴얼 lookup</div>
+        <div class="desc">"이 값이 뭔지 찾아주세요"</div>
+      </div>
+      <div class="wait-card">
+        <div class="icon">✅</div>
+        <div class="name">매뉴얼 승인</div>
+        <div class="desc">"이거 해도 될까요?"</div>
+      </div>
+      <div class="wait-card">
+        <div class="icon">⚙️</div>
+        <div class="name">매뉴얼 설정</div>
+        <div class="desc">"환경 변수 세팅해주세요"</div>
+      </div>
+    </div>
+    <div class="target-row">
+      <div class="key">변환 경로</div>
+      <div class="val">wait state → <strong>MCP 서버</strong>로 자동화 가능. lookup·승인·설정 모두 <strong>Skill 또는 MCP로 codify</strong>.</div>
+    </div>
+  </div>
+  <div class="bottom-quote">agent의 idle 시간 = <strong>이중 낭비</strong>. 우선순위 최상위로 다리를 놓는다.</div>
+</div>
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="38-category2-api-gaps.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">39 / 75</a></div>
+    <div class="nav-right"><a href="40-cli-first.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('38-category2-api-gaps.html');
+  if (e.key === 'ArrowRight') navigateTo('40-cli-first.html');
+});
+</script>
+</body>
+</html>

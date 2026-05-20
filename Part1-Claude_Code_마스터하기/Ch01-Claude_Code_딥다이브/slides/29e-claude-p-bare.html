@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>claude -p · --bare — 비대화형 모드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0f1a; font-family: 'Noto Sans KR', sans-serif; color: #e6edf3; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding-bottom: 50px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+.container { width: 1280px; padding: 36px 80px; display: flex; flex-direction: column; align-items: center; }
+.title { font-size: 46px; font-weight: 900; color: #f0f6fc; text-align: center; margin-bottom: 8px; line-height: 1.3; }
+.title .mono { font-family: 'Courier New', monospace; color: #fde68a; }
+.subtitle { font-size: 16px; color: #b1bac4; margin-bottom: 26px; }
+
+.cases { width: 100%; max-width: 1140px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 18px; }
+.case { padding: 18px 22px; background: rgba(139,148,158,0.04); border: 1px solid rgba(139,148,158,0.1); border-radius: 14px; border-left: 3px solid #fbbf24; opacity: 0; transform: translateY(20px); animation: cardIn 0.5s ease forwards; }
+.case:nth-child(1) { animation-delay: 0.10s; }
+.case:nth-child(2) { animation-delay: 0.20s; }
+.case:nth-child(3) { animation-delay: 0.30s; }
+.case:nth-child(4) { animation-delay: 0.40s; }
+.case-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.case-tag { font-size: 10.5px; padding: 3px 9px; border-radius: 999px; background: rgba(251,191,36,0.12); color: #fde68a; font-weight: 800; letter-spacing: 1px; }
+.case-title { font-size: 15px; font-weight: 800; color: #e6edf3; }
+.case-cmd { padding: 10px 14px; background: rgba(10,15,26,0.65); border: 1px solid rgba(251,191,36,0.18); border-radius: 8px; font-family: 'Courier New', monospace; font-size: 12.5px; color: #c9d1d9; line-height: 1.5; }
+.case-cmd .prompt { color: #6ee7b7; font-weight: 700; }
+.case-cmd .flag { color: #93c5fd; font-weight: 700; }
+.case-cmd .str { color: #fde68a; }
+
+.bare-box { width: 100%; max-width: 1140px; padding: 18px 28px; background: linear-gradient(135deg, rgba(124,58,237,0.10), rgba(56,189,248,0.06)); border: 1px solid rgba(124,58,237,0.25); border-radius: 14px; display: flex; align-items: center; gap: 22px; opacity: 0; animation: cardAppear 0.5s 0.55s ease forwards; }
+.bare-label { flex: 0 0 auto; padding: 8px 14px; border-radius: 999px; background: rgba(124,58,237,0.18); color: #c4b5fd; font-family: 'Courier New', monospace; font-size: 14px; font-weight: 800; }
+.bare-text { flex: 1; font-size: 13.5px; color: #c9d1d9; line-height: 1.55; }
+.bare-text strong { color: #a78bfa; font-weight: 700; }
+.bare-text .keyword { color: #fde68a; font-weight: 700; }
+
+.tip { margin-top: 14px; padding: 12px 28px; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.22); border-radius: 12px; max-width: 1140px; text-align: center; opacity: 0; animation: cardAppear 0.5s 0.7s ease forwards; }
+.tip-text { font-size: 13px; color: #c9d1d9; line-height: 1.5; }
+.tip-text strong { color: #fde68a; font-weight: 700; }
+
+@keyframes cardIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cardAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-12px); } }
+
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; opacity: 0; animation: logoFadeIn 0.6s ease 0.2s forwards; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+@keyframes logoFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.slide-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: rgba(10,15,26,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(124,58,237,0.2); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.slide-nav-inner { width: 1280px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; }
+.slide-nav a { text-decoration: none; font-size: 14px; font-weight: 700; color: #7c3aed; transition: color 0.2s; }
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+</style></head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title"><span class="mono">claude -p</span> · 비대화형 모드</h1>
+  <div class="subtitle">CI · pre-commit · 스크립트에서 Claude를 호출하는 4가지 형태</div>
+  <div class="cases">
+    <div class="case">
+      <div class="case-head">
+        <div class="case-tag">ONE-SHOT</div>
+        <div class="case-title">일회성 실행</div>
+      </div>
+      <div class="case-cmd"><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="str">"이 프로젝트가 뭐 하는지<br>&nbsp;&nbsp;&nbsp;&nbsp;설명"</span></div>
+    </div>
+    <div class="case">
+      <div class="case-head">
+        <div class="case-tag">STRUCTURED</div>
+        <div class="case-title">구조화 출력</div>
+      </div>
+      <div class="case-cmd"><span class="prompt">$</span> claude <span class="flag">-p</span> <span class="str">"모든 API 엔드포인트<br>&nbsp;&nbsp;&nbsp;&nbsp;나열"</span> <span class="flag">--output-format</span> json</div>
+    </div>
+    <div class="case">
+      <div class="case-head">
+        <div class="case-tag">FAST START</div>
+        <div class="case-title">빠른 시작 (--bare)</div>
+      </div>
+      <div class="case-cmd"><span class="prompt">$</span> claude <span class="flag">--bare</span> <span class="flag">-p</span> <span class="str">"이 파일 요약"</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--allowedTools</span> <span class="str">"Read"</span></div>
+    </div>
+    <div class="case">
+      <div class="case-head">
+        <div class="case-tag">CI / AUTO</div>
+        <div class="case-title">CI에서 자율 실행</div>
+      </div>
+      <div class="case-cmd"><span class="prompt">$</span> claude <span class="flag">--permission-mode</span> auto <span class="flag">-p</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"fix all lint errors"</span></div>
+    </div>
+  </div>
+  <div class="bare-box">
+    <div class="bare-label">--bare</div>
+    <div class="bare-text"><strong>hooks · skills · plugins · MCP · CLAUDE.md</strong> 자동 로드를 <span class="keyword">모두 건너뜀</span>. 시작이 빠르고 — 무엇보다 <span class="keyword">재현성</span>이 보장된다.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-text">💡 <strong>대화형 = 사람용</strong>, <strong>비대화형 = 파이프라인용</strong>. 같은 Claude를 두 가지 모드로 쓴다.</div>
+  </div>
+</div>
+<nav class="slide-nav"><div class="slide-nav-inner">
+  <div class="nav-left"><a href="29d-claude-interview.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+  <div class="nav-center"><a href="index.html">29e / 44</a></div>
+  <div class="nav-right"><a href="29f-writer-reviewer.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+</div></nav>
+<script>
+function navigateTo(url) { document.body.classList.add('fade-out'); setTimeout(function() { window.location.href = url; }, 300); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('29d-claude-interview.html');
+  if (e.key === 'ArrowRight') navigateTo('29f-writer-reviewer.html');
+});
+</script></body></html>

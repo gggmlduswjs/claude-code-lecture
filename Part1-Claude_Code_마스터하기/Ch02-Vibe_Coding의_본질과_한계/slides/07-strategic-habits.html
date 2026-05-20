@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>전략적 Vibe Coding 3가지 습관</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0f1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 50px;
+}
+.container {
+  width: 1280px;
+  padding: 44px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.subtitle {
+  font-size: 16px;
+  color: #b1bac4;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.step-flow {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.step-item {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  padding: 24px 28px;
+  background: rgba(139, 148, 158, 0.04);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: stepIn 0.5s ease forwards;
+}
+.step-item:nth-child(1) { animation-delay: 0.1s; }
+.step-item:nth-child(2) { animation-delay: 0.25s; }
+.step-item:nth-child(3) { animation-delay: 0.4s; }
+.step-num {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #34d399, #38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 20px;
+  color: #fff;
+}
+.step-body { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.step-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #e6edf3;
+  line-height: 1.3;
+}
+.step-title .badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6ee7b7;
+  letter-spacing: 1px;
+  margin-left: 10px;
+  padding: 2px 10px;
+  background: rgba(52, 211, 153, 0.12);
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.step-desc {
+  font-size: 14px;
+  color: #b1bac4;
+  line-height: 1.6;
+}
+.step-example {
+  margin-top: 6px;
+  padding: 12px 16px;
+  background: rgba(10, 15, 26, 0.55);
+  border: 1px solid rgba(139, 148, 158, 0.15);
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #6ee7b7;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.slide-nav-inner {
+  width: 1280px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 60px;
+}
+.slide-nav a {
+  text-decoration: none; font-size: 14px; font-weight: 700;
+  color: #7c3aed; transition: color 0.2s;
+}
+.slide-nav a:hover { color: #a78bfa; }
+.slide-nav .nav-disabled { font-size: 14px; font-weight: 700; color: #484f58; cursor: default; }
+.slide-nav .nav-center a { color: #8b949e; font-size: 13px; font-weight: 400; }
+.slide-nav .nav-center a:hover { color: #e6edf3; }
+
+body { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+body.fade-out { animation: fadeOut 0.3s ease forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+.brand-logo { position: fixed; top: 20px; right: 28px; z-index: 9998; background: rgba(255,255,255,0.97); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; pointer-events: none; }
+.brand-logo img { height: 28px; width: auto; display: block; }
+</style>
+</head>
+<body>
+<div class="brand-logo"><img src="fastcampus-logo.png" alt="Fastcampus"/></div>
+<div class="container">
+  <h1 class="title">전략적 Vibe Coding 3가지 습관</h1>
+  <div class="subtitle">대단한 게 아니라, 시작·진행·확인 단계에 5분씩 더 쓰는 것</div>
+
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">시작 전에 스펙 쓰기 <span class="badge">2~3분</span></div>
+        <div class="step-desc">코딩 시작 전 만들 것을 간단히 정리. AI가 추측할 영역을 줄여 일관된 방향을 확보한다.</div>
+        <div class="step-example">프로젝트: 할일 관리 앱
+핵심 기능: CRUD + 카테고리 분류 + 마감일 알림
+기술 스택: Next.js, Supabase, shadcn/ui
+제약 조건: 모바일 반응형, 다크 모드 지원</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">한 번에 하나씩 <span class="badge">단계 분리</span></div>
+        <div class="step-desc">큰 기능을 작은 단위로 쪼개 각 단계에서 방향 확인 + 수정 기회를 만든다.</div>
+        <div class="step-example">Step 1: DB 스키마 설계 → 검토 → OK
+Step 2: API 엔드포인트 구현 → 검토 → OK
+Step 3: 프론트엔드 UI → 검토 → OK
+Step 4: 통합 테스트 작성 → 검토 → OK</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">결과 확인 후 피드백 <span class="badge">실제 동작</span></div>
+        <div class="step-desc">각 단계 종료 시 실제로 실행해보고, 본 것을 기반으로 다음 지시를 만든다.</div>
+        <div class="step-example">"서버 실행해줘"
+→ 브라우저에서 확인
+→ "UI는 좋은데 목록이 비어있어. 초기 데이터 넣어줘"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="slide-nav">
+  <div class="slide-nav-inner">
+    <div class="nav-left"><a href="06-naive-vs-strategic.html" onclick="event.preventDefault(); navigateTo(this.href)">&larr; 이전</a></div>
+    <div class="nav-center"><a href="index.html">07 / 20</a></div>
+    <div class="nav-right"><a href="08-beyond-typing-assistant.html" onclick="event.preventDefault(); navigateTo(this.href)">다음 &rarr;</a></div>
+  </div>
+</nav>
+
+<script>
+function navigateTo(url) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() { window.location.href = url; }, 300);
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') navigateTo('06-naive-vs-strategic.html');
+  if (e.key === 'ArrowRight') navigateTo('08-beyond-typing-assistant.html');
+});
+</script>
+</body>
+</html>
